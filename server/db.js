@@ -42,8 +42,7 @@ async function initializeDatabase(pool) {
       status VARCHAR(120) NOT NULL,
       review_status VARCHAR(120) NOT NULL,
       owner VARCHAR(120) DEFAULT '',
-      path VARCHAR(255) NOT NULL,
-      next_action TEXT DEFAULT '',
+      next_action TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
@@ -59,7 +58,7 @@ async function initializeDatabase(pool) {
       reviewer_role VARCHAR(120) NOT NULL,
       status VARCHAR(120) NOT NULL,
       prompt TEXT NOT NULL,
-      decision_note TEXT DEFAULT '',
+      decision_note TEXT,
       reviewer VARCHAR(120) DEFAULT '',
       approved_on DATETIME NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
