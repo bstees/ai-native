@@ -3,7 +3,8 @@
 ## Purpose
 
 This rubric helps us decide whether a new signal is weak noise, a candidate for
-experimentation, or strong enough to drive backlog creation.
+experimentation, or strong enough to drive backlog creation and shared asset
+maintenance.
 
 ## Source Trust
 
@@ -36,7 +37,7 @@ Score each evidence record from `0` to `3`:
 | `0` | Not relevant to our repos or current epics |
 | `1` | Potentially relevant later, but not actionable now |
 | `2` | Relevant to one active repo or pilot workflow |
-| `3` | Relevant across multiple repos or central sharing strategy |
+| `3` | Relevant across multiple repos or the central sharing strategy |
 
 ## Promotion Guidance
 
@@ -53,8 +54,7 @@ Use judgment, but default to these thresholds:
 - `internal-standard`
   only after we adopt it in practice and choose to maintain it intentionally
 
-## Backlog Rule
+## Asset Rule
 
-Generate backlog items by default only from `established` concepts, or from
-`provisional` concepts when the output is explicitly labeled as a pilot or
-experiment.
+Shared assets should be created by default only from `established` concepts, or
+from `provisional` concepts when the asset is explicitly framed as a pilot.

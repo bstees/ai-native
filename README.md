@@ -1,26 +1,38 @@
 # AI Native
 
-This repository is the working home for reusable agentic development artifacts.
+This repository is the central maintenance layer for reusable native-AI assets
+that can serve production repositories.
 
-Right now it starts with a seed prompt for generating an `agentic-development`
-repository from scratch. From here, we can evolve it in either of two
-directions:
+Its job is to watch how AI is being applied across the software development
+lifecycle, detect recurring patterns that appear to be becoming standard, and
+turn those patterns into maintainable shared assets with human approval gates.
 
-- a centralized repository of reusable AI tooling and standards
-- prompts that generate those artifacts directly in consuming repos
+Consumer repositories such as `Interest Lens` should benefit from what is
+maintained here without having to rediscover best practices repo by repo.
 
 ## Current Contents
 
-- [`prompts/`](./prompts/) stores versioned prompt artifacts we want to refine
-- [`planning/`](./planning/) stores decision notes and future enhancement ideas
-- [`registry/`](./registry/) stores the curation source of truth, including
-  sources, ontology, and record templates
-- [`strategy/`](./strategy/) stores the operating model for curation and
-  cross-repo sharing
+- [`signals/`](./signals/) stores monitored sources, ontology, scoring, and
+  evidence templates
+- [`decisions/`](./decisions/) stores what we believe is mature enough to act
+  on and why
+- [`assets/`](./assets/) stores shared tools, prompts, rules, workflows, and
+  packaging guidance for other repos
+- [`pilots/`](./pilots/) stores adoption plans and feedback loops for early
+  consumer repos
+- [`prompts/`](./prompts/) stores versioned seed prompts and related source
+  material
 
-## Near-Term Focus
+## Operating Model
 
-1. Preserve strong seed prompts as versioned source material.
-2. Build a backlog curation pipeline grounded in durable evidence.
-3. Use `Interest Lens` as the first proving ground for reusable native-AI tools.
-4. Clarify where prompts versus reusable repo assets create the most leverage.
+1. Watch trusted sources for common threads in AI-for-SDLC practice.
+2. Curate those signals into concepts with evidence and status.
+3. Decide which concepts should become shared infrastructure.
+4. Publish or update shared assets for consumer repositories.
+5. Validate adoption through pilot repos such as `Interest Lens`.
+
+## Current Focus
+
+1. Establish the signal-to-decision pipeline.
+2. Define how approved concepts become shared assets.
+3. Use `Interest Lens` as the first proving ground for cross-repo adoption.

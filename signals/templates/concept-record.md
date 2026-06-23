@@ -41,7 +41,7 @@ One short paragraph describing the concept and why it matters.
 - `standardize`
 - `defer`
 
-## Backlog Implication
+## Asset Implication
 
-Describe whether this concept should produce backlog items now, later, or only
+Describe whether this concept should produce a shared asset now, later, or only
 after additional evidence.
