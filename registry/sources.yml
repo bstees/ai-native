@@ -1,0 +1,103 @@
+version: 0.1
+last_updated: 2026-06-23
+owner: ai-native
+
+sources:
+  - id: openai-codex-docs
+    name: OpenAI Codex docs
+    url: https://developers.openai.com/codex
+    source_type: official-docs
+    trust_tier: 1
+    refresh_cadence: weekly
+    extraction_method: manual-review-then-automation
+    focus_areas:
+      - capability
+      - context
+      - control
+      - delivery
+      - quality
+    notes: >
+      Current docs emphasize tools, MCP/connectors, automation, sandboxing,
+      approvals, best practices, and evaluation-related workflows.
+    verified_on: 2026-06-23
+
+  - id: anthropic-claude-code-overview
+    name: Anthropic Claude Code docs overview
+    url: https://code.claude.com/docs/en/overview
+    source_type: official-docs
+    trust_tier: 1
+    refresh_cadence: weekly
+    extraction_method: manual-review-then-automation
+    focus_areas:
+      - capability
+      - context
+      - control
+    notes: >
+      Useful for tracking how a major coding-agent vendor frames workflows,
+      setup, and operating patterns for agentic development.
+    verified_on: 2026-06-23
+
+  - id: github-changelog-copilot
+    name: GitHub Changelog
+    url: https://github.blog/changelog/
+    source_type: official-changelog
+    trust_tier: 1
+    refresh_cadence: weekly
+    extraction_method: tag-filtered-review
+    focus_areas:
+      - capability
+      - control
+      - delivery
+      - quality
+    notes: >
+      A high-frequency source for changes in Copilot, agentic workflows, code
+      review controls, usage metrics, budgets, sandboxes, and enterprise
+      rollout patterns.
+    verified_on: 2026-06-23
+
+  - id: dora-research
+    name: DORA research program
+    url: https://dora.dev/
+    source_type: research-program
+    trust_tier: 2
+    refresh_cadence: monthly
+    extraction_method: report-review
+    focus_areas:
+      - quality
+      - delivery
+      - control
+    notes: >
+      DORA is a strong anchor for software delivery outcomes and currently
+      publishes AI-assisted software development guidance and ROI framing.
+    verified_on: 2026-06-23
+
+  - id: aidev-dataset-paper
+    name: AIDev dataset paper
+    url: https://arxiv.org/abs/2602.09185
+    source_type: research-paper
+    trust_tier: 2
+    refresh_cadence: quarterly
+    extraction_method: abstract-and-findings-review
+    focus_areas:
+      - capability
+      - quality
+      - delivery
+    notes: >
+      Useful for grounding curation in observed agent-authored pull request
+      patterns across real GitHub repositories.
+    verified_on: 2026-06-23
+
+  - id: ai-productivity-rct-paper
+    name: AI productivity RCT paper
+    url: https://arxiv.org/abs/2507.09089
+    source_type: research-paper
+    trust_tier: 2
+    refresh_cadence: quarterly
+    extraction_method: abstract-and-findings-review
+    focus_areas:
+      - quality
+      - capability
+    notes: >
+      Useful as a counterweight to optimistic vendor narratives because it
+      studies actual developer productivity outcomes in mature projects.
+    verified_on: 2026-06-23
