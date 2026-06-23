@@ -13,9 +13,12 @@ directions:
 
 - [`prompts/`](./prompts/) stores versioned prompt artifacts we want to refine
 - [`planning/`](./planning/) stores decision notes and future enhancement ideas
+- [`strategy/`](./strategy/) stores the operating model for curation and
+  cross-repo sharing
 
 ## Near-Term Focus
 
 1. Preserve strong seed prompts as versioned source material.
-2. Clarify where prompts versus reusable repo assets create the most leverage.
-3. Grow the structure only when we have concrete artifacts to support it.
+2. Build a backlog curation pipeline grounded in durable evidence.
+3. Use `Interest Lens` as the first proving ground for reusable native-AI tools.
+4. Clarify where prompts versus reusable repo assets create the most leverage.
