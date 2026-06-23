@@ -18,3 +18,8 @@ can adopt them without each repo inventing its own version.
 
 Assets here should exist because a decision record justifies them, not because a
 single tool release looked interesting.
+
+## Current Assets
+
+- [`repo-rules/`](./repo-rules/) contains the first shared operating-rules
+  asset for consumer repositories.
