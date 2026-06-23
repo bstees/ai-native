@@ -57,6 +57,7 @@ second for local adaptation.
 - [`bug-fix.md`](./bug-fix.md)
 - [`code-review.md`](./code-review.md)
 - [`debugging.md`](./debugging.md)
+- [`repo-onboarding-audit.md`](./repo-onboarding-audit.md)
 - [`rollout-and-validation.md`](./rollout-and-validation.md)
 - [`usability-validation.md`](./usability-validation.md)
 

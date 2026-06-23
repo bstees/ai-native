@@ -1,6 +1,5 @@
 const assert = require("assert");
-const { EventEmitter } = require("events");
-const { Readable, Writable } = require("stream");
+const { PassThrough, Readable, Writable } = require("stream");
 const { createApp } = require("../server/index");
 
 function invoke(app, { method, url, body }) {
@@ -23,7 +22,7 @@ function invoke(app, { method, url, body }) {
           "content-length": Buffer.byteLength(payload)
         }
       : {};
-    const socket = new EventEmitter();
+    const socket = new PassThrough();
     socket.destroy = () => {};
     request.connection = socket;
     request.socket = socket;

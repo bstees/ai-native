@@ -49,7 +49,23 @@ const recordCatalog = [
   },
   {
     stage: "assets",
+    path: "assets/feedback/README.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/feedback/feedback-ingestion-standard.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/feedback/feedback-entry-template.md"
+  },
+  {
+    stage: "assets",
     path: "assets/workflows/goal-and-plan-mode.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/workflows/repo-onboarding-audit.md"
   },
   {
     stage: "assets",
