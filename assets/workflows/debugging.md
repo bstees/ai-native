@@ -15,6 +15,10 @@
 Use this workflow when the primary need is investigation and narrowing, not yet
 feature delivery or a finalized fix.
 
+## Goal
+
+The debugging goal must define what symptom is being explained or narrowed.
+
 ## Trigger
 
 - unclear failure mode
@@ -30,11 +34,13 @@ feature delivery or a finalized fix.
 
 ## Default Sequence
 
-1. State the symptom precisely.
+1. State the symptom and debugging goal precisely.
 2. Form a short list of plausible hypotheses.
 3. Choose the cheapest discriminating check for each hypothesis.
 4. Gather evidence until one explanation becomes significantly more likely.
-5. Only then move into fix design or escalation.
+5. If ambiguity remains high and next actions become consequential, move into
+   planning before attempting a fix.
+6. Only then move into fix design or escalation.
 
 ## Human Gates
 
@@ -59,3 +65,4 @@ feature delivery or a finalized fix.
 - the failure is materially narrowed
 - next action is justified by evidence, not guesswork
 - debugging findings are captured clearly enough for follow-on work
+- unresolved ambiguity is explicit if the investigation stops before a fix

@@ -15,6 +15,11 @@
 Use this workflow when evaluating an existing change set for correctness, risk,
 and readiness.
 
+## Goal
+
+The review objective must be clear: identify whether the change is safe,
+correct, sufficiently validated, and ready for the next stage.
+
 ## Trigger
 
 - pull request review
@@ -31,10 +36,13 @@ and readiness.
 ## Default Sequence
 
 1. Understand the change intent before judging the implementation.
-2. Review for correctness, regressions, missing tests, and risk.
-3. Prioritize findings by severity and user or system impact.
-4. Verify claims with nearby code, tests, or outputs when needed.
-5. Report findings first, then open questions or residual risk.
+2. Review for correctness, regressions, missing tests, modularity, reuse, and
+   contract adherence.
+3. Review validation depth, especially for refactors, logic-heavy areas, and UI
+   components.
+4. Prioritize findings by severity and user or system impact.
+5. Verify claims with nearby code, tests, or outputs when needed.
+6. Report findings first, then open questions or residual risk.
 
 ## Human Gates
 
@@ -59,3 +67,4 @@ and readiness.
 - the most material risks have been surfaced
 - findings are evidence-based
 - confidence and residual uncertainty are explicit
+- approval is not recommended while lint, tests, or build health are failing

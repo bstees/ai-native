@@ -23,5 +23,6 @@ single tool release looked interesting.
 
 - [`repo-rules/`](./repo-rules/) contains the first shared operating-rules
   asset for consumer repositories.
+- [`quality/`](./quality/) contains reusable engineering quality standards.
 - [`workflows/`](./workflows/) contains shared development workflows for common
   agentic software-delivery tasks.

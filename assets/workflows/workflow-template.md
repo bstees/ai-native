@@ -14,6 +14,10 @@
 
 What this workflow is for and when it should be used.
 
+## Goal
+
+What clear objective this workflow requires before execution begins.
+
 ## Trigger
 
 What kind of request or condition should start this workflow.

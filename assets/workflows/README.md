@@ -11,6 +11,7 @@ workflows inside an application.
 Across current agentic-development tooling, there is strong commonality around:
 
 - understanding repository context before changing code
+- establishing a clear goal before execution
 - using tools explicitly instead of improvising everything in prompts
 - keeping intermediate state visible
 - verifying outcomes before declaring success
@@ -31,11 +32,12 @@ Sources used:
 
 ### Common Enough To Standardize
 
+- require a clear goal before work begins
 - gather context before editing
 - prefer the smallest useful change
 - run relevant verification
 - record assumptions and outcomes
-- use human gates for risky or cross-repo actions
+- use human gates for consequential or protected actions
 
 ### Usually Variable By Team
 
@@ -55,6 +57,9 @@ second for local adaptation.
 - [`code-review.md`](./code-review.md)
 - [`debugging.md`](./debugging.md)
 - [`rollout-and-validation.md`](./rollout-and-validation.md)
+
+All workflows in this directory should be read alongside
+[`../quality/engineering-quality.md`](../quality/engineering-quality.md).
 
 ## Adaptation Rule
 

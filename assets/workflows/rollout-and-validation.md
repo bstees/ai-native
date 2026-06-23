@@ -15,6 +15,11 @@
 Use this workflow when a validated change or shared asset is about to be rolled
 out to a consumer repo, environment, or user-facing surface.
 
+## Goal
+
+The rollout goal must define what is being introduced, where it is going, and
+what successful validation looks like.
+
 ## Trigger
 
 - deployment readiness check
@@ -31,11 +36,13 @@ out to a consumer repo, environment, or user-facing surface.
 
 ## Default Sequence
 
-1. Confirm what is being rolled out and where.
+1. Confirm the rollout goal, target, and success criteria.
 2. Verify prerequisites, dependencies, and validation coverage.
-3. Apply the rollout in the narrowest safe scope first when possible.
-4. Run post-rollout checks against the intended behavior.
-5. Record outcome, issues, and whether to promote, revise, or rollback.
+3. Confirm that no lint, build, or test failures remain before seeking
+   approval.
+4. Apply the rollout in the narrowest safe scope first when possible.
+5. Run post-rollout checks against the intended behavior.
+6. Record outcome, issues, and whether to promote, revise, or rollback.
 
 ## Human Gates
 
@@ -60,3 +67,4 @@ out to a consumer repo, environment, or user-facing surface.
 - rollout target is updated intentionally
 - validation confirms the expected result or clearly documents failure
 - next rollout decision is explicit
+- protected-branch or broad rollout approval happens only after validation is clean
