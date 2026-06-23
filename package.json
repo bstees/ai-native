@@ -1,0 +1,21 @@
+{
+  "name": "ai-native-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Containerized UI for AI Native signals, decisions, assets, pilots, and reviews.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mysql2": "^3.11.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^4.5.3"
+  }
+}
