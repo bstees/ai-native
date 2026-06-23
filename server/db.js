@@ -1,5 +1,4 @@
 const mysql = require("mysql2/promise");
-const { seedApprovals, seedRecords } = require("./seedData");
 
 async function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -36,6 +35,7 @@ async function initializeDatabase(pool) {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS records (
       id INT AUTO_INCREMENT PRIMARY KEY,
+      path VARCHAR(255) NOT NULL UNIQUE,
       stage VARCHAR(40) NOT NULL,
       title VARCHAR(255) NOT NULL,
       summary TEXT NOT NULL,
@@ -53,6 +53,7 @@ async function initializeDatabase(pool) {
     CREATE TABLE IF NOT EXISTS approvals (
       id INT AUTO_INCREMENT PRIMARY KEY,
       record_id INT NOT NULL,
+      record_path VARCHAR(255) NOT NULL,
       record_title VARCHAR(255) NOT NULL,
       gate_type VARCHAR(80) NOT NULL,
       reviewer_role VARCHAR(120) NOT NULL,
@@ -63,60 +64,12 @@ async function initializeDatabase(pool) {
       approved_on DATETIME NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      UNIQUE KEY unique_record_gate (record_path, gate_type),
       CONSTRAINT fk_approvals_record
         FOREIGN KEY (record_id) REFERENCES records(id)
         ON DELETE CASCADE
     )
   `);
-
-  const [recordCountRows] = await pool.query("SELECT COUNT(*) AS count FROM records");
-  if (recordCountRows[0].count > 0) {
-    return;
-  }
-
-  const insertedRecordIds = [];
-  for (const record of seedRecords) {
-    const [result] = await pool.query(
-      `
-        INSERT INTO records (stage, title, summary, status, review_status, owner, path, next_action)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `,
-      [
-        record.stage,
-        record.title,
-        record.summary,
-        record.status,
-        record.reviewStatus,
-        record.owner,
-        record.path,
-        record.nextAction
-      ]
-    );
-
-    insertedRecordIds.push(result.insertId);
-  }
-
-  for (const approval of seedApprovals) {
-    const matchingRecordIndex = seedRecords.findIndex(
-      (record) => record.title === approval.recordTitle
-    );
-    const recordId = insertedRecordIds[matchingRecordIndex];
-
-    await pool.query(
-      `
-        INSERT INTO approvals (record_id, record_title, gate_type, reviewer_role, status, prompt)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `,
-      [
-        recordId,
-        approval.recordTitle,
-        approval.gateType,
-        approval.reviewerRole,
-        approval.status,
-        approval.prompt
-      ]
-    );
-  }
 }
 
 module.exports = {

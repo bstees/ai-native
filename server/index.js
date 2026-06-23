@@ -1,34 +1,18 @@
 const express = require("express");
 const path = require("path");
-const { createPool, initializeDatabase } = require("./db");
+const { loadRepoRecords } = require("./content");
+const { createStore } = require("./store");
 
-async function start() {
+async function createApp() {
   const app = express();
   app.use(express.json());
 
-  const pool = await createPool();
-  await initializeDatabase(pool);
+  const store = await createStore(loadRepoRecords());
 
   app.get("/api/dashboard", async (_request, response) => {
-    const [records] = await pool.query(
-      `
-        SELECT id, stage, title, summary, status, review_status AS reviewStatus,
-               owner, path, next_action AS nextAction, updated_at AS updatedAt
-        FROM records
-        ORDER BY FIELD(stage, 'signals', 'decisions', 'assets', 'pilots'), updated_at DESC
-      `
-    );
-
-    const [pendingApprovals] = await pool.query(
-      `
-        SELECT id, record_title AS recordTitle, gate_type AS gateType,
-               reviewer_role AS reviewerRole, status, prompt, reviewer,
-               decision_note AS decisionNote, approved_on AS approvedOn
-        FROM approvals
-        WHERE status = 'pending-human-review'
-        ORDER BY created_at ASC
-      `
-    );
+    await store.sync(loadRepoRecords());
+    const records = await store.getRecords();
+    const pendingApprovals = await store.getPendingApprovals();
 
     const summary = {
       recordCount: records.length,
@@ -43,14 +27,7 @@ async function start() {
     const { id } = request.params;
     const { status, reviewStatus, nextAction } = request.body;
 
-    await pool.query(
-      `
-        UPDATE records
-        SET status = ?, review_status = ?, next_action = ?
-        WHERE id = ?
-      `,
-      [status, reviewStatus, nextAction, id]
-    );
+    await store.updateRecord(id, { status, reviewStatus, nextAction });
 
     response.json({ ok: true });
   });
@@ -58,40 +35,11 @@ async function start() {
   app.post("/api/approvals/:id/decision", async (request, response) => {
     const { id } = request.params;
     const { status, reviewer, note } = request.body;
-    const approvedOn = status === "approved" ? new Date() : null;
-
-    const [approvalRows] = await pool.query("SELECT record_id AS recordId FROM approvals WHERE id = ?", [
-      id
-    ]);
-
-    if (!approvalRows.length) {
+    const result = await store.decideApproval(id, { status, reviewer, note });
+    if (!result) {
       response.status(404).json({ error: "Approval not found." });
       return;
     }
-
-    await pool.query(
-      `
-        UPDATE approvals
-        SET status = ?, reviewer = ?, decision_note = ?, approved_on = ?
-        WHERE id = ?
-      `,
-      [status, reviewer || "", note || "", approvedOn, id]
-    );
-
-    const reviewStatus = status === "approved" ? "approved" : "draft";
-    const nextAction =
-      status === "approved"
-        ? "Pilot approved. Apply the asset in the consumer repo and capture feedback."
-        : "Pilot deferred. Review concerns and update the rollout record before retrying.";
-
-    await pool.query(
-      `
-        UPDATE records
-        SET review_status = ?, next_action = ?
-        WHERE id = ?
-      `,
-      [reviewStatus, nextAction, approvalRows[0].recordId]
-    );
 
     response.json({ ok: true });
   });
@@ -103,13 +51,25 @@ async function start() {
     response.sendFile(path.join(distPath, "index.html"));
   });
 
+  return app;
+}
+
+async function start() {
+  const app = await createApp();
   const port = Number(process.env.PORT || 3000);
   app.listen(port, () => {
     console.log(`AI Native Studio listening on port ${port}`);
   });
 }
 
-start().catch((error) => {
-  console.error("Failed to start AI Native Studio", error);
-  process.exit(1);
-});
+if (require.main === module) {
+  start().catch((error) => {
+    console.error("Failed to start AI Native Studio", error);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  createApp,
+  start
+};

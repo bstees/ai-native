@@ -51,3 +51,11 @@ docker compose up --build
 ```
 
 Then open `http://localhost:3000`.
+
+For local verification without MySQL, use the in-memory mode:
+
+```bash
+npm test
+npm run build
+DB_MODE=memory npm start
+```
