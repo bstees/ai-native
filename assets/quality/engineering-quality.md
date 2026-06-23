@@ -66,6 +66,10 @@ the repo and problem context, including:
 UI components should be validated independently before being treated as broadly
 reusable.
 
+Use [`ui-quality-standard.md`](./ui-quality-standard.md) as the core shared UI
+bar and [`ui-review-checklist.md`](./ui-review-checklist.md) as the default
+review pass before approval.
+
 ## Human Approval Rule
 
 Human gates should not be conservative by default.
