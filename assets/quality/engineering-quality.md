@@ -70,6 +70,9 @@ Use [`ui-quality-standard.md`](./ui-quality-standard.md) as the core shared UI
 bar and [`ui-review-checklist.md`](./ui-review-checklist.md) as the default
 review pass before approval.
 
+Use [`usability-validation-standard.md`](./usability-validation-standard.md) to
+require direct browser or simulator verification of critical user flows.
+
 ## Human Approval Rule
 
 Human gates should not be conservative by default.

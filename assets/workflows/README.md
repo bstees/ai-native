@@ -52,11 +52,13 @@ second for local adaptation.
 
 ## Initial Workflow Set
 
+- [`goal-and-plan-mode.md`](./goal-and-plan-mode.md)
 - [`feature-delivery.md`](./feature-delivery.md)
 - [`bug-fix.md`](./bug-fix.md)
 - [`code-review.md`](./code-review.md)
 - [`debugging.md`](./debugging.md)
 - [`rollout-and-validation.md`](./rollout-and-validation.md)
+- [`usability-validation.md`](./usability-validation.md)
 
 All workflows in this directory should be read alongside
 [`../quality/engineering-quality.md`](../quality/engineering-quality.md).
