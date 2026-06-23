@@ -49,6 +49,50 @@ const recordCatalog = [
   },
   {
     stage: "assets",
+    path: "assets/workflows/goal-and-plan-mode.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/workflows/feature-delivery.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/workflows/bug-fix.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/workflows/code-review.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/workflows/debugging.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/workflows/rollout-and-validation.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/workflows/usability-validation.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/quality/engineering-quality.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/quality/ui-quality-standard.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/quality/ui-review-checklist.md"
+  },
+  {
+    stage: "assets",
+    path: "assets/quality/usability-validation-standard.md"
+  },
+  {
+    stage: "assets",
     path: "assets/repo-rules/ai-native-core-operating-rules.md",
     status: "published",
     reviewStatus: "approved",
@@ -74,6 +118,22 @@ const recordCatalog = [
   {
     stage: "pilots",
     path: "pilots/interest-lens/adoptions/2026-06-23-core-operating-rules.md"
+  },
+  {
+    stage: "pilots",
+    path: "pilots/interest-lens/usability/critical-user-flows.md",
+    status: "active",
+    reviewStatus: "approved",
+    owner: "ai-native",
+    nextAction: "Exercise these flows directly in browser or simulator during UI validation."
+  },
+  {
+    stage: "pilots",
+    path: "pilots/interest-lens/usability/feedback-log.md",
+    status: "active",
+    reviewStatus: "approved",
+    owner: "ai-native",
+    nextAction: "Convert recurring human feedback into stricter reusable standards."
   }
 ];
 

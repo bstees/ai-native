@@ -7,10 +7,32 @@ function formatStage(stage) {
   return stage.charAt(0).toUpperCase() + stage.slice(1);
 }
 
+function getAssetKind(record) {
+  if (!record.path.startsWith("assets/")) {
+    return "";
+  }
+
+  if (record.path.includes("/workflows/")) {
+    return "workflow";
+  }
+
+  if (record.path.includes("/quality/")) {
+    return "quality";
+  }
+
+  if (record.path.includes("/repo-rules/")) {
+    return "rules";
+  }
+
+  return "asset";
+}
+
 function StageCard({ record, onSave }) {
   const [status, setStatus] = useState(record.status || "");
   const [reviewStatus, setReviewStatus] = useState(record.reviewStatus || "draft");
   const [nextAction, setNextAction] = useState(record.nextAction || "");
+  const assetKind = getAssetKind(record);
+  const isPlanMode = String(record.status || "").includes("plan-mode");
 
   useEffect(() => {
     setStatus(record.status || "");
@@ -21,7 +43,11 @@ function StageCard({ record, onSave }) {
   return (
     <article className="card">
       <div className="card-topline">
-        <span className={`pill stage-${record.stage}`}>{formatStage(record.stage)}</span>
+        <div className="pill-cluster">
+          <span className={`pill stage-${record.stage}`}>{formatStage(record.stage)}</span>
+          {assetKind ? <span className={`pill asset-${assetKind}`}>{assetKind}</span> : null}
+          {isPlanMode ? <span className="pill mode-pill">plan mode</span> : null}
+        </div>
         <span className={`pill review-${reviewStatus}`}>{reviewStatus}</span>
       </div>
       <h3>{record.title}</h3>
@@ -64,6 +90,25 @@ function StageCard({ record, onSave }) {
       >
         Save state
       </button>
+    </article>
+  );
+}
+
+function StandardCard({ record }) {
+  const assetKind = getAssetKind(record);
+  const isPlanMode = String(record.status || "").includes("plan-mode");
+
+  return (
+    <article className="mini-card">
+      <div className="card-topline">
+        <div className="pill-cluster">
+          <span className={`pill asset-${assetKind}`}>{assetKind}</span>
+          {isPlanMode ? <span className="pill mode-pill">plan mode</span> : null}
+        </div>
+      </div>
+      <h3>{record.title}</h3>
+      <p className="card-summary">{record.summary}</p>
+      <p className="mini-meta">{record.path}</p>
     </article>
   );
 }
@@ -189,6 +234,30 @@ export default function App() {
     }, {});
   }, [dashboard]);
 
+  const standards = useMemo(() => {
+    if (!dashboard) {
+      return [];
+    }
+
+    return dashboard.records.filter((record) => record.path.startsWith("assets/workflows/"));
+  }, [dashboard]);
+
+  const qualityStandards = useMemo(() => {
+    if (!dashboard) {
+      return [];
+    }
+
+    return dashboard.records.filter((record) => record.path.startsWith("assets/quality/"));
+  }, [dashboard]);
+
+  const pilotValidation = useMemo(() => {
+    if (!dashboard) {
+      return [];
+    }
+
+    return dashboard.records.filter((record) => record.path.includes("pilots/interest-lens/usability/"));
+  }, [dashboard]);
+
   if (loading) {
     return <div className="state-screen">Loading AI Native Studio...</div>;
   }
@@ -228,6 +297,37 @@ export default function App() {
             <span>Published assets</span>
             <strong>{dashboard.summary.assetCount}</strong>
           </div>
+          <div className="stat-card">
+            <span>Plan-mode assets</span>
+            <strong>
+              {dashboard.records.filter((record) => String(record.status || "").includes("plan-mode")).length}
+            </strong>
+          </div>
+        </div>
+      </section>
+
+      <section className="standards-board">
+        <div className="section-header">
+          <h2>Core Standards</h2>
+          <p>Reusable workflow and quality assets that now define how work should be done.</p>
+        </div>
+        <div className="standard-columns">
+          <div className="standard-group">
+            <h3>Workflows</h3>
+            <div className="mini-grid">
+              {standards.map((record) => (
+                <StandardCard key={record.id} record={record} />
+              ))}
+            </div>
+          </div>
+          <div className="standard-group">
+            <h3>Quality</h3>
+            <div className="mini-grid">
+              {qualityStandards.map((record) => (
+                <StandardCard key={record.id} record={record} />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -263,6 +363,18 @@ export default function App() {
               <p>The current queue is clear.</p>
             </article>
           )}
+        </div>
+      </section>
+
+      <section className="review-board">
+        <div className="section-header">
+          <h2>Interest Lens Usability Loop</h2>
+          <p>Critical flows and human feedback that should tighten the UI bar over time.</p>
+        </div>
+        <div className="mini-grid">
+          {pilotValidation.map((record) => (
+            <StandardCard key={record.id} record={record} />
+          ))}
         </div>
       </section>
     </main>
