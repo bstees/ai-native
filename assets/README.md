@@ -23,3 +23,5 @@ single tool release looked interesting.
 
 - [`repo-rules/`](./repo-rules/) contains the first shared operating-rules
   asset for consumer repositories.
+- [`workflows/`](./workflows/) contains shared development workflows for common
+  agentic software-delivery tasks.
