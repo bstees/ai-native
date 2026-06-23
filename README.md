@@ -38,3 +38,16 @@ maintained here without having to rediscover best practices repo by repo.
 1. Establish the signal-to-decision pipeline.
 2. Define how approved concepts become shared assets.
 3. Use `Interest Lens` as the first proving ground for cross-repo adoption.
+
+## Studio UI
+
+This repo now includes a portable React + MySQL showcase application for the
+workflow itself.
+
+Run it with Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+Then open `http://localhost:3000`.
