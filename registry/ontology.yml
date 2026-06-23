@@ -1,0 +1,69 @@
+version: 0.1
+last_updated: 2026-06-23
+owner: ai-native
+
+concept_types:
+  - id: capability
+    description: >
+      A recurring AI-enabled workflow or task pattern that teams can adopt,
+      such as code review, issue triage, test generation, or agent handoff.
+    example_subtypes:
+      - code-review
+      - test-generation
+      - issue-triage
+      - agent-handoff
+      - security-triage
+
+  - id: control
+    description: >
+      A governance, safety, budget, or approval mechanism that shapes how AI
+      work is allowed to execute.
+    example_subtypes:
+      - human-gates
+      - permissions
+      - sandboxing
+      - budget-management
+      - policy-controls
+
+  - id: context
+    description: >
+      A reusable context mechanism that improves agent behavior or consistency,
+      such as repo rules, memory, MCP/connectors, or environment setup.
+    example_subtypes:
+      - repo-rules
+      - memory
+      - connectors
+      - skills
+      - environment-setup
+
+  - id: quality
+    description: >
+      A measurement or validation pattern used to assess AI output quality,
+      reliability, security, or operational impact.
+    example_subtypes:
+      - evals
+      - review-outcomes
+      - traces
+      - defect-signals
+      - security-validation
+
+  - id: delivery
+    description: >
+      A packaging, automation, or operational delivery pattern for applying AI
+      work in repositories or engineering workflows.
+    example_subtypes:
+      - ci-integration
+      - scheduled-jobs
+      - background-agents
+      - sync-workflows
+      - install-workflows
+
+status_definitions:
+  - id: emerging
+    description: Interesting signal that is not yet strong enough to drive default work.
+  - id: provisional
+    description: Credible and specific enough for bounded pilot adoption.
+  - id: established
+    description: Supported strongly enough to generate backlog items by default.
+  - id: internal-standard
+    description: Adopted by us and maintained as part of our operating model.

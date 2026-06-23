@@ -13,6 +13,8 @@ directions:
 
 - [`prompts/`](./prompts/) stores versioned prompt artifacts we want to refine
 - [`planning/`](./planning/) stores decision notes and future enhancement ideas
+- [`registry/`](./registry/) stores the curation source of truth, including
+  sources, ontology, and record templates
 - [`strategy/`](./strategy/) stores the operating model for curation and
   cross-repo sharing
 
