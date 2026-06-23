@@ -7,7 +7,12 @@
 - `concept_type`:
 - `subtype`:
 - `status`: `emerging` | `provisional` | `established` | `internal-standard`
+- `review_status`: `draft` | `pending-human-review` | `approved` | `superseded`
 - `owner`:
+- `needs_review_by`:
+- `approved_by`:
+- `approved_on`:
+- `next_action`:
 - `first_seen`:
 - `last_reviewed`:
 - `last_changed`:

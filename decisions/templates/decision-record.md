@@ -5,8 +5,13 @@
 - `decision_id`:
 - `title`:
 - `status`: `proposed` | `approved` | `deferred` | `superseded`
+- `review_status`: `draft` | `pending-human-review` | `approved` | `superseded`
 - `decided_on`:
 - `owner`:
+- `needs_review_by`:
+- `approved_by`:
+- `approved_on`:
+- `next_action`:
 - `linked_concepts`:
 
 ## Decision

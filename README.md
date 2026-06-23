@@ -20,6 +20,8 @@ maintained here without having to rediscover best practices repo by repo.
   packaging guidance for other repos
 - [`pilots/`](./pilots/) stores adoption plans and feedback loops for early
   consumer repos
+- [`reviews/`](./reviews/) stores the lightweight human review interface and
+  approval queue
 - [`prompts/`](./prompts/) stores versioned seed prompts and related source
   material
 
