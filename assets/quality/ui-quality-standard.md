@@ -39,11 +39,20 @@ clear reason not to reuse them.
 
 - UI should be built from reusable components whenever that is the better
   design.
+- All meaningful mockups and implemented UI should be decomposed into
+  components, even when a specific component is only used once.
 - Components should be self-contained and independently testable.
+- Components should keep their own responsibilities tight, including clear
+  boundaries for markup, styling, copy/resources, tests, and visual review
+  artifacts where appropriate.
 - Avoid one-off variants when a configurable component would serve multiple
   cases.
+- Existing components should be reused before new ones are introduced unless
+  reuse would distort responsibility or clarity.
 - Component instances should behave the same unless configuration intentionally
   changes the behavior.
+- Designers should prefer component-based mockups that reflect likely
+  implementation boundaries when the tooling supports it.
 
 ### 4. State Clarity
 

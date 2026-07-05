@@ -13,6 +13,10 @@ can adopt them without each repo inventing its own version.
 - validation checklists
 - sync or install scripts
 - agent definitions
+- NFR frameworks
+- infrastructure decision frameworks
+- tool-selection frameworks
+- observability standards
 
 ## Rule
 

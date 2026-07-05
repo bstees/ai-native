@@ -103,6 +103,8 @@ Current canonical anchors:
   [`../assets/quality/engineering-quality.md`](../assets/quality/engineering-quality.md)
 - feedback ingestion:
   [`../assets/feedback/feedback-ingestion-standard.md`](../assets/feedback/feedback-ingestion-standard.md)
+- governance and NFR planning:
+  [`./governance-layers-and-nfr-framework.md`](./governance-layers-and-nfr-framework.md)
 
 ### Layer 4: Workflows
 
@@ -348,6 +350,22 @@ Expected behaviors:
 - distinguish between reusable pattern opportunity and one-off local styling
 - keep extracted patterns contract-adherent and independently testable
 
+#### `component-boundary-audit`
+
+Purpose:
+
+- verify that UI decomposition honors single responsibility and sensible reuse
+  boundaries
+
+Expected behaviors:
+
+- inspect whether components own one coherent job
+- check whether existing components should have been reused before new ones
+  were introduced
+- distinguish between justified one-off components and accidental duplication
+- recommend clearer contracts for styling, copy/resources, tests, and visual
+  review artifacts
+
 ## Proposed File Layout
 
 ```text
@@ -374,6 +392,8 @@ CLAUDE.md -> agents.md
     ui-validation-retro/
       SKILL.md
     ui-pattern-extraction/
+      SKILL.md
+    component-boundary-audit/
       SKILL.md
 ```
 

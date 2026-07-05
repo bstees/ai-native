@@ -35,6 +35,16 @@ Current planning artifact:
 
 - [`../planning/instruction-system-architecture.md`](../planning/instruction-system-architecture.md)
 
+## Cross-Cutting Enabler: Governance And NFR Model
+
+Shared assets will also need an explicit governance and non-functional model so
+consumer repos can make platform, pipeline, tooling, and observability
+decisions intentionally rather than by drift.
+
+Current planning artifact:
+
+- [`../planning/governance-layers-and-nfr-framework.md`](../planning/governance-layers-and-nfr-framework.md)
+
 ## Pilot Relationship
 
 `Interest Lens` is the first proving ground for both epics.
