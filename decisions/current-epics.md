@@ -26,6 +26,15 @@ maintained shared assets that can serve production repositories.
 - create pilot sync or install patterns that do not disrupt consumer repos
 - separate source-of-truth material from generated or tool-specific outputs
 
+## Cross-Cutting Enabler: Instruction System
+
+The repo also needs a lean instruction architecture so shared assets can remain
+usable as they spread across tools and consumer repos.
+
+Current planning artifact:
+
+- [`../planning/instruction-system-architecture.md`](../planning/instruction-system-architecture.md)
+
 ## Pilot Relationship
 
 `Interest Lens` is the first proving ground for both epics.

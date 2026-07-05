@@ -27,3 +27,17 @@ paths have already emerged:
 
 Treat the seed prompt as a durable artifact while keeping the repository shape
 light until the next planning round makes the destination clearer.
+
+## Current Planning Follow-Up
+
+The next planning layer is now captured in
+[`instruction-system-architecture.md`](./instruction-system-architecture.md).
+
+That plan focuses on:
+
+- a minimal `agents.md` as the always-on instruction surface
+- vendor instruction files as symlinked adapters
+- repo-local skills to keep sub-agents narrow and DRY
+- instruction topology that reduces repetition across code and markdown
+- evolution loops that learn from friction and propose better topology or skills
+- a specialized UI/UX skill path for areas where agents need stronger guidance
