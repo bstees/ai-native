@@ -19,6 +19,8 @@ needed.
 ### 2. Keep Work Explainable
 
 - Leave a clear trail of why meaningful changes were made.
+- When creating commits, describe what was accomplished rather than listing
+  edited files or low-level steps.
 - Prefer readable code and direct naming over cleverness.
 - Surface assumptions when local context is incomplete.
 
