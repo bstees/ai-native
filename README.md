@@ -1,50 +1,83 @@
 # AI Native
 
-This repository is the central maintenance layer for reusable native-AI assets
-that can serve production repositories.
+This repo is the central standards, workflows, skills, and governance layer for
+our hybrid human-and-agent development model.
 
-Its job is to watch how AI is being applied across the software development
-lifecycle, detect recurring patterns that appear to be becoming standard, and
-turn those patterns into maintainable shared assets with human approval gates.
+Work should happen in product repos. This repo exists to improve how those repos
+work over time.
 
-Consumer repositories such as `Interest Lens` should benefit from what is
-maintained here without having to rediscover best practices repo by repo.
+## Quick Start
 
-## Current Contents
+### What This Repo Is For
 
-- [`signals/`](./signals/) stores monitored sources, ontology, scoring, and
-  evidence templates
-- [`decisions/`](./decisions/) stores what we believe is mature enough to act
-  on and why
-- [`assets/`](./assets/) stores shared tools, prompts, rules, workflows, and
-  packaging guidance for other repos
-- [`pilots/`](./pilots/) stores adoption plans and feedback loops for early
-  consumer repos
-- [`reviews/`](./reviews/) stores the lightweight human review interface and
-  approval queue
-- [`prompts/`](./prompts/) stores versioned seed prompts and related source
-  material
+Use this repo to:
 
-## Operating Model
+- define or refine shared standards
+- add or improve shared workflows and skills
+- plan cross-repo improvements
+- capture lessons from product repos such as `Interest Lens`
 
-1. Watch trusted sources for common threads in AI-for-SDLC practice.
-2. Curate those signals into concepts with evidence and status.
-3. Decide which concepts should become shared infrastructure.
-4. Publish or update shared assets for consumer repositories.
-5. Validate adoption through pilot repos such as `Interest Lens`.
+Do not treat this repo as the place where normal product feature work happens.
 
-## Current Focus
+### What To Read First
 
-1. Establish the signal-to-decision pipeline.
-2. Define how approved concepts become shared assets.
-3. Use `Interest Lens` as the first proving ground for cross-repo adoption.
+1. [`agents.md`](./agents.md)
+2. [`assets/repo-rules/ai-native-core-operating-rules.md`](./assets/repo-rules/ai-native-core-operating-rules.md)
+3. [`assets/workflows/goal-and-plan-mode.md`](./assets/workflows/goal-and-plan-mode.md)
+4. [`assets/quality/engineering-quality.md`](./assets/quality/engineering-quality.md)
 
-## Studio UI
+That is the minimum shared operating surface.
 
-This repo now includes a portable React + MySQL showcase application for the
-workflow itself.
+### Human Workflow
 
-Run it with Docker Compose:
+1. Start with a clear goal.
+2. Decide whether the work belongs here or in a consumer repo.
+3. If the work is large, risky, or cross-cutting, plan first.
+4. Change the narrowest shared asset, workflow, skill, or planning artifact
+   that solves the problem.
+5. Validate the change.
+6. Capture friction or follow-up opportunities if the system made the work
+   harder than it should have been.
+
+### Where Things Live
+
+- [`signals/`](./signals/): monitored sources and evidence inputs
+- [`decisions/`](./decisions/): what we believe and why
+- [`assets/`](./assets/): shared reusable standards, workflows, and guidance
+- [`pilots/`](./pilots/): proving-ground adoption work with consumer repos
+- [`reviews/`](./reviews/): human review queue and approval surfaces
+- [`prompts/`](./prompts/): seed prompts and prompt source material
+- [`planning/`](./planning/): architecture, governance, dashboard, and future-state planning
+- [`.agents/skills/`](./.agents/skills/): repo-local skills for sub-agents
+
+## Prerequisites
+
+You only need a few basics to work effectively here:
+
+- `git`
+- `node` and `npm`
+- `docker compose` if you want to run the showcase app with MySQL
+
+## Useful Commands
+
+### Verify The Repo
+
+```bash
+npm test
+npm run build
+```
+
+### Run The Studio Locally
+
+In-memory mode:
+
+```bash
+DB_MODE=memory npm start
+```
+
+Then open `http://localhost:3000`.
+
+### Run The Studio With Docker
 
 ```bash
 docker compose up --build
@@ -52,10 +85,34 @@ docker compose up --build
 
 Then open `http://localhost:3000`.
 
-For local verification without MySQL, use the in-memory mode:
+### Install Shared Assets Into Interest Lens
 
 ```bash
-npm test
-npm run build
-DB_MODE=memory npm start
+npm run install:interest-lens
+node scripts/seed-interest-lens-onboarding.js
 ```
+
+## How This Repo Relates To Product Repos
+
+`AI Native` is the hub. Product repos are the spokes.
+
+- product work happens in product repos
+- shared learnings come back here
+- shared assets evolve here
+- updated assets are adopted back into product repos
+
+`Interest Lens` is the first proving ground for this loop.
+
+## Glossary
+
+- `asset`: a reusable shared standard, workflow, rule, prompt, or framework
+- `consumer repo`: a product repo that adopts shared AI Native assets
+- `goal`: the concrete outcome a unit of work is trying to achieve
+- `plan mode`: explicit planning before implementation for larger or riskier work
+- `skill`: a narrow reusable technique used by agents or sub-agents
+- `workflow`: the sequence and gates for a recurring type of work
+- `retro`: a short review of what caused unnecessary friction and what should improve
+- `hybrid team`: the combined human-and-agent delivery system
+
+Keep this glossary small. Add terms only when a new word becomes important to
+working effectively in the repo.

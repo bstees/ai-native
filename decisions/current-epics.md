@@ -45,6 +45,16 @@ Current planning artifact:
 
 - [`../planning/governance-layers-and-nfr-framework.md`](../planning/governance-layers-and-nfr-framework.md)
 
+## Cross-Cutting Enabler: Hybrid Team Dashboard
+
+The repo also needs an operating dashboard model so human and agent work can be
+managed as one hybrid delivery system with visible trends, bottlenecks, and
+improvement opportunities.
+
+Current planning artifact:
+
+- [`../planning/hybrid-team-dashboard.md`](../planning/hybrid-team-dashboard.md)
+
 ## Pilot Relationship
 
 `Interest Lens` is the first proving ground for both epics.
