@@ -41,3 +41,6 @@ That plan focuses on:
 - instruction topology that reduces repetition across code and markdown
 - evolution loops that learn from friction and propose better topology or skills
 - a specialized UI/UX skill path for areas where agents need stronger guidance
+
+External inspiration analysis is now captured in
+[`external-inspirations-and-adaptation.md`](./external-inspirations-and-adaptation.md).
