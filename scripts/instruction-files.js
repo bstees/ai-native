@@ -5,6 +5,7 @@ const readline = require("readline");
 const managedMarker = "<!-- ai-native-managed: instructions -->";
 const appendStartMarker = "<!-- ai-native-shared-guidance:start -->";
 const appendEndMarker = "<!-- ai-native-shared-guidance:end -->";
+const legacyIndexPath = ".ai-native/legacy-instructions.md";
 
 const instructionFiles = [
   {
@@ -60,6 +61,12 @@ function buildManagedAgentsContents(targetRoot) {
     "- This consumer repo is `managed` unless `.ai-native/repo-config.json` explicitly marks it as `forked`.",
     "- Repo-local feedback belongs under `.ai-native/feedback/` and `.ai-native/audits/`.",
     "- Repo-specific implementation details should stay in local docs; shared standards should flow from `AI Native`.",
+    "",
+    "## Legacy Guidance",
+    "",
+    "- If instruction files were replaced during migration, the previous versions were preserved as `*-old.md` files.",
+    "- Those preserved files are not part of the always-on agent contract anymore.",
+    `- Consult \`${legacyIndexPath}\` only when historical repo-specific guidance seems relevant.`,
     "",
     "## Local Notes",
     "",
@@ -179,6 +186,58 @@ function writeFile(targetPath, contents, dryRun, logs, action) {
   }
 }
 
+function buildLegacyPath(targetPath) {
+  const parsed = path.parse(targetPath);
+  return path.join(parsed.dir, `${parsed.name}-old${parsed.ext || ""}`);
+}
+
+function buildUniqueLegacyPath(targetPath) {
+  const firstChoice = buildLegacyPath(targetPath);
+
+  if (!fs.existsSync(firstChoice)) {
+    return firstChoice;
+  }
+
+  const parsed = path.parse(targetPath);
+  let attempt = 2;
+  while (true) {
+    const candidate = path.join(parsed.dir, `${parsed.name}-old-${attempt}${parsed.ext || ""}`);
+    if (!fs.existsSync(candidate)) {
+      return candidate;
+    }
+    attempt += 1;
+  }
+}
+
+function preserveLegacyFile(targetPath, dryRun, logs) {
+  const legacyPath = buildUniqueLegacyPath(targetPath);
+  logs.push(`LEGACY ${targetPath} -> ${legacyPath}`);
+  if (!dryRun) {
+    fs.renameSync(targetPath, legacyPath);
+  }
+  return legacyPath;
+}
+
+function buildLegacyIndexContents(targetRoot, preservedEntries) {
+  const repoName = path.basename(targetRoot);
+  return [
+    "# Legacy Instruction Files",
+    "",
+    `These instruction files were preserved during AI Native migration for ${repoName}.`,
+    "",
+    "- They are no longer part of the default always-on agent contract.",
+    "- Review them only when historical repo-specific guidance is relevant.",
+    "- Promote any still-useful repo-specific guidance into durable local docs or feedback instead of expanding `AGENTS.md`.",
+    "",
+    "## Preserved Files",
+    "",
+    ...preservedEntries.flatMap((entry) => [
+      `- original: \`${entry.original}\``,
+      `  preserved_as: \`${entry.legacy}\``
+    ])
+  ].join("\n") + "\n";
+}
+
 function ensureSymlink(targetPath, linkTarget, dryRun, logs) {
   ensureDir(path.dirname(targetPath), dryRun);
   logs.push(`SYMLINK ${targetPath} -> ${linkTarget}`);
@@ -217,7 +276,7 @@ async function promptForConflictResolution(targetRoot, conflicts) {
     "Instruction file conflicts detected:",
     ...conflicts.map((entry, index) => `${index + 1}. ${entry.target}: ${entry.state.kind}`),
     "Choose one action:",
-    "1. Replace conflicting instruction files with AI Native-managed files and symlinks",
+    "1. Replace conflicting instruction files with AI Native-managed files and symlinks (old files are renamed to *-old.md, not deleted)",
     "2. Append AI Native guidance to conflicting markdown files and create safe missing adapters",
     "3. Skip instruction-file changes",
     "4. Show exact commands and exit",
@@ -243,6 +302,7 @@ async function applyInstructionFiles({
 }) {
   const inspection = inspectInstructionFiles(targetRoot);
   const logs = [];
+  const preservedEntries = [];
   let effectiveMode = mode || "auto";
 
   if (!inspection.safeToAutoApply && effectiveMode === "auto") {
@@ -291,6 +351,11 @@ async function applyInstructionFiles({
       }
 
       if (effectiveMode === "replace") {
+        const legacyPath = preserveLegacyFile(entry.absolutePath, dryRun, logs);
+        preservedEntries.push({
+          original: entry.target,
+          legacy: path.relative(targetRoot, legacyPath)
+        });
         writeFile(entry.absolutePath, managedAgentsContents, dryRun, logs, "REPLACE");
         continue;
       }
@@ -320,6 +385,11 @@ async function applyInstructionFiles({
     }
 
     if (effectiveMode === "replace") {
+      const legacyPath = preserveLegacyFile(entry.absolutePath, dryRun, logs);
+      preservedEntries.push({
+        original: entry.target,
+        legacy: path.relative(targetRoot, legacyPath)
+      });
       ensureSymlink(entry.absolutePath, entry.linkTarget, dryRun, logs);
       continue;
     }
@@ -341,6 +411,16 @@ async function applyInstructionFiles({
     }
   }
 
+  if (preservedEntries.length > 0) {
+    writeFile(
+      relativeTargetPath(targetRoot, legacyIndexPath),
+      buildLegacyIndexContents(targetRoot, preservedEntries),
+      dryRun,
+      logs,
+      "LEGACY-INDEX"
+    );
+  }
+
   logs.push(`INSTRUCTION-${effectiveMode.toUpperCase()} completed for ${targetRoot}`);
 
   return {
@@ -356,6 +436,7 @@ module.exports = {
   inspectInstructionFiles,
   applyInstructionFiles,
   formatConflictCommands,
+  legacyIndexPath,
   managedMarker,
   appendStartMarker,
   appendEndMarker

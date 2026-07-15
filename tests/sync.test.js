@@ -3,7 +3,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const { applyInstructionFiles } = require("../scripts/instruction-files");
+const { applyInstructionFiles, legacyIndexPath } = require("../scripts/instruction-files");
 const {
   applySync,
   gitignoreEndMarker,
@@ -213,10 +213,16 @@ async function run() {
     mode: "replace"
   });
   assert.ok(read(replaceRoot, "AGENTS.md").includes("ai-native-managed: instructions"));
+  assert.ok(read(replaceRoot, "AGENTS.md").includes("Legacy Guidance"));
   assert.ok(fs.lstatSync(path.join(replaceRoot, "CLAUDE.md")).isSymbolicLink());
   assert.ok(
     fs.lstatSync(path.join(replaceRoot, ".github", "copilot-instructions.md")).isSymbolicLink()
   );
+  assert.ok(fs.existsSync(path.join(replaceRoot, "AGENTS-old.md")));
+  assert.ok(fs.existsSync(path.join(replaceRoot, "CLAUDE-old.md")));
+  assert.ok(fs.existsSync(path.join(replaceRoot, ".github", "copilot-instructions-old.md")));
+  assert.ok(read(replaceRoot, legacyIndexPath).includes("AGENTS-old.md"));
+  assert.ok(read(replaceRoot, legacyIndexPath).includes("CLAUDE-old.md"));
   assert.ok(replaceInstructionResult.logs.some((line) => line.includes("INSTRUCTION-REPLACE")));
 
   const sourceRoot = path.join(tempRoot, "source-repo");
