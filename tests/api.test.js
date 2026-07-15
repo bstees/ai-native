@@ -87,6 +87,29 @@ async function run() {
   );
   assert.ok(pilotRecord);
 
+  const tokenUsageResponse = await invoke(app, { method: "GET", url: "/api/token-usage?source=sample" });
+  assert.strictEqual(tokenUsageResponse.status, 200);
+  assert.ok(tokenUsageResponse.body.summary.eventCount >= 5);
+  assert.ok(tokenUsageResponse.body.summary.totalTokens > 0);
+  assert.ok(tokenUsageResponse.body.summary.completionShare > 0);
+  assert.ok(tokenUsageResponse.body.agentRollups.some((rollup) => rollup.name === "UI Agent"));
+  assert.ok(tokenUsageResponse.body.activityRollups.some((rollup) => rollup.name));
+  assert.ok(tokenUsageResponse.body.topEvents.length >= 1);
+  assert.ok(tokenUsageResponse.body.focusAreas.heaviestAgent);
+  assert.ok(
+    tokenUsageResponse.body.versionMarkers.some((marker) => marker.version === "v0.2.0")
+  );
+
+  const filteredTokenUsageResponse = await invoke(app, {
+    method: "GET",
+    url: "/api/token-usage?source=sample&agent=UI%20Agent"
+  });
+  assert.strictEqual(filteredTokenUsageResponse.status, 200);
+  assert.ok(
+    filteredTokenUsageResponse.body.events.every((event) => event.agentName === "UI Agent")
+  );
+  assert.ok(filteredTokenUsageResponse.body.summary.eventCount < tokenUsageResponse.body.summary.eventCount);
+
   const updateResponse = await invoke(app, {
     method: "PATCH",
     url: `/api/records/${pilotRecord.id}`,

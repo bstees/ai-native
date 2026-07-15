@@ -1,0 +1,161 @@
+{
+  "title": "AI Native Token Usage",
+  "description": "Usage events captured across primary agents, sub-agents, and scoped skills.",
+  "events": [
+    {
+      "eventId": "evt-001",
+      "sequence": 1,
+      "runId": "run-root",
+      "agentName": "Primary Repo Agent",
+      "agentType": "orchestrator",
+      "skillName": "goal-and-plan-mode",
+      "activity": "Scoping the work",
+      "timestamp": "2026-07-15T09:00:00Z",
+      "promptTokens": 520,
+      "completionTokens": 340,
+      "cost": 0.013
+    },
+    {
+      "eventId": "evt-002",
+      "sequence": 2,
+      "runId": "run-root",
+      "agentName": "Primary Repo Agent",
+      "agentType": "orchestrator",
+      "skillName": "repo-context",
+      "activity": "Inspecting current dashboard code",
+      "timestamp": "2026-07-15T09:02:00Z",
+      "promptTokens": 610,
+      "completionTokens": 280,
+      "cost": 0.014
+    },
+    {
+      "eventId": "evt-003",
+      "sequence": 3,
+      "runId": "run-delivery-1",
+      "parentRunId": "run-root",
+      "agentName": "Delivery Agent",
+      "agentType": "sub-agent",
+      "skillName": "feature-delivery",
+      "activity": "Defining token event schema",
+      "timestamp": "2026-07-15T09:06:00Z",
+      "promptTokens": 430,
+      "completionTokens": 520,
+      "cost": 0.015
+    },
+    {
+      "eventId": "evt-004",
+      "sequence": 4,
+      "runId": "run-delivery-1",
+      "parentRunId": "run-root",
+      "agentName": "Delivery Agent",
+      "agentType": "sub-agent",
+      "skillName": "feature-delivery",
+      "activity": "Implementing aggregation API",
+      "timestamp": "2026-07-15T09:10:00Z",
+      "promptTokens": 680,
+      "completionTokens": 840,
+      "cost": 0.024
+    },
+    {
+      "eventId": "evt-005",
+      "sequence": 5,
+      "runId": "run-ui-1",
+      "parentRunId": "run-root",
+      "agentName": "UI Agent",
+      "agentType": "sub-agent",
+      "skillName": "ui-polish-audit",
+      "activity": "Exploring visualization layout options",
+      "timestamp": "2026-07-15T09:14:00Z",
+      "promptTokens": 360,
+      "completionTokens": 410,
+      "cost": 0.011
+    },
+    {
+      "eventId": "evt-006",
+      "sequence": 6,
+      "runId": "run-ui-1",
+      "parentRunId": "run-root",
+      "agentName": "UI Agent",
+      "agentType": "sub-agent",
+      "skillName": "ui-polish-audit",
+      "activity": "Building cumulative token chart",
+      "timestamp": "2026-07-15T09:18:00Z",
+      "promptTokens": 550,
+      "completionTokens": 690,
+      "cost": 0.02
+    },
+    {
+      "eventId": "evt-007",
+      "sequence": 7,
+      "runId": "run-review-1",
+      "parentRunId": "run-root",
+      "agentName": "Review Agent",
+      "agentType": "sub-agent",
+      "skillName": "dry-context",
+      "activity": "Checking for duplicated dashboard concepts",
+      "timestamp": "2026-07-15T09:22:00Z",
+      "promptTokens": 470,
+      "completionTokens": 320,
+      "cost": 0.012
+    },
+    {
+      "eventId": "evt-008",
+      "sequence": 8,
+      "runId": "run-review-1",
+      "parentRunId": "run-root",
+      "agentName": "Review Agent",
+      "agentType": "sub-agent",
+      "skillName": "engineering-quality",
+      "activity": "Reviewing API and component boundaries",
+      "timestamp": "2026-07-15T09:25:00Z",
+      "promptTokens": 510,
+      "completionTokens": 350,
+      "cost": 0.013
+    },
+    {
+      "eventId": "evt-009",
+      "sequence": 9,
+      "runId": "run-ui-2",
+      "parentRunId": "run-root",
+      "agentName": "UI Agent",
+      "agentType": "sub-agent",
+      "skillName": "visualize",
+      "activity": "Adding version milestone tooltips",
+      "timestamp": "2026-07-15T09:30:00Z",
+      "promptTokens": 620,
+      "completionTokens": 760,
+      "cost": 0.022
+    },
+    {
+      "eventId": "evt-010",
+      "sequence": 10,
+      "runId": "run-root",
+      "agentName": "Primary Repo Agent",
+      "agentType": "orchestrator",
+      "skillName": "usability-validation",
+      "activity": "Validating drill-down interactions",
+      "timestamp": "2026-07-15T09:34:00Z",
+      "promptTokens": 490,
+      "completionTokens": 380,
+      "cost": 0.013
+    }
+  ],
+  "versionMarkers": [
+    {
+      "markerId": "version-1",
+      "version": "v0.1.0",
+      "eventId": "evt-004",
+      "notes": "Initial event contract and aggregation pipeline landed.",
+      "updatedAgents": ["Delivery Agent"],
+      "updatedSkills": ["feature-delivery"]
+    },
+    {
+      "markerId": "version-2",
+      "version": "v0.2.0",
+      "eventId": "evt-009",
+      "notes": "Visualization pass added drill-down and version hover markers.",
+      "updatedAgents": ["UI Agent", "Primary Repo Agent"],
+      "updatedSkills": ["visualize", "usability-validation"]
+    }
+  ]
+}

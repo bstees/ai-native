@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const { loadRepoRecords } = require("./content");
 const { createStore } = require("./store");
+const { buildTokenUsagePayload } = require("./token-usage");
 
 async function createApp() {
   const app = express();
@@ -21,6 +22,17 @@ async function createApp() {
     };
 
     response.json({ records, pendingApprovals, summary });
+  });
+
+  app.get("/api/token-usage", (request, response) => {
+    const filters = {
+      agent: request.query.agent || "",
+      skill: request.query.skill || "",
+      runId: request.query.runId || "",
+      source: request.query.source || ""
+    };
+
+    response.json(buildTokenUsagePayload(filters));
   });
 
   app.patch("/api/records/:id", async (request, response) => {
