@@ -85,12 +85,22 @@ docker compose up --build
 
 Then open `http://localhost:3000`.
 
-### Install Shared Assets Into Interest Lens
+### Sync Shared Assets Into A Consumer Repo
 
 ```bash
-npm run install:interest-lens
-node scripts/seed-interest-lens-onboarding.js
+npm run sync -- /absolute/path/to/consumer-repo
+npm run seed:onboarding -- /absolute/path/to/consumer-repo --repo-name "Consumer Repo"
 ```
+
+`sync` triages the target automatically:
+
+- missing `.ai-native/`: install the managed shared assets
+- drifted managed assets: update them and remove stale previously managed files
+- already current: report that the repo is already up to date
+
+Sync state records a calver release in `.ai-native/.sync-state.json`. The current shared asset version is `26.07.0`, following `YY.MM.patch`, where the last number increments for additional releases in the same month.
+
+Use `--dry-run` with `sync` to preview what would be created, updated, or removed.
 
 ## How This Repo Relates To Product Repos
 

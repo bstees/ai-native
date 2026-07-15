@@ -1,0 +1,249 @@
+const fs = require("fs");
+const path = require("path");
+
+const manifest = require("./shared-assets-manifest");
+const { version } = require("./shared-assets-version");
+
+const sourceRoot = path.join(__dirname, "..");
+const aiNativeDir = ".ai-native";
+const stateFile = path.join(aiNativeDir, ".sync-state.json");
+
+function buildGeneratedFiles() {
+  return [
+    {
+      target: ".ai-native/README.md",
+      contents: [
+        "# AI Native Assets",
+        "",
+        "This directory contains assets installed from the `AI Native` repository.",
+        "",
+        "- `core-operating-rules.md` is the current shared baseline for AI-agent behavior.",
+        "- `goal-and-plan-mode.md` defines when work must start in explicit planning.",
+        "- `repo-onboarding-audit.md` is the first-time adoption workflow for this repo.",
+        "- `ui-quality-standard.md` defines the cross-repo UI quality bar.",
+        "- `ui-review-checklist.md` is the default UI approval checklist.",
+        "- `usability-validation-standard.md` requires browser or simulator flow validation.",
+        "- `feedback/` is the repo-local source of truth for toil, developer notes, and audits.",
+        "- Local additions should stay minimal and repo-specific."
+      ].join("\n")
+    },
+    {
+      target: ".ai-native/feedback/capture-guidance.md",
+      contents: [
+        "# Feedback Capture Guidance",
+        "",
+        "Use markdown in this directory as the source of truth for repo-local feedback.",
+        "",
+        "- `toil/` is for friction uncovered while doing work.",
+        "- `developer-notes/` is for markdown written directly by developers.",
+        "- `../audits/` is for structured standards and onboarding reviews.",
+        "- Review feedback on a commit-time sweep and on a recurring cadence."
+      ].join("\n")
+    },
+    {
+      target: ".ai-native/feedback/toil/README.md",
+      contents: [
+        "# Toil Feedback",
+        "",
+        "Create a markdown entry here whenever delivery friction could have been reduced with better guidance.",
+        "",
+        "Use `../feedback-entry-template.md` as the default structure."
+      ].join("\n")
+    },
+    {
+      target: ".ai-native/feedback/developer-notes/README.md",
+      contents: [
+        "# Developer Notes Feedback",
+        "",
+        "Markdown created here by developers should be treated as feedback input during commit-time and scheduled ingestion reviews."
+      ].join("\n")
+    },
+    {
+      target: ".ai-native/audits/README.md",
+      contents: [
+        "# Repo Audits",
+        "",
+        "Store onboarding audits, standards reviews, and recurring ecosystem health checks here."
+      ].join("\n")
+    }
+  ];
+}
+
+function getManagedFiles() {
+  const copiedFiles = manifest.map((entry) => ({
+    target: entry.target,
+    contents: fs.readFileSync(path.join(sourceRoot, entry.source), "utf8"),
+    source: entry.source,
+    kind: "copied"
+  }));
+
+  const generatedFiles = buildGeneratedFiles().map((entry) => ({
+    target: entry.target,
+    contents: entry.contents,
+    source: "generated",
+    kind: "generated"
+  }));
+
+  return [...copiedFiles, ...generatedFiles].sort((left, right) =>
+    left.target.localeCompare(right.target)
+  );
+}
+
+function getState(targetRoot) {
+  const targetPath = path.join(targetRoot, stateFile);
+
+  if (!fs.existsSync(targetPath)) {
+    return null;
+  }
+
+  return JSON.parse(fs.readFileSync(targetPath, "utf8"));
+}
+
+function buildState(managedFiles) {
+  return {
+    schemaVersion: 1,
+    assetVersion: version,
+    managedFiles: managedFiles.map((entry) => entry.target)
+  };
+}
+
+function ensureDir(directory, dryRun) {
+  if (!dryRun) {
+    fs.mkdirSync(directory, { recursive: true });
+  }
+}
+
+function writeFile(targetPath, contents, dryRun, logs, action = "WRITE") {
+  ensureDir(path.dirname(targetPath), dryRun);
+  logs.push(`${action} ${targetPath}`);
+  if (!dryRun) {
+    fs.writeFileSync(targetPath, contents);
+  }
+}
+
+function removeFile(targetPath, dryRun, logs) {
+  logs.push(`REMOVE ${targetPath}`);
+  if (!dryRun && fs.existsSync(targetPath)) {
+    fs.rmSync(targetPath);
+  }
+}
+
+function inspectSyncState(targetRoot) {
+  if (!targetRoot) {
+    throw new Error("A target repo path is required.");
+  }
+
+  const resolvedTargetRoot = path.resolve(targetRoot);
+
+  if (!fs.existsSync(resolvedTargetRoot)) {
+    throw new Error(`Target repo not found at ${resolvedTargetRoot}`);
+  }
+
+  const managedFiles = getManagedFiles();
+  const desiredTargets = new Set(managedFiles.map((entry) => entry.target));
+  const existingState = getState(resolvedTargetRoot);
+  const aiNativePath = path.join(resolvedTargetRoot, aiNativeDir);
+  const hasAiNativeDir = fs.existsSync(aiNativePath);
+
+  const missingFiles = [];
+  const outdatedFiles = [];
+  const versionStatus =
+    !existingState?.assetVersion ? "missing" : existingState.assetVersion === version ? "current" : "outdated";
+
+  for (const entry of managedFiles) {
+    const targetPath = path.join(resolvedTargetRoot, entry.target);
+    if (!fs.existsSync(targetPath)) {
+      missingFiles.push(entry.target);
+      continue;
+    }
+
+    const currentContents = fs.readFileSync(targetPath, "utf8");
+    if (currentContents !== entry.contents) {
+      outdatedFiles.push(entry.target);
+    }
+  }
+
+  const staleManagedFiles = (existingState?.managedFiles || []).filter(
+    (target) => !desiredTargets.has(target)
+  );
+
+  const status = !hasAiNativeDir
+    ? "new"
+    : versionStatus !== "current" ||
+        missingFiles.length > 0 ||
+        outdatedFiles.length > 0 ||
+        staleManagedFiles.length > 0
+      ? "outdated"
+      : "up-to-date";
+
+  return {
+    targetRoot: resolvedTargetRoot,
+    status,
+    assetVersion: version,
+    versionStatus,
+    managedFiles,
+    missingFiles,
+    outdatedFiles,
+    staleManagedFiles,
+    hasAiNativeDir,
+    existingState
+  };
+}
+
+function applySync({ targetRoot, dryRun = false }) {
+  const inspection = inspectSyncState(targetRoot);
+  const logs = [];
+
+  if (inspection.status === "up-to-date") {
+    logs.push(
+      `OK    ${path.join(inspection.targetRoot, aiNativeDir)} is already up to date at ${inspection.assetVersion}`
+    );
+    return {
+      ...inspection,
+      action: "no-op",
+      logs
+    };
+  }
+
+  for (const entry of inspection.managedFiles) {
+    const targetPath = path.join(inspection.targetRoot, entry.target);
+    const exists = fs.existsSync(targetPath);
+    const currentContents = exists ? fs.readFileSync(targetPath, "utf8") : null;
+
+    if (!exists) {
+      writeFile(targetPath, entry.contents, dryRun, logs, "CREATE");
+      continue;
+    }
+
+    if (currentContents !== entry.contents) {
+      writeFile(targetPath, entry.contents, dryRun, logs, "UPDATE");
+    }
+  }
+
+  for (const relativePath of inspection.staleManagedFiles) {
+    removeFile(path.join(inspection.targetRoot, relativePath), dryRun, logs);
+  }
+
+  const stateContents = JSON.stringify(buildState(inspection.managedFiles), null, 2) + "\n";
+  writeFile(path.join(inspection.targetRoot, stateFile), stateContents, dryRun, logs, "STATE ");
+
+  logs.push(
+    inspection.status === "new"
+      ? `INSTALLED ${path.join(inspection.targetRoot, aiNativeDir)} at ${inspection.assetVersion}`
+      : `SYNCED ${path.join(inspection.targetRoot, aiNativeDir)} to ${inspection.assetVersion}`
+  );
+
+  return {
+    ...inspection,
+    action: inspection.status === "new" ? "install" : "sync",
+    logs
+  };
+}
+
+module.exports = {
+  aiNativeDir,
+  stateFile,
+  getManagedFiles,
+  inspectSyncState,
+  applySync
+};
