@@ -3,6 +3,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
+const { applyInstructionFiles } = require("../scripts/instruction-files");
 const { applySync, inspectSyncState, repoConfigFile, stateFile } = require("../scripts/shared-assets");
 const { version } = require("../scripts/shared-assets-version");
 const { seedRepoOnboarding } = require("../scripts/seed-repo-onboarding");
@@ -11,7 +12,7 @@ function read(targetRoot, relativePath) {
   return fs.readFileSync(path.join(targetRoot, relativePath), "utf8");
 }
 
-function run() {
+async function run() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "ai-native-sync-test-"));
   const targetRoot = path.join(tempRoot, "consumer-repo");
   fs.mkdirSync(targetRoot);
@@ -30,6 +31,7 @@ function run() {
   assert.ok(fs.existsSync(path.join(targetRoot, ".ai-native", "core-operating-rules.md")));
   assert.ok(read(targetRoot, ".ai-native/README.md").includes("AI Native Assets"));
   assert.ok(read(targetRoot, ".ai-native/feedback/README.md").includes("Feedback should live"));
+  assert.ok(read(targetRoot, ".ai-native/engineering-quality.md").includes("Engineering Quality"));
   assert.ok(fs.existsSync(path.join(targetRoot, stateFile)));
   assert.ok(fs.existsSync(path.join(targetRoot, repoConfigFile)));
   assert.strictEqual(JSON.parse(read(targetRoot, stateFile)).assetVersion, version);
@@ -126,6 +128,74 @@ function run() {
   assert.ok(ignoredNoOpResult.gitIgnoredPaths.includes(".ai-native"));
   assert.ok(ignoredNoOpResult.logs.some((line) => line.includes("WARN")));
 
+  const instructionRoot = path.join(tempRoot, "instruction-repo");
+  fs.mkdirSync(instructionRoot);
+  applySync({ targetRoot: instructionRoot });
+  const autoInstructionResult = await applyInstructionFiles({
+    targetRoot: instructionRoot,
+    mode: "auto"
+  });
+  assert.ok(fs.existsSync(path.join(instructionRoot, "AGENTS.md")));
+  assert.ok(fs.lstatSync(path.join(instructionRoot, "CLAUDE.md")).isSymbolicLink());
+  assert.ok(
+    fs.lstatSync(path.join(instructionRoot, ".github", "copilot-instructions.md")).isSymbolicLink()
+  );
+  assert.ok(autoInstructionResult.logs.some((line) => line.includes("INSTRUCTION-AUTO")));
+
+  const appendRoot = path.join(tempRoot, "append-repo");
+  fs.mkdirSync(appendRoot);
+  applySync({ targetRoot: appendRoot });
+  fs.writeFileSync(path.join(appendRoot, "AGENTS.md"), "# Custom AGENTS\n");
+  fs.writeFileSync(path.join(appendRoot, "CLAUDE.md"), "# Custom CLAUDE\n");
+  ensureDir(path.join(appendRoot, ".github"));
+  fs.writeFileSync(
+    path.join(appendRoot, ".github", "copilot-instructions.md"),
+    "# Custom Copilot\n"
+  );
+  const appendInstructionResult = await applyInstructionFiles({
+    targetRoot: appendRoot,
+    mode: "append"
+  });
+  assert.ok(read(appendRoot, "AGENTS.md").includes("ai-native-shared-guidance:start"));
+  assert.ok(read(appendRoot, "CLAUDE.md").includes("AI Native Shared Guidance"));
+  assert.ok(
+    read(appendRoot, ".github/copilot-instructions.md").includes("AI Native Shared Guidance")
+  );
+  assert.ok(appendInstructionResult.logs.some((line) => line.includes("INSTRUCTION-APPEND")));
+
+  const conflictRoot = path.join(tempRoot, "conflict-repo");
+  fs.mkdirSync(conflictRoot);
+  applySync({ targetRoot: conflictRoot });
+  fs.writeFileSync(path.join(conflictRoot, "AGENTS.md"), "# Custom AGENTS\n");
+  const conflictInstructionResult = await applyInstructionFiles({
+    targetRoot: conflictRoot,
+    mode: "auto",
+    interactive: false
+  });
+  assert.strictEqual(conflictInstructionResult.action, "conflict");
+  assert.ok(conflictInstructionResult.logs.some((line) => line.includes("--instructions-mode=replace")));
+
+  const replaceRoot = path.join(tempRoot, "replace-repo");
+  fs.mkdirSync(replaceRoot);
+  applySync({ targetRoot: replaceRoot });
+  ensureDir(path.join(replaceRoot, ".github"));
+  fs.writeFileSync(path.join(replaceRoot, "AGENTS.md"), "# Custom AGENTS\n");
+  fs.writeFileSync(path.join(replaceRoot, "CLAUDE.md"), "# Custom CLAUDE\n");
+  fs.writeFileSync(
+    path.join(replaceRoot, ".github", "copilot-instructions.md"),
+    "# Custom Copilot\n"
+  );
+  const replaceInstructionResult = await applyInstructionFiles({
+    targetRoot: replaceRoot,
+    mode: "replace"
+  });
+  assert.ok(read(replaceRoot, "AGENTS.md").includes("ai-native-managed: instructions"));
+  assert.ok(fs.lstatSync(path.join(replaceRoot, "CLAUDE.md")).isSymbolicLink());
+  assert.ok(
+    fs.lstatSync(path.join(replaceRoot, ".github", "copilot-instructions.md")).isSymbolicLink()
+  );
+  assert.ok(replaceInstructionResult.logs.some((line) => line.includes("INSTRUCTION-REPLACE")));
+
   const sourceRoot = path.join(tempRoot, "source-repo");
   fs.mkdirSync(sourceRoot);
   fs.writeFileSync(
@@ -166,4 +236,11 @@ function run() {
   console.log("Shared asset sync verification passed.");
 }
 
-run();
+function ensureDir(directory) {
+  fs.mkdirSync(directory, { recursive: true });
+}
+
+run().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

@@ -1,5 +1,6 @@
 const path = require("path");
 
+const { applyInstructionFiles, formatConflictCommands, inspectInstructionFiles } = require("./instruction-files");
 const { applySync, inspectSyncState } = require("./shared-assets");
 
 function formatInspection(inspection) {
@@ -41,27 +42,57 @@ function formatInspection(inspection) {
 }
 
 function printUsage() {
-  console.log("Usage: node scripts/sync.js <target-repo-path> [--dry-run]");
+  console.log(
+    "Usage: node scripts/sync.js <target-repo-path> [--dry-run] [--without-instructions] [--instructions-mode=replace|append|skip] [--yes]"
+  );
 }
 
 if (require.main === module) {
-  const args = process.argv.slice(2);
-  const dryRun = args.includes("--dry-run");
-  const targetRoot = args.find((arg) => arg !== "--dry-run");
+  (async () => {
+    const args = process.argv.slice(2);
+    const dryRun = args.includes("--dry-run");
+    const skipInstructions = args.includes("--without-instructions");
+    const assumeYes = args.includes("--yes");
+    const instructionsModeArg = args.find((arg) => arg.startsWith("--instructions-mode="));
+    const instructionsMode = instructionsModeArg ? instructionsModeArg.split("=")[1] : "auto";
+    const targetRoot = args.find(
+      (arg) =>
+        arg !== "--dry-run" &&
+        arg !== "--without-instructions" &&
+        arg !== "--yes" &&
+        !arg.startsWith("--instructions-mode=")
+    );
 
-  if (!targetRoot) {
-    printUsage();
-    process.exit(1);
-  }
+    if (!targetRoot) {
+      printUsage();
+      process.exit(1);
+    }
 
-  try {
-    const inspection = inspectSyncState(targetRoot);
-    formatInspection(inspection).forEach((line) => console.log(line));
+    try {
+      const inspection = inspectSyncState(targetRoot);
+      formatInspection(inspection).forEach((line) => console.log(line));
 
-    const result = applySync({ targetRoot, dryRun });
-    result.logs.forEach((line) => console.log(line));
-  } catch (error) {
-    console.error(error.message);
-    process.exit(1);
-  }
+      const result = applySync({ targetRoot, dryRun });
+      result.logs.forEach((line) => console.log(line));
+
+      if (!skipInstructions) {
+        const instructionsInspection = inspectInstructionFiles(targetRoot);
+        if (!instructionsInspection.safeToAutoApply && instructionsMode === "auto" && !(process.stdin.isTTY && process.stdout.isTTY) && !assumeYes) {
+          console.log("INSTRUCTION-CONFLICT existing custom instruction files require a choice");
+          formatConflictCommands(targetRoot).forEach((command) => console.log(`NEXT  ${command}`));
+        } else {
+          const instructionResult = await applyInstructionFiles({
+            targetRoot,
+            mode: assumeYes && instructionsMode === "auto" ? "replace" : instructionsMode,
+            dryRun,
+            interactive: process.stdin.isTTY && process.stdout.isTTY && !assumeYes
+          });
+          instructionResult.logs.forEach((line) => console.log(line));
+        }
+      }
+    } catch (error) {
+      console.error(error.message);
+      process.exit(1);
+    }
+  })();
 }

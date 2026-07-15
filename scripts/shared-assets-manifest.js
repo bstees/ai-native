@@ -24,6 +24,10 @@ module.exports = [
     target: ".ai-native/repo-onboarding-audit.md"
   },
   {
+    source: "assets/quality/engineering-quality.md",
+    target: ".ai-native/engineering-quality.md"
+  },
+  {
     source: "assets/feedback/README.md",
     target: ".ai-native/feedback/README.md"
   },

@@ -26,6 +26,7 @@ function buildGeneratedFiles() {
         "",
         "- `core-operating-rules.md` is the current shared baseline for AI-agent behavior.",
         "- `goal-and-plan-mode.md` defines when work must start in explicit planning.",
+        "- `engineering-quality.md` defines the shared engineering quality bar.",
         "- `repo-onboarding-audit.md` is the first-time adoption workflow for this repo.",
         "- `ui-quality-standard.md` defines the cross-repo UI quality bar.",
         "- `ui-review-checklist.md` is the default UI approval checklist.",
