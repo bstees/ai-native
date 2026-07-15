@@ -4,7 +4,14 @@ const os = require("os");
 const path = require("path");
 
 const { applyInstructionFiles } = require("../scripts/instruction-files");
-const { applySync, inspectSyncState, repoConfigFile, stateFile } = require("../scripts/shared-assets");
+const {
+  applySync,
+  gitignoreEndMarker,
+  gitignoreStartMarker,
+  inspectSyncState,
+  repoConfigFile,
+  stateFile
+} = require("../scripts/shared-assets");
 const { version } = require("../scripts/shared-assets-version");
 const { seedRepoOnboarding } = require("../scripts/seed-repo-onboarding");
 
@@ -16,6 +23,7 @@ async function run() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "ai-native-sync-test-"));
   const targetRoot = path.join(tempRoot, "consumer-repo");
   fs.mkdirSync(targetRoot);
+  require("child_process").execFileSync("git", ["init"], { cwd: targetRoot, stdio: "ignore" });
 
   const initialInspection = inspectSyncState(targetRoot);
   assert.strictEqual(initialInspection.status, "new");
@@ -34,6 +42,7 @@ async function run() {
   assert.ok(read(targetRoot, ".ai-native/engineering-quality.md").includes("Engineering Quality"));
   assert.ok(fs.existsSync(path.join(targetRoot, stateFile)));
   assert.ok(fs.existsSync(path.join(targetRoot, repoConfigFile)));
+  assert.ok(read(targetRoot, ".gitignore").includes(gitignoreStartMarker));
   assert.strictEqual(JSON.parse(read(targetRoot, stateFile)).assetVersion, version);
   assert.strictEqual(JSON.parse(read(targetRoot, repoConfigFile)).repoRole, "consumer");
   assert.strictEqual(JSON.parse(read(targetRoot, repoConfigFile)).standardsMode, "managed");
@@ -48,6 +57,7 @@ async function run() {
   assert.strictEqual(noOpResult.action, "no-op");
   assert.ok(noOpResult.logs.some((line) => line.includes("already up to date")));
   assert.ok(noOpResult.logs.some((line) => line.includes(version)));
+  assert.ok(noOpResult.logs.some((line) => line.includes(".gitignore")));
 
   const statePath = path.join(targetRoot, stateFile);
   const versionState = JSON.parse(fs.readFileSync(statePath, "utf8"));
@@ -125,8 +135,21 @@ async function run() {
   require("child_process").execFileSync("git", ["init"], { cwd: ignoredRoot, stdio: "ignore" });
   applySync({ targetRoot: ignoredRoot });
   const ignoredNoOpResult = applySync({ targetRoot: ignoredRoot });
-  assert.ok(ignoredNoOpResult.gitIgnoredPaths.includes(".ai-native"));
-  assert.ok(ignoredNoOpResult.logs.some((line) => line.includes("WARN")));
+  const ignoredGitignore = read(ignoredRoot, ".gitignore");
+  assert.ok(ignoredGitignore.includes(gitignoreStartMarker));
+  assert.ok(ignoredGitignore.includes(gitignoreEndMarker));
+  assert.ok(ignoredNoOpResult.ignoredManagedPaths.includes(".ai-native/core-operating-rules.md"));
+  assert.ok(!ignoredNoOpResult.logs.some((line) => line.includes("WARN")));
+
+  const badIgnoreRoot = path.join(tempRoot, "bad-ignore-repo");
+  fs.mkdirSync(badIgnoreRoot);
+  fs.writeFileSync(path.join(badIgnoreRoot, ".gitignore"), ".ai-native/\n!.ai-native/\n");
+  require("child_process").execFileSync("git", ["init"], { cwd: badIgnoreRoot, stdio: "ignore" });
+  applySync({ targetRoot: badIgnoreRoot });
+  fs.appendFileSync(path.join(badIgnoreRoot, ".gitignore"), ".ai-native/repo-config.json\n");
+  const badIgnoreResult = applySync({ targetRoot: badIgnoreRoot });
+  assert.ok(badIgnoreResult.ignoredRepoOwnedPaths.includes(".ai-native/repo-config.json"));
+  assert.ok(badIgnoreResult.logs.some((line) => line.includes("WARN")));
 
   const instructionRoot = path.join(tempRoot, "instruction-repo");
   fs.mkdirSync(instructionRoot);

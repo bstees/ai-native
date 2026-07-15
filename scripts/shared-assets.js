@@ -14,6 +14,9 @@ const { version } = require("./shared-assets-version");
 const sourceRoot = path.join(__dirname, "..");
 const aiNativeDir = ".ai-native";
 const stateFile = path.join(aiNativeDir, ".sync-state.json");
+const gitignoreFile = ".gitignore";
+const gitignoreStartMarker = "# ai-native managed assets:start";
+const gitignoreEndMarker = "# ai-native managed assets:end";
 
 function buildGeneratedFiles() {
   return [
@@ -97,6 +100,37 @@ function getManagedFiles() {
   );
 }
 
+function getManagedIgnorePaths() {
+  return [
+    ".ai-native/.sync-state.json",
+    ".ai-native/README.md",
+    ".ai-native/core-operating-rules.md",
+    ".ai-native/goal-and-plan-mode.md",
+    ".ai-native/engineering-quality.md",
+    ".ai-native/repo-onboarding-audit.md",
+    ".ai-native/ui-quality-standard.md",
+    ".ai-native/ui-review-checklist.md",
+    ".ai-native/usability-validation-standard.md",
+    ".ai-native/feedback/README.md",
+    ".ai-native/feedback/capture-guidance.md",
+    ".ai-native/feedback/feedback-entry-template.md",
+    ".ai-native/feedback/feedback-ingestion-standard.md",
+    ".ai-native/feedback/toil/README.md",
+    ".ai-native/feedback/developer-notes/README.md",
+    ".ai-native/audits/README.md"
+  ];
+}
+
+function getRepoOwnedPaths() {
+  return [
+    ".ai-native/repo-config.json",
+    ".ai-native/feedback/",
+    ".ai-native/feedback/toil/",
+    ".ai-native/feedback/developer-notes/",
+    ".ai-native/audits/"
+  ];
+}
+
 function getState(targetRoot) {
   const targetPath = path.join(targetRoot, stateFile);
 
@@ -139,6 +173,50 @@ function ensureDir(directory, dryRun) {
   }
 }
 
+function buildManagedGitignoreBlock() {
+  return [
+    gitignoreStartMarker,
+    "!.ai-native/",
+    ".ai-native/*",
+    "!.ai-native/repo-config.json",
+    "!.ai-native/feedback/",
+    "!.ai-native/feedback/toil/",
+    "!.ai-native/feedback/developer-notes/",
+    "!.ai-native/audits/",
+    ".ai-native/.sync-state.json",
+    ".ai-native/README.md",
+    ".ai-native/core-operating-rules.md",
+    ".ai-native/goal-and-plan-mode.md",
+    ".ai-native/engineering-quality.md",
+    ".ai-native/repo-onboarding-audit.md",
+    ".ai-native/ui-quality-standard.md",
+    ".ai-native/ui-review-checklist.md",
+    ".ai-native/usability-validation-standard.md",
+    ".ai-native/feedback/README.md",
+    ".ai-native/feedback/capture-guidance.md",
+    ".ai-native/feedback/feedback-entry-template.md",
+    ".ai-native/feedback/feedback-ingestion-standard.md",
+    ".ai-native/feedback/toil/README.md",
+    ".ai-native/feedback/developer-notes/README.md",
+    ".ai-native/audits/README.md",
+    gitignoreEndMarker
+  ].join("\n");
+}
+
+function updateGitignoreContents(existingContents) {
+  const block = buildManagedGitignoreBlock();
+
+  if (existingContents.includes(gitignoreStartMarker) && existingContents.includes(gitignoreEndMarker)) {
+    return existingContents.replace(
+      new RegExp(`${gitignoreStartMarker}[\\s\\S]*${gitignoreEndMarker}`),
+      block
+    );
+  }
+
+  const trimmed = existingContents.trimEnd();
+  return `${trimmed}${trimmed ? "\n\n" : ""}${block}\n`;
+}
+
 function writeFile(targetPath, contents, dryRun, logs, action = "WRITE") {
   ensureDir(path.dirname(targetPath), dryRun);
   logs.push(`${action} ${targetPath}`);
@@ -154,32 +232,43 @@ function removeFile(targetPath, dryRun, logs) {
   }
 }
 
-function detectGitIgnoredPaths(targetRoot) {
+function gitCommandSucceeds(targetRoot, args) {
   try {
-    execFileSync("git", ["-C", targetRoot, "rev-parse", "--is-inside-work-tree"], {
+    execFileSync("git", ["-C", targetRoot, ...args], {
       stdio: ["ignore", "pipe", "ignore"]
     });
-  } catch (_error) {
-    return [];
-  }
-
-  const candidates = [aiNativeDir, stateFile];
-  const ignoredPaths = [];
-
-  for (const relativePath of candidates) {
-    try {
-      execFileSync("git", ["-C", targetRoot, "check-ignore", "-q", relativePath], {
-        stdio: "ignore"
-      });
-      ignoredPaths.push(relativePath);
-    } catch (error) {
-      if (error.status !== 1) {
-        throw error;
-      }
+    return true;
+  } catch (error) {
+    if (error.status === 1 || error.status === 128) {
+      return false;
     }
+    throw error;
+  }
+}
+
+function detectGitIgnoreStatus(targetRoot) {
+  if (!gitCommandSucceeds(targetRoot, ["rev-parse", "--is-inside-work-tree"])) {
+    return {
+      isGitRepo: false,
+      ignoredPaths: [],
+      ignoredManagedPaths: [],
+      ignoredRepoOwnedPaths: []
+    };
   }
 
-  return ignoredPaths;
+  const ignoredManagedPaths = getManagedIgnorePaths().filter((relativePath) =>
+    gitCommandSucceeds(targetRoot, ["check-ignore", "-q", relativePath])
+  );
+  const ignoredRepoOwnedPaths = getRepoOwnedPaths().filter((relativePath) =>
+    gitCommandSucceeds(targetRoot, ["check-ignore", "-q", relativePath])
+  );
+
+  return {
+    isGitRepo: true,
+    ignoredPaths: [...new Set([...ignoredManagedPaths, ...ignoredRepoOwnedPaths])],
+    ignoredManagedPaths,
+    ignoredRepoOwnedPaths
+  };
 }
 
 function inspectSyncState(targetRoot) {
@@ -200,7 +289,7 @@ function inspectSyncState(targetRoot) {
   const sourceConfig = getSourceConfig(resolvedTargetRoot);
   const aiNativePath = path.join(resolvedTargetRoot, aiNativeDir);
   const hasAiNativeDir = fs.existsSync(aiNativePath);
-  const gitIgnoredPaths = detectGitIgnoredPaths(resolvedTargetRoot);
+  const gitIgnoreStatus = detectGitIgnoreStatus(resolvedTargetRoot);
   const repoRole = sourceConfig?.repoRole || repoConfig?.repoRole || "consumer";
   const standardsMode = repoRole === "consumer" ? repoConfig?.standardsMode || "managed" : null;
 
@@ -255,7 +344,10 @@ function inspectSyncState(targetRoot) {
     outdatedFiles,
     staleManagedFiles,
     hasAiNativeDir,
-    gitIgnoredPaths,
+    gitIgnoredPaths: gitIgnoreStatus.ignoredPaths,
+    ignoredManagedPaths: gitIgnoreStatus.ignoredManagedPaths,
+    ignoredRepoOwnedPaths: gitIgnoreStatus.ignoredRepoOwnedPaths,
+    isGitRepo: gitIgnoreStatus.isGitRepo,
     existingState
   };
 }
@@ -296,6 +388,18 @@ function applySync({ targetRoot, dryRun = false }) {
     };
   }
 
+  if (inspection.repoRole === "consumer" && inspection.standardsMode === "managed" && inspection.isGitRepo) {
+    const gitignorePath = path.join(inspection.targetRoot, gitignoreFile);
+    const existingGitignore = fs.existsSync(gitignorePath) ? fs.readFileSync(gitignorePath, "utf8") : "";
+    const desiredGitignore = updateGitignoreContents(existingGitignore);
+
+    if (existingGitignore !== desiredGitignore) {
+      writeFile(gitignorePath, desiredGitignore, dryRun, logs, "GITIGNORE");
+    } else {
+      logs.push(`OK    ${gitignorePath}`);
+    }
+  }
+
   if (inspection.status === "up-to-date") {
     writeFile(
       path.join(inspection.targetRoot, repoConfigFile),
@@ -304,9 +408,9 @@ function applySync({ targetRoot, dryRun = false }) {
       logs,
       "CONFIG"
     );
-    if (inspection.gitIgnoredPaths.length > 0) {
+    if (inspection.ignoredRepoOwnedPaths.length > 0) {
       logs.push(
-        `WARN  ${inspection.gitIgnoredPaths.join(", ")} is ignored by git in ${inspection.targetRoot}`
+        `WARN  ${inspection.ignoredRepoOwnedPaths.join(", ")} is ignored by git in ${inspection.targetRoot}`
       );
     }
     logs.push(
@@ -348,9 +452,9 @@ function applySync({ targetRoot, dryRun = false }) {
   const stateContents = JSON.stringify(buildState(inspection.managedFiles), null, 2) + "\n";
   writeFile(path.join(inspection.targetRoot, stateFile), stateContents, dryRun, logs, "STATE ");
 
-  if (inspection.gitIgnoredPaths.length > 0) {
+  if (inspection.ignoredRepoOwnedPaths.length > 0) {
     logs.push(
-      `WARN  ${inspection.gitIgnoredPaths.join(", ")} is ignored by git in ${inspection.targetRoot}`
+      `WARN  ${inspection.ignoredRepoOwnedPaths.join(", ")} is ignored by git in ${inspection.targetRoot}`
     );
   }
 
@@ -370,6 +474,11 @@ function applySync({ targetRoot, dryRun = false }) {
 module.exports = {
   aiNativeDir,
   stateFile,
+  gitignoreFile,
+  gitignoreStartMarker,
+  gitignoreEndMarker,
+  getManagedIgnorePaths,
+  getRepoOwnedPaths,
   repoConfigFile,
   getManagedFiles,
   inspectSyncState,

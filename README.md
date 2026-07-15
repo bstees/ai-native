@@ -111,6 +111,8 @@ Consumer repo mode is stored in `.ai-native/repo-config.json`:
 - `managed`: accepts canonical standards updates from `AI Native`
 - `forked`: keeps local divergent standards and no longer auto-tracks `AI Native`
 
+For `managed` repos, `sync` also maintains a selective `.gitignore` block so mother-ship-owned `.ai-native` standards stay local while repo-owned feedback, audits, and `repo-config.json` remain reviewable.
+
 Use `--dry-run` with `sync` to preview what would be created, updated, or removed.
 
 ## How This Repo Relates To Product Repos
