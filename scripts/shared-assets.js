@@ -1,7 +1,14 @@
 const fs = require("fs");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 const manifest = require("./shared-assets-manifest");
+const {
+  buildManagedRepoConfig,
+  getRepoConfig,
+  getSourceConfig,
+  repoConfigFile
+} = require("./repo-role");
 const { version } = require("./shared-assets-version");
 
 const sourceRoot = path.join(__dirname, "..");
@@ -107,6 +114,24 @@ function buildState(managedFiles) {
   };
 }
 
+function buildRepoConfigContents(existingConfig, targetRoot) {
+  const defaultRepoName = path.basename(targetRoot);
+  const config = {
+    ...buildManagedRepoConfig({ repoName: defaultRepoName }),
+    ...(existingConfig || {})
+  };
+
+  if (config.repoRole !== "consumer") {
+    config.repoRole = "consumer";
+  }
+
+  if (!config.standardsMode) {
+    config.standardsMode = "managed";
+  }
+
+  return JSON.stringify(config, null, 2) + "\n";
+}
+
 function ensureDir(directory, dryRun) {
   if (!dryRun) {
     fs.mkdirSync(directory, { recursive: true });
@@ -128,6 +153,34 @@ function removeFile(targetPath, dryRun, logs) {
   }
 }
 
+function detectGitIgnoredPaths(targetRoot) {
+  try {
+    execFileSync("git", ["-C", targetRoot, "rev-parse", "--is-inside-work-tree"], {
+      stdio: ["ignore", "pipe", "ignore"]
+    });
+  } catch (_error) {
+    return [];
+  }
+
+  const candidates = [aiNativeDir, stateFile];
+  const ignoredPaths = [];
+
+  for (const relativePath of candidates) {
+    try {
+      execFileSync("git", ["-C", targetRoot, "check-ignore", "-q", relativePath], {
+        stdio: "ignore"
+      });
+      ignoredPaths.push(relativePath);
+    } catch (error) {
+      if (error.status !== 1) {
+        throw error;
+      }
+    }
+  }
+
+  return ignoredPaths;
+}
+
 function inspectSyncState(targetRoot) {
   if (!targetRoot) {
     throw new Error("A target repo path is required.");
@@ -142,8 +195,13 @@ function inspectSyncState(targetRoot) {
   const managedFiles = getManagedFiles();
   const desiredTargets = new Set(managedFiles.map((entry) => entry.target));
   const existingState = getState(resolvedTargetRoot);
+  const repoConfig = getRepoConfig(resolvedTargetRoot);
+  const sourceConfig = getSourceConfig(resolvedTargetRoot);
   const aiNativePath = path.join(resolvedTargetRoot, aiNativeDir);
   const hasAiNativeDir = fs.existsSync(aiNativePath);
+  const gitIgnoredPaths = detectGitIgnoredPaths(resolvedTargetRoot);
+  const repoRole = sourceConfig?.repoRole || repoConfig?.repoRole || "consumer";
+  const standardsMode = repoRole === "consumer" ? repoConfig?.standardsMode || "managed" : null;
 
   const missingFiles = [];
   const outdatedFiles = [];
@@ -168,7 +226,13 @@ function inspectSyncState(targetRoot) {
   );
 
   const status = !hasAiNativeDir
-    ? "new"
+    ? repoRole === "source"
+      ? "source"
+      : "new"
+    : repoRole === "source"
+      ? "source"
+    : standardsMode === "forked"
+      ? "forked"
     : versionStatus !== "current" ||
         missingFiles.length > 0 ||
         outdatedFiles.length > 0 ||
@@ -181,11 +245,16 @@ function inspectSyncState(targetRoot) {
     status,
     assetVersion: version,
     versionStatus,
+    repoRole,
+    standardsMode,
+    repoConfig,
+    sourceConfig,
     managedFiles,
     missingFiles,
     outdatedFiles,
     staleManagedFiles,
     hasAiNativeDir,
+    gitIgnoredPaths,
     existingState
   };
 }
@@ -194,7 +263,51 @@ function applySync({ targetRoot, dryRun = false }) {
   const inspection = inspectSyncState(targetRoot);
   const logs = [];
 
+  const repoConfigContents = buildRepoConfigContents(inspection.repoConfig, inspection.targetRoot);
+
+  if (inspection.status === "source") {
+    logs.push(
+      `SOURCE ${inspection.targetRoot} is the AI Native source repo; sync only applies to downstream consumer repos`
+    );
+    return {
+      ...inspection,
+      action: "source",
+      logs
+    };
+  }
+
+  if (inspection.status === "forked") {
+    writeFile(
+      path.join(inspection.targetRoot, repoConfigFile),
+      repoConfigContents,
+      dryRun,
+      logs,
+      "CONFIG"
+    );
+    writeFile(path.join(inspection.targetRoot, stateFile), JSON.stringify(buildState(inspection.managedFiles), null, 2) + "\n", dryRun, logs, "STATE ");
+    logs.push(
+      `FORKED ${path.join(inspection.targetRoot, aiNativeDir)} is diverged from AI Native; managed assets were not overwritten`
+    );
+    return {
+      ...inspection,
+      action: "forked",
+      logs
+    };
+  }
+
   if (inspection.status === "up-to-date") {
+    writeFile(
+      path.join(inspection.targetRoot, repoConfigFile),
+      repoConfigContents,
+      dryRun,
+      logs,
+      "CONFIG"
+    );
+    if (inspection.gitIgnoredPaths.length > 0) {
+      logs.push(
+        `WARN  ${inspection.gitIgnoredPaths.join(", ")} is ignored by git in ${inspection.targetRoot}`
+      );
+    }
     logs.push(
       `OK    ${path.join(inspection.targetRoot, aiNativeDir)} is already up to date at ${inspection.assetVersion}`
     );
@@ -224,8 +337,21 @@ function applySync({ targetRoot, dryRun = false }) {
     removeFile(path.join(inspection.targetRoot, relativePath), dryRun, logs);
   }
 
+  writeFile(
+    path.join(inspection.targetRoot, repoConfigFile),
+    repoConfigContents,
+    dryRun,
+    logs,
+    "CONFIG"
+  );
   const stateContents = JSON.stringify(buildState(inspection.managedFiles), null, 2) + "\n";
   writeFile(path.join(inspection.targetRoot, stateFile), stateContents, dryRun, logs, "STATE ");
+
+  if (inspection.gitIgnoredPaths.length > 0) {
+    logs.push(
+      `WARN  ${inspection.gitIgnoredPaths.join(", ")} is ignored by git in ${inspection.targetRoot}`
+    );
+  }
 
   logs.push(
     inspection.status === "new"
@@ -243,6 +369,7 @@ function applySync({ targetRoot, dryRun = false }) {
 module.exports = {
   aiNativeDir,
   stateFile,
+  repoConfigFile,
   getManagedFiles,
   inspectSyncState,
   applySync

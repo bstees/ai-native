@@ -3,7 +3,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const { applySync, inspectSyncState, stateFile } = require("../scripts/shared-assets");
+const { applySync, inspectSyncState, repoConfigFile, stateFile } = require("../scripts/shared-assets");
 const { version } = require("../scripts/shared-assets-version");
 const { seedRepoOnboarding } = require("../scripts/seed-repo-onboarding");
 
@@ -31,11 +31,16 @@ function run() {
   assert.ok(read(targetRoot, ".ai-native/README.md").includes("AI Native Assets"));
   assert.ok(read(targetRoot, ".ai-native/feedback/README.md").includes("Feedback should live"));
   assert.ok(fs.existsSync(path.join(targetRoot, stateFile)));
+  assert.ok(fs.existsSync(path.join(targetRoot, repoConfigFile)));
   assert.strictEqual(JSON.parse(read(targetRoot, stateFile)).assetVersion, version);
+  assert.strictEqual(JSON.parse(read(targetRoot, repoConfigFile)).repoRole, "consumer");
+  assert.strictEqual(JSON.parse(read(targetRoot, repoConfigFile)).standardsMode, "managed");
 
   const upToDateInspection = inspectSyncState(targetRoot);
   assert.strictEqual(upToDateInspection.status, "up-to-date");
   assert.strictEqual(upToDateInspection.versionStatus, "current");
+  assert.strictEqual(upToDateInspection.repoRole, "consumer");
+  assert.strictEqual(upToDateInspection.standardsMode, "managed");
 
   const noOpResult = applySync({ targetRoot });
   assert.strictEqual(noOpResult.action, "no-op");
@@ -111,6 +116,52 @@ function run() {
     )
   );
   assert.ok(fs.existsSync(path.join(targetRoot, ".ai-native", "feedback", "toil", "local-note.md")));
+
+  const ignoredRoot = path.join(tempRoot, "ignored-repo");
+  fs.mkdirSync(ignoredRoot);
+  fs.writeFileSync(path.join(ignoredRoot, ".gitignore"), ".ai-native/\n");
+  require("child_process").execFileSync("git", ["init"], { cwd: ignoredRoot, stdio: "ignore" });
+  applySync({ targetRoot: ignoredRoot });
+  const ignoredNoOpResult = applySync({ targetRoot: ignoredRoot });
+  assert.ok(ignoredNoOpResult.gitIgnoredPaths.includes(".ai-native"));
+  assert.ok(ignoredNoOpResult.logs.some((line) => line.includes("WARN")));
+
+  const sourceRoot = path.join(tempRoot, "source-repo");
+  fs.mkdirSync(sourceRoot);
+  fs.writeFileSync(
+    path.join(sourceRoot, "ai-native.config.json"),
+    JSON.stringify({ repoRole: "source", repoName: "AI Native" }, null, 2) + "\n"
+  );
+  const sourceInspection = inspectSyncState(sourceRoot);
+  assert.strictEqual(sourceInspection.status, "source");
+  assert.strictEqual(sourceInspection.repoRole, "source");
+  const sourceResult = applySync({ targetRoot: sourceRoot });
+  assert.strictEqual(sourceResult.action, "source");
+  assert.ok(sourceResult.logs.some((line) => line.includes("source repo")));
+  assert.ok(!fs.existsSync(path.join(sourceRoot, ".ai-native")));
+
+  const forkedRoot = path.join(tempRoot, "forked-repo");
+  fs.mkdirSync(forkedRoot);
+  applySync({ targetRoot: forkedRoot });
+  const forkedConfigPath = path.join(forkedRoot, repoConfigFile);
+  const forkedConfig = JSON.parse(fs.readFileSync(forkedConfigPath, "utf8"));
+  forkedConfig.standardsMode = "forked";
+  fs.writeFileSync(forkedConfigPath, JSON.stringify(forkedConfig, null, 2) + "\n");
+  fs.writeFileSync(
+    path.join(forkedRoot, ".ai-native", "core-operating-rules.md"),
+    "forked local standards\n"
+  );
+  const forkedInspection = inspectSyncState(forkedRoot);
+  assert.strictEqual(forkedInspection.status, "forked");
+  assert.strictEqual(forkedInspection.standardsMode, "forked");
+
+  const forkedResult = applySync({ targetRoot: forkedRoot });
+  assert.strictEqual(forkedResult.action, "forked");
+  assert.ok(forkedResult.logs.some((line) => line.includes("FORKED")));
+  assert.strictEqual(
+    read(forkedRoot, ".ai-native/core-operating-rules.md"),
+    "forked local standards\n"
+  );
 
   console.log("Shared asset sync verification passed.");
 }

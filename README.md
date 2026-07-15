@@ -100,6 +100,17 @@ npm run seed:onboarding -- /absolute/path/to/consumer-repo --repo-name "Consumer
 
 Sync state records a calver release in `.ai-native/.sync-state.json`. The current shared asset version is `26.07.0`, following `YY.MM.patch`, where the last number increments for additional releases in the same month.
 
+Repo state now has two layers:
+
+- `AI Native` is the `source` repo for standards
+- consumer repos are `managed` by default and can explicitly become `forked`
+- `sync` should be run against consumer repos, not the `AI Native` source repo
+
+Consumer repo mode is stored in `.ai-native/repo-config.json`:
+
+- `managed`: accepts canonical standards updates from `AI Native`
+- `forked`: keeps local divergent standards and no longer auto-tracks `AI Native`
+
 Use `--dry-run` with `sync` to preview what would be created, updated, or removed.
 
 ## How This Repo Relates To Product Repos

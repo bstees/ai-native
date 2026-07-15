@@ -4,13 +4,25 @@ const { applySync, inspectSyncState } = require("./shared-assets");
 
 function formatInspection(inspection) {
   const lines = [
-    `STATUS ${inspection.status} ${path.join(inspection.targetRoot, ".ai-native")} target=${inspection.assetVersion}`
+    `STATUS ${inspection.status} ${path.join(inspection.targetRoot, ".ai-native")} role=${inspection.repoRole}${inspection.standardsMode ? ` mode=${inspection.standardsMode}` : ""} target=${inspection.assetVersion}`
   ];
 
   if (inspection.versionStatus !== "current") {
     lines.push(
       `VERSION ${inspection.versionStatus} current=${inspection.existingState?.assetVersion || "none"} target=${inspection.assetVersion}`
     );
+  }
+
+  if (inspection.status === "source") {
+    lines.push("ROLE source repos publish standards; they do not consume downstream sync updates");
+  }
+
+  if (inspection.status === "forked") {
+    lines.push("MODE forked repos keep feedback flowing but no longer auto-track AI Native standards");
+  }
+
+  if (inspection.gitIgnoredPaths.length > 0) {
+    lines.push(`IGNORED ${inspection.gitIgnoredPaths.join(", ")}`);
   }
 
   if (inspection.missingFiles.length > 0) {
