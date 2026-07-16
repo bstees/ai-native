@@ -34,6 +34,7 @@ function buildGeneratedFiles() {
         "- `ui-quality-standard.md` defines the cross-repo UI quality bar.",
         "- `ui-review-checklist.md` is the default UI approval checklist.",
         "- `usability-validation-standard.md` requires browser or simulator flow validation.",
+        "- `agent-orchestration/` defines portable sub-agent profiles, context policy, routing, and provider adapters.",
         "- `feedback/` is the repo-local source of truth for toil, developer notes, and audits.",
         "- Local additions should stay minimal and repo-specific."
       ].join("\n")
@@ -101,24 +102,7 @@ function getManagedFiles() {
 }
 
 function getManagedIgnorePaths() {
-  return [
-    ".ai-native/.sync-state.json",
-    ".ai-native/README.md",
-    ".ai-native/core-operating-rules.md",
-    ".ai-native/goal-and-plan-mode.md",
-    ".ai-native/engineering-quality.md",
-    ".ai-native/repo-onboarding-audit.md",
-    ".ai-native/ui-quality-standard.md",
-    ".ai-native/ui-review-checklist.md",
-    ".ai-native/usability-validation-standard.md",
-    ".ai-native/feedback/README.md",
-    ".ai-native/feedback/capture-guidance.md",
-    ".ai-native/feedback/feedback-entry-template.md",
-    ".ai-native/feedback/feedback-ingestion-standard.md",
-    ".ai-native/feedback/toil/README.md",
-    ".ai-native/feedback/developer-notes/README.md",
-    ".ai-native/audits/README.md"
-  ];
+  return [stateFile, ...getManagedFiles().map(({ target }) => target)];
 }
 
 function getRepoOwnedPaths() {
@@ -183,22 +167,7 @@ function buildManagedGitignoreBlock() {
     "!.ai-native/feedback/toil/",
     "!.ai-native/feedback/developer-notes/",
     "!.ai-native/audits/",
-    ".ai-native/.sync-state.json",
-    ".ai-native/README.md",
-    ".ai-native/core-operating-rules.md",
-    ".ai-native/goal-and-plan-mode.md",
-    ".ai-native/engineering-quality.md",
-    ".ai-native/repo-onboarding-audit.md",
-    ".ai-native/ui-quality-standard.md",
-    ".ai-native/ui-review-checklist.md",
-    ".ai-native/usability-validation-standard.md",
-    ".ai-native/feedback/README.md",
-    ".ai-native/feedback/capture-guidance.md",
-    ".ai-native/feedback/feedback-entry-template.md",
-    ".ai-native/feedback/feedback-ingestion-standard.md",
-    ".ai-native/feedback/toil/README.md",
-    ".ai-native/feedback/developer-notes/README.md",
-    ".ai-native/audits/README.md",
+    ...getManagedIgnorePaths(),
     gitignoreEndMarker
   ].join("\n");
 }

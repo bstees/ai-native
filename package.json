@@ -8,6 +8,8 @@
     "build": "vite build",
     "start": "node server/index.js",
     "test": "node tests/run.js",
+    "test:agent-routing": "node tests/agent-routing.test.js",
+    "resolve:agent": "node assets/agent-orchestration/resolve.js",
     "sync": "node scripts/sync.js",
     "seed:onboarding": "node scripts/seed-repo-onboarding.js"
   },

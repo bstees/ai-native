@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "generic",
+  "description": "Portable fallback for providers controlled through prompts and an external launcher.",
+  "enforcement": {
+    "modelRouting": "orchestrator",
+    "reasoningEffort": "prompt",
+    "contextInheritance": "orchestrator",
+    "readOnly": "orchestrator",
+    "delegationDepth": "prompt",
+    "outputTokenLimit": "orchestrator"
+  },
+  "reasoningEffortMap": {
+    "minimal": "minimal reasoning",
+    "low": "low reasoning",
+    "medium": "medium reasoning",
+    "high": "high reasoning",
+    "maximum": "maximum available reasoning"
+  },
+  "contextInheritanceMap": {
+    "none": "fresh-session",
+    "recent": "launcher-selected-recent-context",
+    "full": "full-parent-context"
+  },
+  "notes": [
+    "Replace this adapter with a provider-specific manifest when native controls are available.",
+    "The launcher must enforce file selection, permissions, model aliases, and output limits."
+  ]
+}

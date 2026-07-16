@@ -44,6 +44,8 @@ That is the minimum shared operating surface.
 - [`signals/`](./signals/): monitored sources and evidence inputs
 - [`decisions/`](./decisions/): what we believe and why
 - [`assets/`](./assets/): shared reusable standards, workflows, and guidance
+- [`assets/agent-orchestration/`](./assets/agent-orchestration/): portable
+  sub-agent profiles, context policy, routing, and provider adapters
 - [`pilots/`](./pilots/): proving-ground adoption work with consumer repos
 - [`reviews/`](./reviews/): human review queue and approval surfaces
 - [`prompts/`](./prompts/): seed prompts and prompt source material
@@ -98,7 +100,7 @@ npm run seed:onboarding -- /absolute/path/to/consumer-repo --repo-name "Consumer
 - drifted managed assets: update them and remove stale previously managed files
 - already current: report that the repo is already up to date
 
-Sync state records a calver release in `.ai-native/.sync-state.json`. The current shared asset version is `26.07.0`, following `YY.MM.patch`, where the last number increments for additional releases in the same month.
+Sync state records a calver release in `.ai-native/.sync-state.json`. The current shared asset version is `26.07.1`, following `YY.MM.patch`, where the last number increments for additional releases in the same month.
 
 Repo state now has two layers:
 

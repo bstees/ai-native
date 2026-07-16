@@ -1,5 +1,49 @@
 module.exports = [
   {
+    source: "assets/agent-orchestration/README.md",
+    target: ".ai-native/agent-orchestration/README.md"
+  },
+  {
+    source: "assets/agent-orchestration/routing-policy.json",
+    target: ".ai-native/agent-orchestration/routing-policy.json"
+  },
+  {
+    source: "assets/agent-orchestration/resolve.js",
+    target: ".ai-native/agent-orchestration/resolve.js"
+  },
+  {
+    source: "assets/agent-orchestration/contracts/agent-profile.schema.json",
+    target: ".ai-native/agent-orchestration/contracts/agent-profile.schema.json"
+  },
+  {
+    source: "assets/agent-orchestration/contracts/provider-adapter.schema.json",
+    target: ".ai-native/agent-orchestration/contracts/provider-adapter.schema.json"
+  },
+  {
+    source: "assets/agent-orchestration/profiles/documentation.json",
+    target: ".ai-native/agent-orchestration/profiles/documentation.json"
+  },
+  {
+    source: "assets/agent-orchestration/profiles/explorer.json",
+    target: ".ai-native/agent-orchestration/profiles/explorer.json"
+  },
+  {
+    source: "assets/agent-orchestration/profiles/delivery.json",
+    target: ".ai-native/agent-orchestration/profiles/delivery.json"
+  },
+  {
+    source: "assets/agent-orchestration/profiles/reviewer.json",
+    target: ".ai-native/agent-orchestration/profiles/reviewer.json"
+  },
+  {
+    source: "assets/agent-orchestration/adapters/codex.json",
+    target: ".ai-native/agent-orchestration/adapters/codex.json"
+  },
+  {
+    source: "assets/agent-orchestration/adapters/generic.json",
+    target: ".ai-native/agent-orchestration/adapters/generic.json"
+  },
+  {
     source: "assets/repo-rules/ai-native-core-operating-rules.md",
     target: ".ai-native/core-operating-rules.md"
   },

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "explorer",
+  "description": "Perform bounded, read-heavy repository or evidence exploration.",
+  "requirements": {
+    "capabilityTier": "efficient",
+    "reasoningEffort": "low",
+    "modalities": ["text"],
+    "minimumContextTokens": 64000,
+    "controls": {
+      "modelRouting": "preferred",
+      "reasoningEffort": "preferred",
+      "contextInheritance": "required",
+      "readOnly": "required",
+      "delegationDepth": "preferred",
+      "outputTokenLimit": "preferred"
+    }
+  },
+  "execution": { "readOnly": true, "allowDelegation": false, "maxParallelism": 1 },
+  "context": {
+    "inheritance": "none",
+    "include": ["task-goal", "search-scope", "selected-files", "applicable-canonical-guidance"],
+    "exclude": ["parent-transcript", "unrelated-files", "raw-tool-output"]
+  },
+  "output": { "format": "findings-with-evidence-locations", "maxTokens": 4000 },
+  "escalationProfile": "reviewer"
+}

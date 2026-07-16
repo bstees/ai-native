@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "reviewer",
+  "description": "Review correctness, security, regressions, and validation gaps.",
+  "requirements": {
+    "capabilityTier": "advanced",
+    "reasoningEffort": "high",
+    "modalities": ["text"],
+    "minimumContextTokens": 64000,
+    "controls": {
+      "modelRouting": "preferred",
+      "reasoningEffort": "preferred",
+      "contextInheritance": "required",
+      "readOnly": "required",
+      "delegationDepth": "preferred",
+      "outputTokenLimit": "preferred"
+    }
+  },
+  "execution": { "readOnly": true, "allowDelegation": false, "maxParallelism": 1 },
+  "context": {
+    "inheritance": "none",
+    "include": ["review-goal", "acceptance-criteria", "changed-files", "applicable-contracts", "validation-results"],
+    "exclude": ["parent-conclusions", "unrelated-repo-history", "raw-exploration-logs"]
+  },
+  "output": { "format": "severity-ranked-findings-with-evidence", "maxTokens": 5000 }
+}

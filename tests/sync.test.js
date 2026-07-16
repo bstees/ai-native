@@ -14,6 +14,7 @@ const {
 } = require("../scripts/shared-assets");
 const { version } = require("../scripts/shared-assets-version");
 const { seedRepoOnboarding } = require("../scripts/seed-repo-onboarding");
+const { resolveAgentPlan } = require("../assets/agent-orchestration/resolve");
 
 function read(targetRoot, relativePath) {
   return fs.readFileSync(path.join(targetRoot, relativePath), "utf8");
@@ -40,6 +41,17 @@ async function run() {
   assert.ok(read(targetRoot, ".ai-native/README.md").includes("AI Native Assets"));
   assert.ok(read(targetRoot, ".ai-native/feedback/README.md").includes("Feedback should live"));
   assert.ok(read(targetRoot, ".ai-native/engineering-quality.md").includes("Engineering Quality"));
+  assert.ok(
+    read(targetRoot, ".ai-native/agent-orchestration/README.md").includes(
+      "Vendor-Neutral Agent Orchestration"
+    )
+  );
+  const installedAgentPlan = resolveAgentPlan({
+    root: path.join(targetRoot, ".ai-native", "agent-orchestration"),
+    provider: "generic",
+    profile: "documentation"
+  });
+  assert.strictEqual(installedAgentPlan.status, "ready");
   assert.ok(fs.existsSync(path.join(targetRoot, stateFile)));
   assert.ok(fs.existsSync(path.join(targetRoot, repoConfigFile)));
   assert.ok(read(targetRoot, ".gitignore").includes(gitignoreStartMarker));

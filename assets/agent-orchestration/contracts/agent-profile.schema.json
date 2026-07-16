@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-native.local/schemas/agent-profile.schema.json",
+  "title": "Agent Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "description", "requirements", "execution", "context", "output"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "description": { "type": "string", "minLength": 1 },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityTier", "reasoningEffort", "modalities", "controls"],
+      "properties": {
+        "capabilityTier": { "enum": ["economy", "efficient", "balanced", "advanced", "maximum"] },
+        "reasoningEffort": { "enum": ["minimal", "low", "medium", "high", "maximum"] },
+        "modalities": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["text", "image", "audio", "video"] } },
+        "minimumContextTokens": { "type": "integer", "minimum": 1 },
+        "controls": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "enum": ["required", "preferred"] }
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["readOnly", "allowDelegation", "maxParallelism"],
+      "properties": {
+        "readOnly": { "type": "boolean" },
+        "allowDelegation": { "type": "boolean" },
+        "maxParallelism": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inheritance", "include", "exclude"],
+      "properties": {
+        "inheritance": { "enum": ["none", "recent", "full"] },
+        "include": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "exclude": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "maxTokens"],
+      "properties": {
+        "format": { "type": "string", "minLength": 1 },
+        "maxTokens": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "escalationProfile": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+  }
+}

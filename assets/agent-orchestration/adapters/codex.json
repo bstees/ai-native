@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "codex",
+  "description": "Codex custom-agent and sub-agent translation capabilities.",
+  "enforcement": {
+    "modelRouting": "native",
+    "reasoningEffort": "native",
+    "contextInheritance": "native",
+    "readOnly": "native",
+    "delegationDepth": "native",
+    "outputTokenLimit": "prompt"
+  },
+  "reasoningEffortMap": {
+    "minimal": "minimal",
+    "low": "low",
+    "medium": "medium",
+    "high": "high",
+    "maximum": "max"
+  },
+  "contextInheritanceMap": {
+    "none": "none",
+    "recent": "recent-turns",
+    "full": "all"
+  },
+  "notes": [
+    "Omit a concrete model from custom-agent configuration to allow current task-aware selection.",
+    "Use project or personal custom-agent files to translate profile defaults.",
+    "Keep agents.max_depth at one unless recursive delegation is explicitly required."
+  ]
+}

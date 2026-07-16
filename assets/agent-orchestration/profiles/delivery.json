@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "delivery",
+  "description": "Implement a scoped change and verify its behavior.",
+  "requirements": {
+    "capabilityTier": "balanced",
+    "reasoningEffort": "medium",
+    "modalities": ["text"],
+    "minimumContextTokens": 64000,
+    "controls": {
+      "modelRouting": "preferred",
+      "reasoningEffort": "preferred",
+      "contextInheritance": "required",
+      "readOnly": "preferred",
+      "delegationDepth": "preferred",
+      "outputTokenLimit": "preferred"
+    }
+  },
+  "execution": { "readOnly": false, "allowDelegation": false, "maxParallelism": 1 },
+  "context": {
+    "inheritance": "recent",
+    "include": ["task-goal", "acceptance-criteria", "implementation-scope", "applicable-contracts", "validation-commands"],
+    "exclude": ["unrelated-parent-history", "unrelated-files", "raw-prior-agent-logs"]
+  },
+  "output": { "format": "change-summary-validation-and-residual-risk", "maxTokens": 5000 },
+  "escalationProfile": "reviewer"
+}

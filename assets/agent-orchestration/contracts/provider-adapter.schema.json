@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-native.local/schemas/provider-adapter.schema.json",
+  "title": "Provider Adapter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "description", "enforcement", "reasoningEffortMap", "contextInheritanceMap"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "description": { "type": "string", "minLength": 1 },
+    "enforcement": {
+      "type": "object",
+      "required": ["modelRouting", "reasoningEffort", "contextInheritance", "readOnly", "delegationDepth", "outputTokenLimit"],
+      "additionalProperties": { "enum": ["native", "orchestrator", "prompt", "unsupported"] }
+    },
+    "reasoningEffortMap": { "type": "object", "additionalProperties": { "type": ["string", "null"] } },
+    "contextInheritanceMap": { "type": "object", "additionalProperties": { "type": ["string", "null"] } },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  }
+}

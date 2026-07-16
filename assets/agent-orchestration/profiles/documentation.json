@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "documentation",
+  "description": "Write, edit, or summarize documentation from bounded sources.",
+  "requirements": {
+    "capabilityTier": "efficient",
+    "reasoningEffort": "low",
+    "modalities": ["text"],
+    "minimumContextTokens": 32000,
+    "controls": {
+      "modelRouting": "preferred",
+      "reasoningEffort": "preferred",
+      "contextInheritance": "required",
+      "readOnly": "required",
+      "delegationDepth": "preferred",
+      "outputTokenLimit": "preferred"
+    }
+  },
+  "execution": { "readOnly": true, "allowDelegation": false, "maxParallelism": 1 },
+  "context": {
+    "inheritance": "none",
+    "include": ["task-goal", "acceptance-criteria", "selected-files", "applicable-canonical-guidance"],
+    "exclude": ["parent-transcript", "unrelated-repo-guidance", "raw-exploration-logs"]
+  },
+  "output": { "format": "concise-document-and-open-questions", "maxTokens": 3000 },
+  "escalationProfile": "reviewer"
+}
