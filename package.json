@@ -8,6 +8,9 @@
     "build": "vite build",
     "start": "node server/index.js",
     "test": "node tests/run.js",
+    "eval:instructions": "node scripts/evaluate-instructions.js",
+    "eval:instructions:pilot": "node scripts/run-instruction-pilot.js",
+    "validate:agent-contracts": "node scripts/validate-agent-orchestration.js",
     "test:agent-routing": "node tests/agent-routing.test.js",
     "resolve:agent": "node assets/agent-orchestration/resolve.js",
     "sync": "node scripts/sync.js",
@@ -21,7 +24,8 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^4.5.3"
+    "@vitejs/plugin-react": "^6.0.5",
+    "ajv": "^8.20.0",
+    "vite": "^8.2.0"
   }
 }

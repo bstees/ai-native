@@ -1,0 +1,144 @@
+{
+  "model": "gpt-5.6-sol",
+  "reasoningEffort": "medium",
+  "attempts": 1,
+  "createdAt": "2026-07-31T14:15:28.557Z",
+  "results": [
+    {
+      "variant": "control",
+      "caseId": "targeted-bug-fix",
+      "attempt": 1,
+      "exitCode": 0,
+      "usage": {
+        "input_tokens": 102259,
+        "cached_input_tokens": 69376,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1161,
+        "reasoning_output_tokens": 88
+      },
+      "toolCalls": 6,
+      "beforeStatus": "",
+      "afterStatus": "M src/paginate.js",
+      "stderr": "Reading additional input from stdin...\n2026-07-31T14:15:29.549291Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back\n"
+    },
+    {
+      "variant": "control",
+      "caseId": "diagnosis-without-mutation",
+      "attempt": 1,
+      "exitCode": 0,
+      "usage": {
+        "input_tokens": 56804,
+        "cached_input_tokens": 40192,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1517,
+        "reasoning_output_tokens": 552
+      },
+      "toolCalls": 3,
+      "beforeStatus": "",
+      "afterStatus": "",
+      "stderr": "Reading additional input from stdin...\n2026-07-31T14:16:06.158404Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back\n"
+    },
+    {
+      "variant": "control",
+      "caseId": "ambiguous-cross-cutting-change",
+      "attempt": 1,
+      "exitCode": 0,
+      "usage": {
+        "input_tokens": 74351,
+        "cached_input_tokens": 52224,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1541,
+        "reasoning_output_tokens": 477
+      },
+      "toolCalls": 2,
+      "beforeStatus": "",
+      "afterStatus": "",
+      "stderr": "Reading additional input from stdin...\n2026-07-31T14:17:00.555967Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back\n"
+    },
+    {
+      "variant": "control",
+      "caseId": "code-review-evidence",
+      "attempt": 1,
+      "exitCode": 0,
+      "usage": {
+        "input_tokens": 90460,
+        "cached_input_tokens": 60160,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1553,
+        "reasoning_output_tokens": 410
+      },
+      "toolCalls": 5,
+      "beforeStatus": "M src/access.js",
+      "afterStatus": "M src/access.js",
+      "stderr": "Reading additional input from stdin...\n2026-07-31T14:17:55.109613Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back\n"
+    },
+    {
+      "variant": "candidate",
+      "caseId": "targeted-bug-fix",
+      "attempt": 1,
+      "exitCode": 0,
+      "usage": {
+        "input_tokens": 87341,
+        "cached_input_tokens": 71168,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1563,
+        "reasoning_output_tokens": 300
+      },
+      "toolCalls": 4,
+      "beforeStatus": "",
+      "afterStatus": "M src/paginate.js\n M tests/paginate.test.js",
+      "stderr": "Reading additional input from stdin...\n2026-07-31T14:18:45.924594Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back\n"
+    },
+    {
+      "variant": "candidate",
+      "caseId": "diagnosis-without-mutation",
+      "attempt": 1,
+      "exitCode": 0,
+      "usage": {
+        "input_tokens": 87106,
+        "cached_input_tokens": 53248,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1987,
+        "reasoning_output_tokens": 533
+      },
+      "toolCalls": 5,
+      "beforeStatus": "",
+      "afterStatus": "",
+      "stderr": "Reading additional input from stdin...\n2026-07-31T14:19:29.133410Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back\n"
+    },
+    {
+      "variant": "candidate",
+      "caseId": "ambiguous-cross-cutting-change",
+      "attempt": 1,
+      "exitCode": 0,
+      "usage": {
+        "input_tokens": 88461,
+        "cached_input_tokens": 69376,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1781,
+        "reasoning_output_tokens": 415
+      },
+      "toolCalls": 4,
+      "beforeStatus": "",
+      "afterStatus": "",
+      "stderr": "Reading additional input from stdin...\n2026-07-31T14:20:22.937506Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back\n"
+    },
+    {
+      "variant": "candidate",
+      "caseId": "code-review-evidence",
+      "attempt": 1,
+      "exitCode": 0,
+      "usage": {
+        "input_tokens": 87056,
+        "cached_input_tokens": 68352,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1979,
+        "reasoning_output_tokens": 706
+      },
+      "toolCalls": 5,
+      "beforeStatus": "M src/access.js",
+      "afterStatus": "M src/access.js",
+      "stderr": "Reading additional input from stdin...\n2026-07-31T14:21:18.631220Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back\n"
+    }
+  ]
+}

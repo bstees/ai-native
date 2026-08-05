@@ -1,11 +1,15 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "generic",
   "description": "Portable fallback for providers controlled through prompts and an external launcher.",
   "enforcement": {
     "modelRouting": "orchestrator",
     "reasoningEffort": "prompt",
     "contextInheritance": "orchestrator",
+    "contextMinimization": "orchestrator",
+    "actionAuthority": "orchestrator",
+    "humanApproval": "orchestrator",
+    "auditEvidence": "orchestrator",
     "readOnly": "orchestrator",
     "delegationDepth": "prompt",
     "outputTokenLimit": "orchestrator"

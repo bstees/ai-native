@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "reviewer",
   "description": "Review correctness, security, regressions, and validation gaps.",
   "requirements": {
@@ -11,10 +11,20 @@
       "modelRouting": "preferred",
       "reasoningEffort": "preferred",
       "contextInheritance": "required",
+      "contextMinimization": "required",
+      "actionAuthority": "required",
+      "humanApproval": "preferred",
+      "auditEvidence": "required",
       "readOnly": "required",
       "delegationDepth": "preferred",
       "outputTokenLimit": "preferred"
     }
+  },
+  "governance": {
+    "riskTier": "moderate",
+    "maximumDataClassification": "internal",
+    "actionAuthority": "recommend",
+    "humanApprovalRequiredFor": ["approval-decision", "acceptance-of-material-residual-risk"]
   },
   "execution": { "readOnly": true, "allowDelegation": false, "maxParallelism": 1 },
   "context": {

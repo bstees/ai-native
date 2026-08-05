@@ -4,9 +4,9 @@
   "title": "Agent Profile",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "id", "description", "requirements", "execution", "context", "output"],
+  "required": ["schemaVersion", "id", "description", "requirements", "governance", "execution", "context", "output"],
   "properties": {
-    "schemaVersion": { "const": 1 },
+    "schemaVersion": { "const": 2 },
     "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
     "description": { "type": "string", "minLength": 1 },
     "requirements": {
@@ -22,6 +22,21 @@
           "type": "object",
           "minProperties": 1,
           "additionalProperties": { "enum": ["required", "preferred"] }
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["riskTier", "maximumDataClassification", "actionAuthority", "humanApprovalRequiredFor"],
+      "properties": {
+        "riskTier": { "enum": ["low", "moderate", "high", "critical"] },
+        "maximumDataClassification": { "enum": ["public", "internal", "confidential", "restricted"] },
+        "actionAuthority": { "enum": ["observe", "recommend", "act-reversibly", "act-consequentially"] },
+        "humanApprovalRequiredFor": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
         }
       }
     },

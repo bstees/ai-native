@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "delivery",
   "description": "Implement a scoped change and verify its behavior.",
   "requirements": {
@@ -11,10 +11,20 @@
       "modelRouting": "preferred",
       "reasoningEffort": "preferred",
       "contextInheritance": "required",
+      "contextMinimization": "required",
+      "actionAuthority": "required",
+      "humanApproval": "required",
+      "auditEvidence": "preferred",
       "readOnly": "preferred",
       "delegationDepth": "preferred",
       "outputTokenLimit": "preferred"
     }
+  },
+  "governance": {
+    "riskTier": "moderate",
+    "maximumDataClassification": "internal",
+    "actionAuthority": "act-reversibly",
+    "humanApprovalRequiredFor": ["destructive-action", "production-mutation", "protected-branch-change", "security-or-privacy-control-change"]
   },
   "execution": { "readOnly": false, "allowDelegation": false, "maxParallelism": 1 },
   "context": {

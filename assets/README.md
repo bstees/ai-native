@@ -32,3 +32,8 @@ single tool release looked interesting.
   agentic software-delivery tasks.
 - [`agent-orchestration/`](./agent-orchestration/) contains vendor-neutral
   sub-agent profiles, routing policy, context rules, and provider adapters.
+- [`governance/`](./governance/) contains the canonical AI usage policy and
+  operational risk-assessment, incident-escalation, and adoption artifacts.
+- [`instruction-evaluation/`](./instruction-evaluation/) contains contracts,
+  representative cases, and a comparison method for measuring instruction
+  quality and token efficiency.

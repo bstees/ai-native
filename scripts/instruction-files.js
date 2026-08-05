@@ -5,6 +5,7 @@ const readline = require("readline");
 const managedMarker = "<!-- ai-native-managed: instructions -->";
 const appendStartMarker = "<!-- ai-native-shared-guidance:start -->";
 const appendEndMarker = "<!-- ai-native-shared-guidance:end -->";
+const referenceLine = "<!-- ai-native-managed: reference --> Read and follow the applicable local guidance under `.ai-native/`.";
 const legacyIndexPath = ".ai-native/legacy-instructions.md";
 
 const instructionFiles = [
@@ -37,13 +38,12 @@ function relativeTargetPath(targetRoot, relativePath) {
   return path.join(targetRoot, relativePath);
 }
 
-function buildManagedAgentsContents(targetRoot) {
-  const repoName = path.basename(targetRoot);
+function buildManagedAgentsContents() {
   return [
     managedMarker,
     "# AI Native Consumer Repo Guidance",
     "",
-    `This repository (${repoName}) uses \`AI Native\` as its shared standards source.`,
+    "This repository uses `AI Native` as its shared standards source.",
     "",
     "## Shared Standards",
     "",
@@ -53,13 +53,14 @@ function buildManagedAgentsContents(targetRoot) {
     "- `goal-and-plan-mode.md`",
     "- `engineering-quality.md`",
     "- `repo-onboarding-audit.md`",
+    "- `governance/ai-usage-governance-standard.md`",
     "- `feedback/feedback-ingestion-standard.md`",
     "",
     "## Operating Model",
     "",
     "- `AI Native` is the source repo for shared standards.",
-    "- This consumer repo is `managed` unless `.ai-native/repo-config.json` explicitly marks it as `forked`.",
-    "- Repo-local feedback belongs under `.ai-native/feedback/` and `.ai-native/audits/`.",
+    "- `.ai-native/` is a local, ignored installation refreshed from the AI Native source repo.",
+    "- Local feedback belongs under `.ai-native/feedback/` and `.ai-native/audits/` until intentionally exported.",
     "- Repo-specific implementation details should stay in local docs; shared standards should flow from `AI Native`.",
     "",
     "## Legacy Guidance",
@@ -72,24 +73,6 @@ function buildManagedAgentsContents(targetRoot) {
     "",
     "Add repo-specific guidance below this section if needed."
   ].join("\n") + "\n";
-}
-
-function buildAppendBlock() {
-  return [
-    appendStartMarker,
-    "## AI Native Shared Guidance",
-    "",
-    "Also include the shared standards synced into `.ai-native/`, especially:",
-    "",
-    "- `.ai-native/core-operating-rules.md`",
-    "- `.ai-native/goal-and-plan-mode.md`",
-    "- `.ai-native/engineering-quality.md`",
-    "- `.ai-native/repo-onboarding-audit.md`",
-    "- `.ai-native/feedback/feedback-ingestion-standard.md`",
-    "",
-    "Treat `AI Native` as the source repo for shared standards. Use repo-local files for feedback and local adaptation only.",
-    appendEndMarker
-  ].join("\n");
 }
 
 function fileState(targetRoot, spec) {
@@ -114,6 +97,13 @@ function fileState(targetRoot, spec) {
     if (contents.includes(managedMarker)) {
       return {
         kind: "managed-file",
+        contents
+      };
+    }
+
+    if (contents.includes(referenceLine)) {
+      return {
+        kind: "referenced-file",
         contents
       };
     }
@@ -164,18 +154,20 @@ function inspectInstructionFiles(targetRoot) {
   };
 }
 
-function updateAppendedContents(existingContents) {
-  const block = buildAppendBlock();
+function removeLegacyAppendBlock(existingContents) {
+  return existingContents.replace(
+    new RegExp(`(?:^|\\n)${appendStartMarker}[\\s\\S]*?${appendEndMarker}(?:\\n|$)`),
+    "\n"
+  );
+}
 
-  if (existingContents.includes(appendStartMarker) && existingContents.includes(appendEndMarker)) {
-    return existingContents.replace(
-      new RegExp(`${appendStartMarker}[\\s\\S]*${appendEndMarker}`),
-      block
-    );
-  }
-
-  const suffix = existingContents.endsWith("\n") ? "" : "\n";
-  return `${existingContents}${suffix}\n${block}\n`;
+function updateReferencedContents(existingContents) {
+  const withoutLegacyBlock = removeLegacyAppendBlock(existingContents);
+  const lines = withoutLegacyBlock
+    .split("\n")
+    .filter((line) => line.trim() !== referenceLine);
+  const trimmed = lines.join("\n").trimEnd();
+  return `${trimmed}${trimmed ? "\n\n" : ""}${referenceLine}\n`;
 }
 
 function writeFile(targetPath, contents, dryRun, logs, action) {
@@ -261,7 +253,7 @@ function ensureManagedFile(targetPath, desiredContents, currentState, dryRun, lo
 function formatConflictCommands(targetRoot) {
   return [
     `npm run sync -- ${JSON.stringify(targetRoot)} --instructions-mode=replace`,
-    `npm run sync -- ${JSON.stringify(targetRoot)} --instructions-mode=append`,
+    `npm run sync -- ${JSON.stringify(targetRoot)} --instructions-mode=keep`,
     `npm run sync -- ${JSON.stringify(targetRoot)} --instructions-mode=skip`
   ];
 }
@@ -277,7 +269,7 @@ async function promptForConflictResolution(targetRoot, conflicts) {
     ...conflicts.map((entry, index) => `${index + 1}. ${entry.target}: ${entry.state.kind}`),
     "Choose one action:",
     "1. Replace conflicting instruction files with AI Native-managed files and symlinks (old files are renamed to *-old.md, not deleted)",
-    "2. Append AI Native guidance to conflicting markdown files and create safe missing adapters",
+    "2. Keep the existing AGENTS.md and add one AI Native reference line",
     "3. Skip instruction-file changes",
     "4. Show exact commands and exit",
     "Enter 1-4: "
@@ -288,7 +280,7 @@ async function promptForConflictResolution(targetRoot, conflicts) {
 
   return {
     "1": "replace",
-    "2": "append",
+    "2": "keep",
     "3": "skip",
     "4": "commands"
   }[answer.trim()] || "commands";
@@ -304,6 +296,16 @@ async function applyInstructionFiles({
   const logs = [];
   const preservedEntries = [];
   let effectiveMode = mode || "auto";
+  if (effectiveMode === "append") {
+    effectiveMode = "keep";
+  }
+
+  if (effectiveMode === "auto" && inspection.safeToAutoApply) {
+    const agentsState = inspection.files.find(({ id }) => id === "agents")?.state.kind;
+    effectiveMode = ["appended-file", "referenced-file"].includes(agentsState)
+      ? "keep"
+      : "replace";
+  }
 
   if (!inspection.safeToAutoApply && effectiveMode === "auto") {
     if (interactive) {
@@ -334,7 +336,7 @@ async function applyInstructionFiles({
     };
   }
 
-  const managedAgentsContents = buildManagedAgentsContents(targetRoot);
+  const managedAgentsContents = buildManagedAgentsContents();
 
   for (const entry of inspection.files) {
     if (entry.id === "agents") {
@@ -360,17 +362,40 @@ async function applyInstructionFiles({
         continue;
       }
 
-      if (effectiveMode === "append") {
+      if (effectiveMode === "keep") {
+        if (entry.state.kind === "custom-symlink") {
+          throw new Error(
+            "Keep/reference mode requires AGENTS.md to be a regular file; use replace mode or update the symlink target manually."
+          );
+        }
         const existingContents = entry.state.contents || "";
         writeFile(
           entry.absolutePath,
-          updateAppendedContents(existingContents),
+          updateReferencedContents(existingContents),
           dryRun,
           logs,
-          "APPEND"
+          "REFERENCE"
         );
       }
 
+      continue;
+    }
+
+    if (effectiveMode === "keep") {
+      if (entry.state.kind === "managed-symlink") {
+        logs.push(`REMOVE ${entry.absolutePath} (legacy AI Native-managed symlink)`);
+        if (!dryRun) fs.rmSync(entry.absolutePath);
+      } else if (entry.state.kind === "appended-file") {
+        writeFile(
+          entry.absolutePath,
+          removeLegacyAppendBlock(entry.state.contents || "").trimEnd() + "\n",
+          dryRun,
+          logs,
+          "CLEAN"
+        );
+      } else {
+        logs.push(`KEEP  ${entry.absolutePath}`);
+      }
       continue;
     }
 
@@ -394,21 +419,6 @@ async function applyInstructionFiles({
       continue;
     }
 
-    if (effectiveMode === "append") {
-      if (entry.state.kind === "custom-file" || entry.state.kind === "appended-file") {
-        const existingContents = entry.state.contents || "";
-        writeFile(
-          entry.absolutePath,
-          updateAppendedContents(existingContents),
-          dryRun,
-          logs,
-          "APPEND"
-        );
-      } else {
-        logs.push(`SKIP  ${entry.absolutePath}`);
-      }
-      continue;
-    }
   }
 
   if (preservedEntries.length > 0) {
@@ -439,5 +449,6 @@ module.exports = {
   legacyIndexPath,
   managedMarker,
   appendStartMarker,
-  appendEndMarker
+  appendEndMarker,
+  referenceLine
 };

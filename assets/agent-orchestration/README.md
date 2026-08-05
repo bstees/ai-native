@@ -17,6 +17,12 @@ The orchestration layers have separate responsibilities:
 5. The runtime assembles the smallest context packet and records degraded or
    unsupported controls before execution.
 
+Every profile also declares a governance envelope: risk tier, maximum data
+classification, action authority, and the actions that require human approval.
+The envelope is a maximum, not an automatic authorization. The use case and
+provider must also satisfy the
+[`AI Usage Governance Standard`](../governance/ai-usage-governance-standard.md).
+
 Skills should request profiles or capability tiers. They should not name
 models or restate provider configuration.
 
@@ -56,6 +62,15 @@ Adapters classify every control as:
 The resolver fails closed on unsupported requirements marked `required` and
 reports all weaker-than-native enforcement.
 
+Adapter enforcement describes technical capability only. It does not attest to
+provider retention, training use, residency, contractual terms, or approval for
+a particular data classification; those require the standard's provider and
+use-case review.
+
+Governance-aware profiles and adapters use schema version 2. The resolver
+rejects version 1 manifests so older definitions cannot silently bypass the
+governance envelope or newly required controls.
+
 ## Included Profiles
 
 - [`profiles/documentation.json`](./profiles/documentation.json)
@@ -69,6 +84,13 @@ Validate a provider/profile pairing with:
 node .ai-native/agent-orchestration/resolve.js \
   --provider codex \
   --profile documentation
+```
+
+In this source repository, validate every profile and adapter against its JSON
+Schema contract with:
+
+```bash
+npm run validate:agent-contracts
 ```
 
 The output is a provider-neutral execution plan. Provider launchers may consume

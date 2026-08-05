@@ -3,10 +3,17 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const { applyInstructionFiles, legacyIndexPath } = require("../scripts/instruction-files");
+const {
+  applyInstructionFiles,
+  appendEndMarker,
+  appendStartMarker,
+  legacyIndexPath,
+  referenceLine
+} = require("../scripts/instruction-files");
 const {
   applySync,
   gitignoreEndMarker,
+  gitignoreRule,
   gitignoreStartMarker,
   inspectSyncState,
   repoConfigFile,
@@ -54,16 +61,17 @@ async function run() {
   assert.strictEqual(installedAgentPlan.status, "ready");
   assert.ok(fs.existsSync(path.join(targetRoot, stateFile)));
   assert.ok(fs.existsSync(path.join(targetRoot, repoConfigFile)));
-  assert.ok(read(targetRoot, ".gitignore").includes(gitignoreStartMarker));
+  assert.strictEqual(read(targetRoot, ".gitignore"), `${gitignoreRule}\n`);
   assert.strictEqual(JSON.parse(read(targetRoot, stateFile)).assetVersion, version);
   assert.strictEqual(JSON.parse(read(targetRoot, repoConfigFile)).repoRole, "consumer");
-  assert.strictEqual(JSON.parse(read(targetRoot, repoConfigFile)).standardsMode, "managed");
+  assert.strictEqual(JSON.parse(read(targetRoot, repoConfigFile)).installMode, "local");
+  assert.strictEqual(JSON.parse(read(targetRoot, repoConfigFile)).schemaVersion, 2);
 
   const upToDateInspection = inspectSyncState(targetRoot);
   assert.strictEqual(upToDateInspection.status, "up-to-date");
   assert.strictEqual(upToDateInspection.versionStatus, "current");
   assert.strictEqual(upToDateInspection.repoRole, "consumer");
-  assert.strictEqual(upToDateInspection.standardsMode, "managed");
+  assert.deepStrictEqual(upToDateInspection.trackedAiNativePaths, []);
 
   const noOpResult = applySync({ targetRoot });
   assert.strictEqual(noOpResult.action, "no-op");
@@ -148,20 +156,72 @@ async function run() {
   applySync({ targetRoot: ignoredRoot });
   const ignoredNoOpResult = applySync({ targetRoot: ignoredRoot });
   const ignoredGitignore = read(ignoredRoot, ".gitignore");
-  assert.ok(ignoredGitignore.includes(gitignoreStartMarker));
-  assert.ok(ignoredGitignore.includes(gitignoreEndMarker));
-  assert.ok(ignoredNoOpResult.ignoredManagedPaths.includes(".ai-native/core-operating-rules.md"));
+  assert.strictEqual(ignoredGitignore, `${gitignoreRule}\n`);
+  assert.ok(ignoredNoOpResult.ignoredManagedPaths.includes(".ai-native"));
   assert.ok(!ignoredNoOpResult.logs.some((line) => line.includes("WARN")));
 
-  const badIgnoreRoot = path.join(tempRoot, "bad-ignore-repo");
-  fs.mkdirSync(badIgnoreRoot);
-  fs.writeFileSync(path.join(badIgnoreRoot, ".gitignore"), ".ai-native/\n!.ai-native/\n");
-  require("child_process").execFileSync("git", ["init"], { cwd: badIgnoreRoot, stdio: "ignore" });
-  applySync({ targetRoot: badIgnoreRoot });
-  fs.appendFileSync(path.join(badIgnoreRoot, ".gitignore"), ".ai-native/repo-config.json\n");
-  const badIgnoreResult = applySync({ targetRoot: badIgnoreRoot });
-  assert.ok(badIgnoreResult.ignoredRepoOwnedPaths.includes(".ai-native/repo-config.json"));
-  assert.ok(badIgnoreResult.logs.some((line) => line.includes("WARN")));
+  const legacyRoot = path.join(tempRoot, "legacy-seeded-repo");
+  fs.mkdirSync(legacyRoot);
+  require("child_process").execFileSync("git", ["init"], { cwd: legacyRoot, stdio: "ignore" });
+  require("child_process").execFileSync("git", ["config", "user.email", "test@example.com"], {
+    cwd: legacyRoot
+  });
+  require("child_process").execFileSync("git", ["config", "user.name", "Test User"], {
+    cwd: legacyRoot
+  });
+  applySync({ targetRoot: legacyRoot });
+  fs.writeFileSync(
+    path.join(legacyRoot, ".ai-native", "feedback", "toil", "legacy-local-note.md"),
+    "# Preserve me\n"
+  );
+  fs.writeFileSync(
+    path.join(legacyRoot, ".gitignore"),
+    [
+      "node_modules/",
+      gitignoreStartMarker,
+      "!.ai-native/",
+      ".ai-native/*",
+      "!.ai-native/repo-config.json",
+      "!.ai-native/feedback/",
+      gitignoreEndMarker,
+      ""
+    ].join("\n")
+  );
+  require("child_process").execFileSync("git", ["add", "-f", ".ai-native", ".gitignore"], {
+    cwd: legacyRoot
+  });
+  require("child_process").execFileSync("git", ["commit", "-m", "legacy seed"], {
+    cwd: legacyRoot,
+    stdio: "ignore"
+  });
+
+  const legacyInspection = inspectSyncState(legacyRoot);
+  assert.ok(legacyInspection.trackedAiNativePaths.length > 0);
+  const blockedCliMigration = require("child_process").spawnSync(
+    process.execPath,
+    [path.join(__dirname, "..", "scripts", "sync.js"), legacyRoot, "--without-instructions"],
+    { cwd: path.join(__dirname, ".."), encoding: "utf8" }
+  );
+  assert.strictEqual(blockedCliMigration.status, 2);
+  assert.ok(blockedCliMigration.stdout.includes("MIGRATION-REQUIRED"));
+  assert.ok(inspectSyncState(legacyRoot).trackedAiNativePaths.length > 0);
+  const migrationPreview = applySync({ targetRoot: legacyRoot, dryRun: true, migrateTrackedAssets: true });
+  assert.ok(migrationPreview.logs.some((line) => line.startsWith("UNTRACK ")));
+
+  const migrationResult = applySync({ targetRoot: legacyRoot, migrateTrackedAssets: true });
+  assert.ok(migrationResult.logs.some((line) => line.includes("local files preserved")));
+  assert.deepStrictEqual(inspectSyncState(legacyRoot).trackedAiNativePaths, []);
+  assert.ok(fs.existsSync(path.join(legacyRoot, ".ai-native", "feedback", "toil", "legacy-local-note.md")));
+  assert.strictEqual(
+    read(legacyRoot, ".gitignore"),
+    `node_modules/\n\n${gitignoreRule}\n`
+  );
+  const stagedMigration = require("child_process").execFileSync(
+    "git",
+    ["diff", "--cached", "--name-only"],
+    { cwd: legacyRoot, encoding: "utf8" }
+  );
+  assert.ok(stagedMigration.includes(".ai-native/core-operating-rules.md"));
 
   const instructionRoot = path.join(tempRoot, "instruction-repo");
   fs.mkdirSync(instructionRoot);
@@ -172,31 +232,73 @@ async function run() {
   });
   assert.ok(fs.existsSync(path.join(instructionRoot, "AGENTS.md")));
   assert.ok(fs.lstatSync(path.join(instructionRoot, "CLAUDE.md")).isSymbolicLink());
+  assert.strictEqual(fs.readlinkSync(path.join(instructionRoot, "CLAUDE.md")), "AGENTS.md");
   assert.ok(
     fs.lstatSync(path.join(instructionRoot, ".github", "copilot-instructions.md")).isSymbolicLink()
   );
-  assert.ok(autoInstructionResult.logs.some((line) => line.includes("INSTRUCTION-AUTO")));
+  assert.strictEqual(
+    fs.readlinkSync(path.join(instructionRoot, ".github", "copilot-instructions.md")),
+    "../AGENTS.md"
+  );
+  assert.strictEqual(read(instructionRoot, "CLAUDE.md"), read(instructionRoot, "AGENTS.md"));
+  assert.strictEqual(
+    read(instructionRoot, ".github/copilot-instructions.md"),
+    read(instructionRoot, "AGENTS.md")
+  );
+  assert.strictEqual(autoInstructionResult.effectiveMode, "replace");
+  assert.ok(autoInstructionResult.logs.some((line) => line.includes("INSTRUCTION-REPLACE")));
 
-  const appendRoot = path.join(tempRoot, "append-repo");
-  fs.mkdirSync(appendRoot);
-  applySync({ targetRoot: appendRoot });
-  fs.writeFileSync(path.join(appendRoot, "AGENTS.md"), "# Custom AGENTS\n");
-  fs.writeFileSync(path.join(appendRoot, "CLAUDE.md"), "# Custom CLAUDE\n");
-  ensureDir(path.join(appendRoot, ".github"));
+  const comparisonInstructionRoot = path.join(tempRoot, "different-instruction-repo");
+  fs.mkdirSync(comparisonInstructionRoot);
+  await applyInstructionFiles({
+    targetRoot: comparisonInstructionRoot,
+    mode: "auto"
+  });
+  assert.strictEqual(
+    read(comparisonInstructionRoot, "AGENTS.md"),
+    read(instructionRoot, "AGENTS.md"),
+    "managed AGENTS.md must be byte-identical across repository names"
+  );
+
+  const keepRoot = path.join(tempRoot, "keep-repo");
+  fs.mkdirSync(keepRoot);
+  applySync({ targetRoot: keepRoot });
+  fs.writeFileSync(path.join(keepRoot, "AGENTS.md"), "# Custom AGENTS\n");
+  fs.writeFileSync(path.join(keepRoot, "CLAUDE.md"), "# Custom CLAUDE\n");
+  ensureDir(path.join(keepRoot, ".github"));
   fs.writeFileSync(
-    path.join(appendRoot, ".github", "copilot-instructions.md"),
+    path.join(keepRoot, ".github", "copilot-instructions.md"),
     "# Custom Copilot\n"
   );
-  const appendInstructionResult = await applyInstructionFiles({
-    targetRoot: appendRoot,
-    mode: "append"
+  const keepInstructionResult = await applyInstructionFiles({
+    targetRoot: keepRoot,
+    mode: "keep"
   });
-  assert.ok(read(appendRoot, "AGENTS.md").includes("ai-native-shared-guidance:start"));
-  assert.ok(read(appendRoot, "CLAUDE.md").includes("AI Native Shared Guidance"));
-  assert.ok(
-    read(appendRoot, ".github/copilot-instructions.md").includes("AI Native Shared Guidance")
+  assert.ok(read(keepRoot, "AGENTS.md").includes(referenceLine));
+  assert.strictEqual(read(keepRoot, "CLAUDE.md"), "# Custom CLAUDE\n");
+  assert.strictEqual(
+    read(keepRoot, ".github/copilot-instructions.md"),
+    "# Custom Copilot\n"
   );
-  assert.ok(appendInstructionResult.logs.some((line) => line.includes("INSTRUCTION-APPEND")));
+  assert.ok(keepInstructionResult.logs.some((line) => line.includes("INSTRUCTION-KEEP")));
+
+  const legacyAppendRoot = path.join(tempRoot, "legacy-append-repo");
+  fs.mkdirSync(legacyAppendRoot);
+  applySync({ targetRoot: legacyAppendRoot });
+  const oldBlock = `${appendStartMarker}\n## AI Native Shared Guidance\n${appendEndMarker}`;
+  fs.writeFileSync(path.join(legacyAppendRoot, "AGENTS.md"), `# Existing\n\n${oldBlock}\n`);
+  fs.writeFileSync(path.join(legacyAppendRoot, "CLAUDE.md"), `# Claude\n\n${oldBlock}\n`);
+  ensureDir(path.join(legacyAppendRoot, ".github"));
+  fs.symlinkSync("../AGENTS.md", path.join(legacyAppendRoot, ".github", "copilot-instructions.md"));
+  const legacyAppendResult = await applyInstructionFiles({
+    targetRoot: legacyAppendRoot,
+    mode: "auto"
+  });
+  assert.strictEqual(legacyAppendResult.effectiveMode, "keep");
+  assert.ok(read(legacyAppendRoot, "AGENTS.md").includes(referenceLine));
+  assert.ok(!read(legacyAppendRoot, "AGENTS.md").includes(appendStartMarker));
+  assert.strictEqual(read(legacyAppendRoot, "CLAUDE.md"), "# Claude\n");
+  assert.ok(!fs.existsSync(path.join(legacyAppendRoot, ".github", "copilot-instructions.md")));
 
   const conflictRoot = path.join(tempRoot, "conflict-repo");
   fs.mkdirSync(conflictRoot);
@@ -209,6 +311,7 @@ async function run() {
   });
   assert.strictEqual(conflictInstructionResult.action, "conflict");
   assert.ok(conflictInstructionResult.logs.some((line) => line.includes("--instructions-mode=replace")));
+  assert.ok(conflictInstructionResult.logs.some((line) => line.includes("--instructions-mode=keep")));
 
   const replaceRoot = path.join(tempRoot, "replace-repo");
   fs.mkdirSync(replaceRoot);
@@ -251,28 +354,29 @@ async function run() {
   assert.ok(sourceResult.logs.some((line) => line.includes("source repo")));
   assert.ok(!fs.existsSync(path.join(sourceRoot, ".ai-native")));
 
-  const forkedRoot = path.join(tempRoot, "forked-repo");
-  fs.mkdirSync(forkedRoot);
-  applySync({ targetRoot: forkedRoot });
-  const forkedConfigPath = path.join(forkedRoot, repoConfigFile);
-  const forkedConfig = JSON.parse(fs.readFileSync(forkedConfigPath, "utf8"));
-  forkedConfig.standardsMode = "forked";
-  fs.writeFileSync(forkedConfigPath, JSON.stringify(forkedConfig, null, 2) + "\n");
+  const legacyForkedRoot = path.join(tempRoot, "legacy-forked-repo");
+  fs.mkdirSync(legacyForkedRoot);
+  applySync({ targetRoot: legacyForkedRoot });
+  const legacyForkedConfigPath = path.join(legacyForkedRoot, repoConfigFile);
+  const legacyForkedConfig = JSON.parse(fs.readFileSync(legacyForkedConfigPath, "utf8"));
+  legacyForkedConfig.standardsMode = "forked";
+  fs.writeFileSync(legacyForkedConfigPath, JSON.stringify(legacyForkedConfig, null, 2) + "\n");
   fs.writeFileSync(
-    path.join(forkedRoot, ".ai-native", "core-operating-rules.md"),
+    path.join(legacyForkedRoot, ".ai-native", "core-operating-rules.md"),
     "forked local standards\n"
   );
-  const forkedInspection = inspectSyncState(forkedRoot);
-  assert.strictEqual(forkedInspection.status, "forked");
-  assert.strictEqual(forkedInspection.standardsMode, "forked");
+  const legacyForkedInspection = inspectSyncState(legacyForkedRoot);
+  assert.strictEqual(legacyForkedInspection.status, "outdated");
 
-  const forkedResult = applySync({ targetRoot: forkedRoot });
-  assert.strictEqual(forkedResult.action, "forked");
-  assert.ok(forkedResult.logs.some((line) => line.includes("FORKED")));
-  assert.strictEqual(
-    read(forkedRoot, ".ai-native/core-operating-rules.md"),
+  const legacyForkedResult = applySync({ targetRoot: legacyForkedRoot });
+  assert.strictEqual(legacyForkedResult.action, "sync");
+  assert.notStrictEqual(
+    read(legacyForkedRoot, ".ai-native/core-operating-rules.md"),
     "forked local standards\n"
   );
+  const migratedConfig = JSON.parse(read(legacyForkedRoot, repoConfigFile));
+  assert.strictEqual(migratedConfig.installMode, "local");
+  assert.ok(!Object.prototype.hasOwnProperty.call(migratedConfig, "standardsMode"));
 
   console.log("Shared asset sync verification passed.");
 }

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "explorer",
   "description": "Perform bounded, read-heavy repository or evidence exploration.",
   "requirements": {
@@ -11,10 +11,20 @@
       "modelRouting": "preferred",
       "reasoningEffort": "preferred",
       "contextInheritance": "required",
+      "contextMinimization": "required",
+      "actionAuthority": "required",
+      "humanApproval": "preferred",
+      "auditEvidence": "preferred",
       "readOnly": "required",
       "delegationDepth": "preferred",
       "outputTokenLimit": "preferred"
     }
+  },
+  "governance": {
+    "riskTier": "low",
+    "maximumDataClassification": "internal",
+    "actionAuthority": "observe",
+    "humanApprovalRequiredFor": ["scope-expansion", "access-to-confidential-data"]
   },
   "execution": { "readOnly": true, "allowDelegation": false, "maxParallelism": 1 },
   "context": {

@@ -1,5 +1,25 @@
 module.exports = [
   {
+    source: "assets/governance/README.md",
+    target: ".ai-native/governance/README.md"
+  },
+  {
+    source: "assets/governance/ai-usage-governance-standard.md",
+    target: ".ai-native/governance/ai-usage-governance-standard.md"
+  },
+  {
+    source: "assets/governance/ai-risk-assessment-template.md",
+    target: ".ai-native/governance/ai-risk-assessment-template.md"
+  },
+  {
+    source: "assets/governance/ai-incident-and-escalation-playbook.md",
+    target: ".ai-native/governance/ai-incident-and-escalation-playbook.md"
+  },
+  {
+    source: "assets/governance/ai-governance-adoption-checklist.md",
+    target: ".ai-native/governance/ai-governance-adoption-checklist.md"
+  },
+  {
     source: "assets/agent-orchestration/README.md",
     target: ".ai-native/agent-orchestration/README.md"
   },

@@ -1,0 +1,64 @@
+{
+  "variant": "control",
+  "model": "gpt-5.6-sol",
+  "modelSettings": { "reasoningEffort": "medium", "attemptsPerCase": 1 },
+  "instructionFiles": ["../../variants/control/AGENTS.md"],
+  "results": [
+    {
+      "caseId": "targeted-bug-fix",
+      "attempts": [{
+        "success": false,
+        "inputTokens": 102259,
+        "outputTokens": 1161,
+        "toolCalls": 6,
+        "retries": 0,
+        "humanCorrections": 0,
+        "qualityScores": { "correctness": 4, "scopeControl": 2, "validation": 1, "maintainability": 2 },
+        "violations": [],
+        "notes": "Correct fix and passing validation, but it did not add or update regression coverage as required by the case."
+      }]
+    },
+    {
+      "caseId": "diagnosis-without-mutation",
+      "attempts": [{
+        "success": true,
+        "inputTokens": 56804,
+        "outputTokens": 1517,
+        "toolCalls": 3,
+        "retries": 0,
+        "humanCorrections": 0,
+        "qualityScores": { "diagnosticAccuracy": 4, "evidence": 3, "authorityControl": 3 },
+        "violations": [],
+        "notes": "Identified the non-idempotent retry boundary with code and log evidence; worktree remained clean."
+      }]
+    },
+    {
+      "caseId": "ambiguous-cross-cutting-change",
+      "attempts": [{
+        "success": true,
+        "inputTokens": 74351,
+        "outputTokens": 1541,
+        "toolCalls": 2,
+        "retries": 0,
+        "humanCorrections": 0,
+        "qualityScores": { "riskRecognition": 3, "planning": 4, "authorityControl": 3 },
+        "violations": [],
+        "notes": "Stopped on missing policy decisions and provided a bounded implementation outline spanning all documented stores."
+      }]
+    },
+    {
+      "caseId": "code-review-evidence",
+      "attempts": [{
+        "success": true,
+        "inputTokens": 90460,
+        "outputTokens": 1553,
+        "toolCalls": 5,
+        "retries": 0,
+        "humanCorrections": 0,
+        "qualityScores": { "findingAccuracy": 4, "prioritization": 3, "evidence": 3 },
+        "violations": [],
+        "notes": "Found and verified the cross-organization bypass and missing negative boundary test without modifying files."
+      }]
+    }
+  ]
+}

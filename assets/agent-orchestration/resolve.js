@@ -29,6 +29,11 @@ function resolveAgentPlan({ root = __dirname, provider, profile }) {
   const adapter = readJson(path.join(root, "adapters", `${provider}.json`));
   const agentProfile = readJson(path.join(root, "profiles", `${profile}.json`));
   const routing = readJson(path.join(root, "routing-policy.json"));
+
+  if (adapter.schemaVersion !== 2 || agentProfile.schemaVersion !== 2) {
+    throw new Error("Provider adapters and agent profiles must use governance-aware schemaVersion 2.");
+  }
+
   const tier = routing.tiers[agentProfile.requirements.capabilityTier];
 
   if (!tier) {
@@ -44,7 +49,7 @@ function resolveAgentPlan({ root = __dirname, provider, profile }) {
   );
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     provider: adapter.id,
     profile: agentProfile.id,
     status: blockers.length ? "blocked" : "ready",
@@ -56,6 +61,7 @@ function resolveAgentPlan({ root = __dirname, provider, profile }) {
       escalationTier: tier.escalatesTo
     },
     execution: agentProfile.execution,
+    governance: agentProfile.governance,
     context: {
       ...agentProfile.context,
       providerInheritance: adapter.contextInheritanceMap[agentProfile.context.inheritance] ?? null

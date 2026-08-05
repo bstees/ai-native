@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-native.local/instruction-evaluation/evaluation-case.schema.json",
+  "title": "Instruction evaluation case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "prompt", "expectedBehaviors", "forbiddenBehaviors", "rubric"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "prompt": { "type": "string", "minLength": 1 },
+    "setup": { "type": "string" },
+    "expectedBehaviors": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "forbiddenBehaviors": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "rubric": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["maxScore", "description"],
+        "properties": {
+          "maxScore": { "type": "integer", "minimum": 1 },
+          "description": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

@@ -41,14 +41,17 @@ move through an explicit planning stage before implementation.
 2. If the goal is large or risky, produce a plan before editing.
 3. Understand the existing code path, adjacent conventions, and any relevant
    instructions or rules.
-4. Identify the minimum viable implementation slice and note assumptions.
-5. Make the smallest useful code changes that satisfy the requested behavior.
-6. Refactor adjacent code only when validation strength is sufficient to
+4. When AI use could involve confidential or restricted data, consequential
+   action, or a required control, confirm the classification and authority under
+   the [`AI Usage Governance Standard`](../governance/ai-usage-governance-standard.md).
+5. Identify the minimum viable implementation slice and note assumptions.
+6. Make the smallest useful code changes that satisfy the requested behavior.
+7. Refactor adjacent code only when validation strength is sufficient to
    protect the change.
-7. Add or update tests for changed behavior.
-8. Run verification appropriate to the change, including stronger validation
+8. Add or update tests for changed behavior.
+9. Run verification appropriate to the change, including stronger validation
    where structural refactors or UI behavior are involved.
-9. Summarize what changed, what was verified, and any residual risk.
+10. Summarize what changed, what was verified, and any residual risk.
 
 ## Human Gates
 

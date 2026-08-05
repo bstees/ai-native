@@ -1,0 +1,4 @@
+interface:
+  display_name: "Validation Gap Automation"
+  short_description: "Turn repeatable gaps into durable checks"
+  default_prompt: "Use $validation-gap-automation to convert this documented validation gap into the smallest reliable automated check."

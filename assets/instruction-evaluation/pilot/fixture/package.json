@@ -1,0 +1,7 @@
+{
+  "name": "instruction-evaluation-fixture",
+  "private": true,
+  "scripts": {
+    "test": "node tests/run.js"
+  }
+}
