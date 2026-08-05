@@ -4,7 +4,7 @@ const { execFileSync } = require("child_process");
 
 const manifest = require("./shared-assets-manifest");
 const {
-  buildManagedRepoConfig,
+  buildLocalRepoConfig,
   getRepoConfig,
   getSourceConfig,
   repoConfigFile
@@ -15,6 +15,7 @@ const sourceRoot = path.join(__dirname, "..");
 const aiNativeDir = ".ai-native";
 const stateFile = path.join(aiNativeDir, ".sync-state.json");
 const gitignoreFile = ".gitignore";
+const gitignoreRule = ".ai-native/";
 const gitignoreStartMarker = "# ai-native managed assets:start";
 const gitignoreEndMarker = "# ai-native managed assets:end";
 
@@ -26,6 +27,7 @@ function buildGeneratedFiles() {
         "# AI Native Assets",
         "",
         "This directory contains assets installed from the `AI Native` repository.",
+        "The entire directory is local and ignored by Git; do not vendor individual files from it.",
         "",
         "- `core-operating-rules.md` is the current shared baseline for AI-agent behavior.",
         "- `goal-and-plan-mode.md` defines when work must start in explicit planning.",
@@ -34,7 +36,8 @@ function buildGeneratedFiles() {
         "- `ui-quality-standard.md` defines the cross-repo UI quality bar.",
         "- `ui-review-checklist.md` is the default UI approval checklist.",
         "- `usability-validation-standard.md` requires browser or simulator flow validation.",
-        "- `feedback/` is the repo-local source of truth for toil, developer notes, and audits.",
+        "- `agent-orchestration/` defines portable sub-agent profiles, context policy, routing, and provider adapters.",
+        "- `feedback/` holds local toil, developer notes, and audits until they are intentionally reviewed and exported.",
         "- Local additions should stay minimal and repo-specific."
       ].join("\n")
     },
@@ -100,37 +103,6 @@ function getManagedFiles() {
   );
 }
 
-function getManagedIgnorePaths() {
-  return [
-    ".ai-native/.sync-state.json",
-    ".ai-native/README.md",
-    ".ai-native/core-operating-rules.md",
-    ".ai-native/goal-and-plan-mode.md",
-    ".ai-native/engineering-quality.md",
-    ".ai-native/repo-onboarding-audit.md",
-    ".ai-native/ui-quality-standard.md",
-    ".ai-native/ui-review-checklist.md",
-    ".ai-native/usability-validation-standard.md",
-    ".ai-native/feedback/README.md",
-    ".ai-native/feedback/capture-guidance.md",
-    ".ai-native/feedback/feedback-entry-template.md",
-    ".ai-native/feedback/feedback-ingestion-standard.md",
-    ".ai-native/feedback/toil/README.md",
-    ".ai-native/feedback/developer-notes/README.md",
-    ".ai-native/audits/README.md"
-  ];
-}
-
-function getRepoOwnedPaths() {
-  return [
-    ".ai-native/repo-config.json",
-    ".ai-native/feedback/",
-    ".ai-native/feedback/toil/",
-    ".ai-native/feedback/developer-notes/",
-    ".ai-native/audits/"
-  ];
-}
-
 function getState(targetRoot) {
   const targetPath = path.join(targetRoot, stateFile);
 
@@ -152,17 +124,10 @@ function buildState(managedFiles) {
 function buildRepoConfigContents(existingConfig, targetRoot) {
   const defaultRepoName = path.basename(targetRoot);
   const config = {
-    ...buildManagedRepoConfig({ repoName: defaultRepoName }),
-    ...(existingConfig || {})
+    ...(existingConfig || {}),
+    ...buildLocalRepoConfig({ repoName: existingConfig?.repoName || defaultRepoName })
   };
-
-  if (config.repoRole !== "consumer") {
-    config.repoRole = "consumer";
-  }
-
-  if (!config.standardsMode) {
-    config.standardsMode = "managed";
-  }
+  delete config.standardsMode;
 
   return JSON.stringify(config, null, 2) + "\n";
 }
@@ -173,48 +138,17 @@ function ensureDir(directory, dryRun) {
   }
 }
 
-function buildManagedGitignoreBlock() {
-  return [
-    gitignoreStartMarker,
-    "!.ai-native/",
-    ".ai-native/*",
-    "!.ai-native/repo-config.json",
-    "!.ai-native/feedback/",
-    "!.ai-native/feedback/toil/",
-    "!.ai-native/feedback/developer-notes/",
-    "!.ai-native/audits/",
-    ".ai-native/.sync-state.json",
-    ".ai-native/README.md",
-    ".ai-native/core-operating-rules.md",
-    ".ai-native/goal-and-plan-mode.md",
-    ".ai-native/engineering-quality.md",
-    ".ai-native/repo-onboarding-audit.md",
-    ".ai-native/ui-quality-standard.md",
-    ".ai-native/ui-review-checklist.md",
-    ".ai-native/usability-validation-standard.md",
-    ".ai-native/feedback/README.md",
-    ".ai-native/feedback/capture-guidance.md",
-    ".ai-native/feedback/feedback-entry-template.md",
-    ".ai-native/feedback/feedback-ingestion-standard.md",
-    ".ai-native/feedback/toil/README.md",
-    ".ai-native/feedback/developer-notes/README.md",
-    ".ai-native/audits/README.md",
-    gitignoreEndMarker
-  ].join("\n");
-}
-
 function updateGitignoreContents(existingContents) {
-  const block = buildManagedGitignoreBlock();
-
-  if (existingContents.includes(gitignoreStartMarker) && existingContents.includes(gitignoreEndMarker)) {
-    return existingContents.replace(
-      new RegExp(`${gitignoreStartMarker}[\\s\\S]*${gitignoreEndMarker}`),
-      block
-    );
-  }
-
-  const trimmed = existingContents.trimEnd();
-  return `${trimmed}${trimmed ? "\n\n" : ""}${block}\n`;
+  const withoutLegacyBlock = existingContents.replace(
+    new RegExp(`(?:^|\\n)${gitignoreStartMarker}[\\s\\S]*?${gitignoreEndMarker}(?:\\n|$)`),
+    "\n"
+  );
+  const equivalentRules = new Set([gitignoreRule, ".ai-native", "/.ai-native", "/.ai-native/"]);
+  const lines = withoutLegacyBlock
+    .split("\n")
+    .filter((line) => !equivalentRules.has(line.trim()));
+  const trimmed = lines.join("\n").trimEnd();
+  return `${trimmed}${trimmed ? "\n\n" : ""}${gitignoreRule}\n`;
 }
 
 function writeFile(targetPath, contents, dryRun, logs, action = "WRITE") {
@@ -246,28 +180,53 @@ function gitCommandSucceeds(targetRoot, args) {
   }
 }
 
+function getTrackedAiNativePaths(targetRoot) {
+  if (!gitCommandSucceeds(targetRoot, ["rev-parse", "--is-inside-work-tree"])) {
+    return [];
+  }
+
+  const output = execFileSync("git", ["-C", targetRoot, "ls-files", "-z", "--", aiNativeDir], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  return output.split("\0").filter(Boolean);
+}
+
+function untrackAiNativePaths(targetRoot) {
+  const trackedPaths = getTrackedAiNativePaths(targetRoot);
+  if (trackedPaths.length === 0) {
+    return [];
+  }
+
+  try {
+    execFileSync("git", ["-C", targetRoot, "rm", "-r", "--cached", "--ignore-unmatch", "--", aiNativeDir], {
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+  } catch (error) {
+    const detail = error.stderr?.toString().trim();
+    throw new Error(
+      `Could not remove legacy .ai-native paths from the Git index${detail ? `: ${detail}` : "."}`
+    );
+  }
+  return trackedPaths;
+}
+
 function detectGitIgnoreStatus(targetRoot) {
   if (!gitCommandSucceeds(targetRoot, ["rev-parse", "--is-inside-work-tree"])) {
     return {
       isGitRepo: false,
       ignoredPaths: [],
-      ignoredManagedPaths: [],
-      ignoredRepoOwnedPaths: []
+      ignoredManagedPaths: []
     };
   }
 
-  const ignoredManagedPaths = getManagedIgnorePaths().filter((relativePath) =>
-    gitCommandSucceeds(targetRoot, ["check-ignore", "-q", relativePath])
-  );
-  const ignoredRepoOwnedPaths = getRepoOwnedPaths().filter((relativePath) =>
-    gitCommandSucceeds(targetRoot, ["check-ignore", "-q", relativePath])
-  );
-
+  const ignoredManagedPaths = gitCommandSucceeds(targetRoot, ["check-ignore", "-q", aiNativeDir])
+    ? [aiNativeDir]
+    : [];
   return {
     isGitRepo: true,
-    ignoredPaths: [...new Set([...ignoredManagedPaths, ...ignoredRepoOwnedPaths])],
-    ignoredManagedPaths,
-    ignoredRepoOwnedPaths
+    ignoredPaths: ignoredManagedPaths,
+    ignoredManagedPaths
   };
 }
 
@@ -290,8 +249,8 @@ function inspectSyncState(targetRoot) {
   const aiNativePath = path.join(resolvedTargetRoot, aiNativeDir);
   const hasAiNativeDir = fs.existsSync(aiNativePath);
   const gitIgnoreStatus = detectGitIgnoreStatus(resolvedTargetRoot);
+  const trackedAiNativePaths = getTrackedAiNativePaths(resolvedTargetRoot);
   const repoRole = sourceConfig?.repoRole || repoConfig?.repoRole || "consumer";
-  const standardsMode = repoRole === "consumer" ? repoConfig?.standardsMode || "managed" : null;
 
   const missingFiles = [];
   const outdatedFiles = [];
@@ -321,8 +280,6 @@ function inspectSyncState(targetRoot) {
       : "new"
     : repoRole === "source"
       ? "source"
-    : standardsMode === "forked"
-      ? "forked"
     : versionStatus !== "current" ||
         missingFiles.length > 0 ||
         outdatedFiles.length > 0 ||
@@ -336,7 +293,6 @@ function inspectSyncState(targetRoot) {
     assetVersion: version,
     versionStatus,
     repoRole,
-    standardsMode,
     repoConfig,
     sourceConfig,
     managedFiles,
@@ -346,13 +302,13 @@ function inspectSyncState(targetRoot) {
     hasAiNativeDir,
     gitIgnoredPaths: gitIgnoreStatus.ignoredPaths,
     ignoredManagedPaths: gitIgnoreStatus.ignoredManagedPaths,
-    ignoredRepoOwnedPaths: gitIgnoreStatus.ignoredRepoOwnedPaths,
     isGitRepo: gitIgnoreStatus.isGitRepo,
+    trackedAiNativePaths,
     existingState
   };
 }
 
-function applySync({ targetRoot, dryRun = false }) {
+function applySync({ targetRoot, dryRun = false, migrateTrackedAssets = false }) {
   const inspection = inspectSyncState(targetRoot);
   const logs = [];
 
@@ -369,26 +325,7 @@ function applySync({ targetRoot, dryRun = false }) {
     };
   }
 
-  if (inspection.status === "forked") {
-    writeFile(
-      path.join(inspection.targetRoot, repoConfigFile),
-      repoConfigContents,
-      dryRun,
-      logs,
-      "CONFIG"
-    );
-    writeFile(path.join(inspection.targetRoot, stateFile), JSON.stringify(buildState(inspection.managedFiles), null, 2) + "\n", dryRun, logs, "STATE ");
-    logs.push(
-      `FORKED ${path.join(inspection.targetRoot, aiNativeDir)} is diverged from AI Native; managed assets were not overwritten`
-    );
-    return {
-      ...inspection,
-      action: "forked",
-      logs
-    };
-  }
-
-  if (inspection.repoRole === "consumer" && inspection.standardsMode === "managed" && inspection.isGitRepo) {
+  if (inspection.repoRole === "consumer" && inspection.isGitRepo) {
     const gitignorePath = path.join(inspection.targetRoot, gitignoreFile);
     const existingGitignore = fs.existsSync(gitignorePath) ? fs.readFileSync(gitignorePath, "utf8") : "";
     const desiredGitignore = updateGitignoreContents(existingGitignore);
@@ -400,6 +337,22 @@ function applySync({ targetRoot, dryRun = false }) {
     }
   }
 
+  if (inspection.trackedAiNativePaths.length > 0) {
+    if (migrateTrackedAssets) {
+      if (dryRun) {
+        logs.push(`UNTRACK ${inspection.trackedAiNativePaths.length} legacy .ai-native path(s)`);
+      } else {
+        const untrackedPaths = untrackAiNativePaths(inspection.targetRoot);
+        logs.push(`UNTRACK ${untrackedPaths.length} legacy .ai-native path(s); local files preserved`);
+      }
+    } else {
+      logs.push(
+        `MIGRATION ${inspection.trackedAiNativePaths.length} tracked .ai-native path(s) must be removed from the Git index`
+      );
+      logs.push("NEXT  rerun with --migrate-tracked-assets or --yes after reviewing the migration");
+    }
+  }
+
   if (inspection.status === "up-to-date") {
     writeFile(
       path.join(inspection.targetRoot, repoConfigFile),
@@ -408,11 +361,6 @@ function applySync({ targetRoot, dryRun = false }) {
       logs,
       "CONFIG"
     );
-    if (inspection.ignoredRepoOwnedPaths.length > 0) {
-      logs.push(
-        `WARN  ${inspection.ignoredRepoOwnedPaths.join(", ")} is ignored by git in ${inspection.targetRoot}`
-      );
-    }
     logs.push(
       `OK    ${path.join(inspection.targetRoot, aiNativeDir)} is already up to date at ${inspection.assetVersion}`
     );
@@ -452,12 +400,6 @@ function applySync({ targetRoot, dryRun = false }) {
   const stateContents = JSON.stringify(buildState(inspection.managedFiles), null, 2) + "\n";
   writeFile(path.join(inspection.targetRoot, stateFile), stateContents, dryRun, logs, "STATE ");
 
-  if (inspection.ignoredRepoOwnedPaths.length > 0) {
-    logs.push(
-      `WARN  ${inspection.ignoredRepoOwnedPaths.join(", ")} is ignored by git in ${inspection.targetRoot}`
-    );
-  }
-
   logs.push(
     inspection.status === "new"
       ? `INSTALLED ${path.join(inspection.targetRoot, aiNativeDir)} at ${inspection.assetVersion}`
@@ -475,12 +417,14 @@ module.exports = {
   aiNativeDir,
   stateFile,
   gitignoreFile,
+  gitignoreRule,
   gitignoreStartMarker,
   gitignoreEndMarker,
-  getManagedIgnorePaths,
-  getRepoOwnedPaths,
+  getTrackedAiNativePaths,
   repoConfigFile,
   getManagedFiles,
   inspectSyncState,
-  applySync
+  applySync,
+  untrackAiNativePaths,
+  updateGitignoreContents
 };

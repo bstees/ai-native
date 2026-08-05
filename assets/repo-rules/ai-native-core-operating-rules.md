@@ -41,6 +41,12 @@ needed.
 - Never introduce secrets into code or config.
 - Do not weaken auth, transport, or validation controls without explicit approval.
 - Prefer least privilege when tools, permissions, or integrations are involved.
+- Classify AI use, data access, and action authority under the
+  [`AI Usage Governance Standard`](../governance/ai-usage-governance-standard.md).
+- Stop and escalate when a required control is unavailable, protected data may
+  have been exposed, or an action exceeds declared authority.
+- Use only approved AI systems for the highest data classification involved;
+  provider availability is not data-handling approval.
 
 ## Recommended Local Adaptation
 
@@ -50,6 +56,7 @@ Consumer repos may add:
 - local testing commands
 - deployment or release constraints
 - domain-specific approval rules
+- named security, privacy/data, and incident-escalation roles
 
 Consumer repos should avoid rewriting the baseline unless local needs clearly
 require it.

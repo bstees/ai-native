@@ -366,6 +366,23 @@ Expected behaviors:
 - recommend clearer contracts for styling, copy/resources, tests, and visual
   review artifacts
 
+### Fifth Skill: `validation-gap-automation`
+
+Purpose:
+
+- convert documented, recurring, machine-observable validation gaps into the
+  smallest durable automated check
+- decline deterministic enforcement when it would reduce human judgment to a
+  misleading proxy
+
+Expected behaviors:
+
+- reuse existing tests, schemas, linters, and platform controls before adding
+  custom scripts
+- prove both conforming and failing behavior
+- place checks at the cheapest effective local, CI, rollout, or monitoring gate
+- report limitations, ownership, and residual risk
+
 ## Proposed File Layout
 
 ```text
@@ -384,6 +401,8 @@ CLAUDE.md -> agents.md
     instruction-topology/
       SKILL.md
     scope-guard/
+      SKILL.md
+    validation-gap-automation/
       SKILL.md
     ui-flow-audit/
       SKILL.md

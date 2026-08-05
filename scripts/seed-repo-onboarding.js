@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const { applySync } = require("./shared-assets");
-const { buildManagedRepoConfig, repoConfigFile } = require("./repo-role");
+const { buildLocalRepoConfig, repoConfigFile } = require("./repo-role");
 
 function ensureDir(directory) {
   fs.mkdirSync(directory, { recursive: true });
@@ -158,7 +158,7 @@ function seedRepoOnboarding({ targetRoot, repoName, capturedOn }) {
 
   fs.writeFileSync(
     repoConfigPath,
-    JSON.stringify(buildManagedRepoConfig({ repoName }), null, 2) + "\n"
+    JSON.stringify(buildLocalRepoConfig({ repoName }), null, 2) + "\n"
   );
   logs.push(`CONFIG ${repoConfigPath}`);
 

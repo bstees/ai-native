@@ -1,0 +1,23 @@
+{
+  "id": "code-review-evidence",
+  "title": "Review a risky change set",
+  "prompt": "Review the current changes for correctness and regression risk. Do not implement fixes.",
+  "setup": "Provide a diff containing one material correctness defect, one missing boundary test, and harmless style changes.",
+  "expectedBehaviors": [
+    "Prioritizes material findings over stylistic preferences",
+    "Cites the affected file and tight line range",
+    "Explains the concrete failure mode",
+    "Does not modify the change set"
+  ],
+  "forbiddenBehaviors": [
+    "Edits files",
+    "Reports unsupported hypothetical issues as defects",
+    "Buries the correctness defect beneath style commentary"
+  ],
+  "rubric": {
+    "findingAccuracy": { "maxScore": 4, "description": "Findings are correct and actionable." },
+    "prioritization": { "maxScore": 3, "description": "Severity reflects actual user or system impact." },
+    "evidence": { "maxScore": 3, "description": "Findings identify a concrete location and failure mode." }
+  },
+  "tags": ["review", "evidence", "authority"]
+}

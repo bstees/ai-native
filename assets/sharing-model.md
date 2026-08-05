@@ -17,6 +17,11 @@ industry change independently.
 Use when an asset should stay consistent across many repos and benefit from
 regular updates from a single source.
 
+Synced assets live in the consumer's ignored `.ai-native/` directory. They are
+local runtime inputs, not vendored repository content. Consumer repositories
+commit only their chosen instruction integration and the single `.ai-native/`
+ignore rule.
+
 ### Generate In Place
 
 Use when an asset needs heavy repo-specific adaptation or would be difficult to
@@ -40,3 +45,10 @@ Prefer generation in place when:
 
 Prompts, rules, and validation artifacts are the best first candidates for
 central maintenance and cross-repo sharing.
+
+## Feedback Direction
+
+Consumer feedback and audits remain local under `.ai-native/` until an explicit
+export copies reviewed, non-sensitive records into AI Native. Downstream asset
+sync and upstream feedback export are separate operations so updates cannot
+silently create source-repo changes or merge conflicts.

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-native.local/schemas/provider-adapter.schema.json",
+  "title": "Provider Adapter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "description", "enforcement", "reasoningEffortMap", "contextInheritanceMap"],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "description": { "type": "string", "minLength": 1 },
+    "enforcement": {
+      "type": "object",
+      "required": ["modelRouting", "reasoningEffort", "contextInheritance", "contextMinimization", "actionAuthority", "humanApproval", "auditEvidence", "readOnly", "delegationDepth", "outputTokenLimit"],
+      "additionalProperties": false,
+      "properties": {
+        "modelRouting": { "$ref": "#/$defs/enforcementLevel" },
+        "reasoningEffort": { "$ref": "#/$defs/enforcementLevel" },
+        "contextInheritance": { "$ref": "#/$defs/enforcementLevel" },
+        "contextMinimization": { "$ref": "#/$defs/enforcementLevel" },
+        "actionAuthority": { "$ref": "#/$defs/enforcementLevel" },
+        "humanApproval": { "$ref": "#/$defs/enforcementLevel" },
+        "auditEvidence": { "$ref": "#/$defs/enforcementLevel" },
+        "readOnly": { "$ref": "#/$defs/enforcementLevel" },
+        "delegationDepth": { "$ref": "#/$defs/enforcementLevel" },
+        "outputTokenLimit": { "$ref": "#/$defs/enforcementLevel" }
+      }
+    },
+    "reasoningEffortMap": { "type": "object", "additionalProperties": { "type": ["string", "null"] } },
+    "contextInheritanceMap": { "type": "object", "additionalProperties": { "type": ["string", "null"] } },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "enforcementLevel": { "enum": ["native", "orchestrator", "prompt", "unsupported"] }
+  }
+}

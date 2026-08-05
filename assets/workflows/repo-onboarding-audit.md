@@ -56,11 +56,15 @@ behavior, it should normally begin in explicit planning mode.
 3. Install or sync the current shared baseline assets into the repo.
 4. Create an initial audit markdown file that records alignment, gaps, and
    immediate recommendations.
-5. Generate repo-local feedback markdown for any toil or ambiguity discovered
+5. Complete the
+   [`AI Governance Adoption Checklist`](../governance/ai-governance-adoption-checklist.md),
+   including use-case inventory, data classifications, action authority,
+   provider controls, escalation roles, and exceptions.
+6. Generate repo-local feedback markdown for any toil or ambiguity discovered
    during onboarding.
-6. Run the strongest practical validation for touched areas, including browser
+7. Run the strongest practical validation for touched areas, including browser
    or simulator checks for UI repos.
-7. Propose the next adoption slice, such as a standards fix, workflow upgrade,
+8. Propose the next adoption slice, such as a standards fix, workflow upgrade,
    or UI quality pass.
 
 ## Human Gates
@@ -75,6 +79,7 @@ behavior, it should normally begin in explicit planning mode.
 
 - installed or updated shared assets
 - initial onboarding audit markdown
+- completed or explicitly gapped AI governance adoption checklist
 - initial repo-local feedback backlog
 - recommended next adoption slice
 
@@ -89,4 +94,5 @@ behavior, it should normally begin in explicit planning mode.
 - shared baseline assets are present
 - the first audit is documented in markdown
 - initial feedback capture is set up
+- AI-use ownership, data boundaries, human gates, and escalation gaps are explicit
 - next adoption work is concrete enough to execute

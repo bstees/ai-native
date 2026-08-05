@@ -8,6 +8,9 @@ time.
 - [`agentic-development-repository-seed.md`](./agentic-development-repository-seed.md)
   is the baseline seed prompt for generating an `agentic-development`
   repository from scratch.
+- [`new-app-intake-starter.md`](./new-app-intake-starter.md)
+  is the starter prompt for using AI Native to intake and plan a brand new app
+  from a high-level idea.
 
 ## Editing Approach
 

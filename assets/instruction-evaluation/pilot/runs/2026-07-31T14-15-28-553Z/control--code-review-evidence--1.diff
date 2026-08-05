@@ -1,0 +1,11 @@
+diff --git a/src/access.js b/src/access.js
+index 8025eac..80f63d2 100644
+--- a/src/access.js
++++ b/src/access.js
+@@ -1,5 +1,5 @@
+ function canAccess(user, document) {
+-  return user.organizationId === document.organizationId;
++  return user.organizationId === document.organizationId || user.role === "viewer";
+ }
+
+ module.exports = { canAccess };

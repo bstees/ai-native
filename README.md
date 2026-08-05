@@ -44,6 +44,12 @@ That is the minimum shared operating surface.
 - [`signals/`](./signals/): monitored sources and evidence inputs
 - [`decisions/`](./decisions/): what we believe and why
 - [`assets/`](./assets/): shared reusable standards, workflows, and guidance
+- [`assets/agent-orchestration/`](./assets/agent-orchestration/): portable
+  sub-agent profiles, context policy, routing, and provider adapters
+- [`assets/governance/`](./assets/governance/): AI usage, data-handling, risk,
+  escalation, exception, and adoption controls
+- [`assets/instruction-evaluation/`](./assets/instruction-evaluation/): cases,
+  run contracts, and comparison guidance for AI-facing Markdown
 - [`pilots/`](./pilots/): proving-ground adoption work with consumer repos
 - [`reviews/`](./reviews/): human review queue and approval surfaces
 - [`prompts/`](./prompts/): seed prompts and prompt source material
@@ -65,6 +71,7 @@ You only need a few basics to work effectively here:
 ```bash
 npm test
 npm run build
+npm run eval:instructions
 ```
 
 ### Run The Studio Locally
@@ -98,20 +105,40 @@ npm run seed:onboarding -- /absolute/path/to/consumer-repo --repo-name "Consumer
 - drifted managed assets: update them and remove stale previously managed files
 - already current: report that the repo is already up to date
 
-Sync state records a calver release in `.ai-native/.sync-state.json`. The current shared asset version is `26.07.0`, following `YY.MM.patch`, where the last number increments for additional releases in the same month.
+Sync state records a calver release in `.ai-native/.sync-state.json`. The current shared asset version is `26.07.2`, following `YY.MM.patch`, where the last number increments for additional releases in the same month.
 
-Repo state now has two layers:
+Consumer installation has two simple ownership layers:
 
 - `AI Native` is the `source` repo for standards
-- consumer repos are `managed` by default and can explicitly become `forked`
+- `.ai-native/` is a local consumer overlay refreshed from the source
+- the consumer repo owns its normal instruction files and may either replace
+  them with AI Native-managed entry points or keep them with one AI Native
+  reference line
 - `sync` should be run against consumer repos, not the `AI Native` source repo
 
-Consumer repo mode is stored in `.ai-native/repo-config.json`:
+Sync ensures one ignore rule and does not selectively expose files beneath it:
 
-- `managed`: accepts canonical standards updates from `AI Native`
-- `forked`: keeps local divergent standards and no longer auto-tracks `AI Native`
+```gitignore
+.ai-native/
+```
 
-For `managed` repos, `sync` also maintains a selective `.gitignore` block so mother-ship-owned `.ai-native` standards stay local while repo-owned feedback, audits, and `repo-config.json` remain reviewable.
+Choose one instruction path when a custom instruction file already exists:
+
+```bash
+npm run sync -- /absolute/path/to/consumer-repo --instructions-mode=replace
+npm run sync -- /absolute/path/to/consumer-repo --instructions-mode=keep
+```
+
+- `replace` preserves custom instruction files as unique `*-old.md` files,
+  installs an AI Native-managed `AGENTS.md`, and creates supported symlinks
+- `keep` preserves the existing `AGENTS.md`, adds one managed reference line,
+  preserves custom tool instructions, and removes legacy AI Native symlinks
+
+Repos seeded by an older release may still track `.ai-native/`. The next sync
+detects that state. Interactive runs ask before removing those paths from the
+Git index while keeping the local files; non-interactive runs require
+`--migrate-tracked-assets` or `--yes`. This creates a one-time staged deletion
+for the consumer repo to review and commit.
 
 Use `--dry-run` with `sync` to preview what would be created, updated, or removed.
 

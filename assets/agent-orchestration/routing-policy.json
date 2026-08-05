@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "tiers": {
+    "economy": { "modelAlias": "economy-current", "escalatesTo": "efficient" },
+    "efficient": { "modelAlias": "efficient-current", "escalatesTo": "balanced" },
+    "balanced": { "modelAlias": "balanced-current", "escalatesTo": "advanced" },
+    "advanced": { "modelAlias": "advanced-current", "escalatesTo": "maximum" },
+    "maximum": { "modelAlias": "maximum-current", "escalatesTo": null }
+  },
+  "escalateWhen": [
+    "required-control-unavailable",
+    "validation-failed",
+    "insufficient-context-capacity",
+    "agent-reports-low-confidence"
+  ]
+}

@@ -20,11 +20,12 @@ function getRepoConfig(targetRoot) {
   return readJsonIfPresent(path.join(targetRoot, repoConfigFile));
 }
 
-function buildManagedRepoConfig({ repoName = "Consumer Repo" } = {}) {
+function buildLocalRepoConfig({ repoName = "Consumer Repo" } = {}) {
   return {
+    schemaVersion: 2,
     repoName,
     repoRole: "consumer",
-    standardsMode: "managed",
+    installMode: "local",
     sourceRepo: "AI Native"
   };
 }
@@ -34,5 +35,5 @@ module.exports = {
   sourceConfigFile,
   getSourceConfig,
   getRepoConfig,
-  buildManagedRepoConfig
+  buildLocalRepoConfig
 };

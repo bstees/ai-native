@@ -1,0 +1,4 @@
+2026-07-30T13:01:04Z externalId=customer-42 attempt=1 insert=ok
+2026-07-30T13:01:04Z externalId=customer-42 attempt=1 markImported=timeout
+2026-07-30T13:01:05Z externalId=customer-42 attempt=2 insert=ok
+2026-07-30T13:01:05Z externalId=customer-42 attempt=2 markImported=ok
