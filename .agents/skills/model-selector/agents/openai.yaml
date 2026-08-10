@@ -1,0 +1,4 @@
+interface:
+  display_name: "Model Selector"
+  short_description: "Choose efficient subagent models and settings"
+  default_prompt: "Use $model-selector to recommend the best model, reasoning effort, and context configuration for this subagent task."
