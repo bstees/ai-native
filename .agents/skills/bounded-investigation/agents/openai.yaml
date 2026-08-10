@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bounded Investigation"
+  short_description: "Keep investigations focused and finite"
+  default_prompt: "Use $bounded-investigation to investigate this problem with explicit scope, budgets, stop conditions, and a useful bounded conclusion."
