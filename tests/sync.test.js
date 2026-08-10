@@ -21,6 +21,11 @@ const {
 } = require("../scripts/shared-assets");
 const { version } = require("../scripts/shared-assets-version");
 const { seedRepoOnboarding } = require("../scripts/seed-repo-onboarding");
+const { defaultIndexPath } = require("../scripts/repo-surface-index");
+const {
+  isRepoSurfaceIndexBootstrapComplete,
+  repoSurfaceIndexBootstrapId
+} = require("../scripts/repo-surface-index-bootstrap");
 const { resolveAgentPlan } = require("../assets/agent-orchestration/resolve");
 
 function read(targetRoot, relativePath) {
@@ -148,6 +153,23 @@ async function run() {
     )
   );
   assert.ok(fs.existsSync(path.join(targetRoot, ".ai-native", "feedback", "toil", "local-note.md")));
+  assert.strictEqual(seedResult.indexBootstrap.action, "bootstrapped");
+  assert.ok(fs.existsSync(defaultIndexPath(targetRoot)));
+  assert.ok(isRepoSurfaceIndexBootstrapComplete(JSON.parse(read(targetRoot, stateFile))));
+  assert.ok(
+    JSON.parse(read(targetRoot, stateFile)).completedBootstraps.includes(
+      repoSurfaceIndexBootstrapId
+    )
+  );
+
+  fs.rmSync(defaultIndexPath(targetRoot));
+  const repeatedSeedResult = seedRepoOnboarding({
+    targetRoot,
+    repoName: "Example Product",
+    capturedOn: "2026-07-15"
+  });
+  assert.strictEqual(repeatedSeedResult.indexBootstrap.action, "skip");
+  assert.ok(!fs.existsSync(defaultIndexPath(targetRoot)));
 
   const ignoredRoot = path.join(tempRoot, "ignored-repo");
   fs.mkdirSync(ignoredRoot);
@@ -281,6 +303,28 @@ async function run() {
     "# Custom Copilot\n"
   );
   assert.ok(keepInstructionResult.logs.some((line) => line.includes("INSTRUCTION-KEEP")));
+
+  const previousReferenceLine =
+    "<!-- ai-native-managed: reference --> Read and follow the applicable local guidance under `.ai-native/`.";
+  const oldReferenceRoot = path.join(tempRoot, "old-reference-repo");
+  fs.mkdirSync(oldReferenceRoot);
+  applySync({ targetRoot: oldReferenceRoot });
+  fs.writeFileSync(
+    path.join(oldReferenceRoot, "AGENTS.md"),
+    `# Custom AGENTS\n\n${previousReferenceLine}\n`
+  );
+  const oldReferenceResult = await applyInstructionFiles({
+    targetRoot: oldReferenceRoot,
+    mode: "auto"
+  });
+  const migratedReferenceContents = read(oldReferenceRoot, "AGENTS.md");
+  assert.strictEqual(oldReferenceResult.effectiveMode, "keep");
+  assert.ok(migratedReferenceContents.includes(referenceLine));
+  assert.ok(!migratedReferenceContents.includes(previousReferenceLine));
+  assert.strictEqual(
+    migratedReferenceContents.match(/<!-- ai-native-managed: reference -->/g).length,
+    1
+  );
 
   const legacyAppendRoot = path.join(tempRoot, "legacy-append-repo");
   fs.mkdirSync(legacyAppendRoot);

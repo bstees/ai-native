@@ -2,6 +2,7 @@ const path = require("path");
 const readline = require("readline");
 
 const { applyInstructionFiles, formatConflictCommands, inspectInstructionFiles } = require("./instruction-files");
+const { bootstrapRepoSurfaceIndex } = require("./repo-surface-index-bootstrap");
 const { applySync, inspectSyncState } = require("./shared-assets");
 
 function formatInspection(inspection) {
@@ -127,6 +128,14 @@ if (require.main === module) {
           });
           instructionResult.logs.forEach((line) => console.log(line));
         }
+      }
+
+      if (result.action !== "source") {
+        const bootstrapResult = bootstrapRepoSurfaceIndex({
+          targetRoot: result.targetRoot,
+          dryRun
+        });
+        bootstrapResult.logs.forEach((line) => console.log(line));
       }
     } catch (error) {
       console.error(error.message);

@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
+const { bootstrapRepoSurfaceIndex } = require("./repo-surface-index-bootstrap");
 const { applySync } = require("./shared-assets");
 const { buildLocalRepoConfig, repoConfigFile } = require("./repo-role");
 
@@ -191,8 +192,12 @@ function seedRepoOnboarding({ targetRoot, repoName, capturedOn }) {
     logs
   );
 
+  const bootstrapResult = bootstrapRepoSurfaceIndex({ targetRoot: result.targetRoot });
+  logs.push(...bootstrapResult.logs);
+
   return {
     targetRoot: result.targetRoot,
+    indexBootstrap: bootstrapResult,
     logs
   };
 }

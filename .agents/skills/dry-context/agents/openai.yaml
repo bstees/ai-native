@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dry Context"
+  short_description: "Find reusable contracts and reduce duplication"
+  default_prompt: "Use $dry-context to discover existing surface contracts before recommending the smallest safe reuse or canonicalization."

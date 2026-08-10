@@ -74,6 +74,24 @@ npm run build
 npm run eval:instructions
 ```
 
+### Query Existing Repo Surfaces
+
+Use the local surface index before broad exploration when looking for an
+existing exported contract, component, route, command, schema, or canonical
+guidance section:
+
+```bash
+npm run query:repo -- "agent profile contract"
+```
+
+The first query bootstraps a deterministic index and later queries refresh it
+when public surfaces change. The generated cache stays inside Git's private
+metadata (or `.ai-native/cache/` before Git is initialized) and contains
+signatures and concise navigation summaries, not implementation bodies.
+Candidate discovery honors Git ignore rules—even for legacy tracked paths—and
+excludes conventional dependency, vendor, generated, test, and build trees so
+results stay focused on first-party repo surfaces.
+
 ### Run The Studio Locally
 
 In-memory mode:
@@ -105,7 +123,13 @@ npm run seed:onboarding -- /absolute/path/to/consumer-repo --repo-name "Consumer
 - drifted managed assets: update them and remove stale previously managed files
 - already current: report that the repo is already up to date
 
-Sync state records a calver release in `.ai-native/.sync-state.json`. The current shared asset version is `26.07.2`, following `YY.MM.patch`, where the last number increments for additional releases in the same month.
+Sync state records a calver release in `.ai-native/.sync-state.json`. The current shared asset version is `26.08.0`, following `YY.MM.patch`, where the last number increments for additional releases in the same month.
+
+The first successful sync on a new or previously synced consumer also builds a
+Git-private repository surface index and records the versioned bootstrap in the
+same state file. Later syncs check that marker and skip indexing entirely, even
+when shared assets change. A failed bootstrap remains pending for the next sync;
+normal index queries still refresh stale surface contracts on demand.
 
 Consumer installation has two simple ownership layers:
 
@@ -116,7 +140,8 @@ Consumer installation has two simple ownership layers:
   reference line
 - `sync` should be run against consumer repos, not the `AI Native` source repo
 
-Sync ensures one ignore rule and does not selectively expose files beneath it:
+Sync ensures one ignore rule—even when it runs before `git init`—and does not
+selectively expose files beneath it:
 
 ```gitignore
 .ai-native/

@@ -1,5 +1,13 @@
 module.exports = [
   {
+    source: ".agents/skills/dry-context/SKILL.md",
+    target: ".ai-native/skills/dry-context/SKILL.md"
+  },
+  {
+    source: ".agents/skills/dry-context/agents/openai.yaml",
+    target: ".ai-native/skills/dry-context/agents/openai.yaml"
+  },
+  {
     source: "assets/governance/README.md",
     target: ".ai-native/governance/README.md"
   },
@@ -102,5 +110,9 @@ module.exports = [
   {
     source: "assets/feedback/feedback-entry-template.md",
     target: ".ai-native/feedback/feedback-entry-template.md"
+  },
+  {
+    source: "scripts/repo-surface-index.js",
+    target: ".ai-native/tools/repo-surface-index.js"
   }
 ];

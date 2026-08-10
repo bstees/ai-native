@@ -13,6 +13,8 @@
     "validate:agent-contracts": "node scripts/validate-agent-orchestration.js",
     "test:agent-routing": "node tests/agent-routing.test.js",
     "resolve:agent": "node assets/agent-orchestration/resolve.js",
+    "index:repo": "node scripts/repo-surface-index.js build",
+    "query:repo": "node scripts/repo-surface-index.js query",
     "sync": "node scripts/sync.js",
     "seed:onboarding": "node scripts/seed-repo-onboarding.js"
   },

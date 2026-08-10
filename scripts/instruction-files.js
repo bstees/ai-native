@@ -5,7 +5,8 @@ const readline = require("readline");
 const managedMarker = "<!-- ai-native-managed: instructions -->";
 const appendStartMarker = "<!-- ai-native-shared-guidance:start -->";
 const appendEndMarker = "<!-- ai-native-shared-guidance:end -->";
-const referenceLine = "<!-- ai-native-managed: reference --> Read and follow the applicable local guidance under `.ai-native/`.";
+const referenceMarker = "<!-- ai-native-managed: reference -->";
+const referenceLine = `${referenceMarker} Read and follow applicable local guidance under \`.ai-native/\`; use \`.ai-native/skills/dry-context/SKILL.md\` before proposing new repo code or guidance.`;
 const legacyIndexPath = ".ai-native/legacy-instructions.md";
 
 const instructionFiles = [
@@ -56,6 +57,11 @@ function buildManagedAgentsContents() {
     "- `governance/ai-usage-governance-standard.md`",
     "- `feedback/feedback-ingestion-standard.md`",
     "",
+    "## Shared Skills",
+    "",
+    "- Use `.ai-native/skills/dry-context/SKILL.md` before proposing new repo code or guidance so existing public contracts are discovered first.",
+    "- The skill queries the local surface index through `.ai-native/tools/repo-surface-index.js` and falls back to targeted search when needed.",
+    "",
     "## Operating Model",
     "",
     "- `AI Native` is the source repo for shared standards.",
@@ -101,7 +107,7 @@ function fileState(targetRoot, spec) {
       };
     }
 
-    if (contents.includes(referenceLine)) {
+    if (contents.includes(referenceMarker)) {
       return {
         kind: "referenced-file",
         contents
@@ -165,7 +171,7 @@ function updateReferencedContents(existingContents) {
   const withoutLegacyBlock = removeLegacyAppendBlock(existingContents);
   const lines = withoutLegacyBlock
     .split("\n")
-    .filter((line) => line.trim() !== referenceLine);
+    .filter((line) => !line.includes(referenceMarker));
   const trimmed = lines.join("\n").trimEnd();
   return `${trimmed}${trimmed ? "\n\n" : ""}${referenceLine}\n`;
 }
@@ -450,5 +456,6 @@ module.exports = {
   managedMarker,
   appendStartMarker,
   appendEndMarker,
-  referenceLine
+  referenceLine,
+  referenceMarker
 };

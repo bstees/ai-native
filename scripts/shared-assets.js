@@ -37,6 +37,8 @@ function buildGeneratedFiles() {
         "- `ui-review-checklist.md` is the default UI approval checklist.",
         "- `usability-validation-standard.md` requires browser or simulator flow validation.",
         "- `agent-orchestration/` defines portable sub-agent profiles, context policy, routing, and provider adapters.",
+        "- `skills/dry-context/SKILL.md` directs agents to discover existing repo surfaces before proposing duplicates.",
+        "- `tools/repo-surface-index.js` queries or refreshes the local first-party surface-contract index.",
         "- `feedback/` holds local toil, developer notes, and audits until they are intentionally reviewed and exported.",
         "- Local additions should stay minimal and repo-specific."
       ].join("\n")
@@ -113,11 +115,16 @@ function getState(targetRoot) {
   return JSON.parse(fs.readFileSync(targetPath, "utf8"));
 }
 
-function buildState(managedFiles) {
+function buildState(managedFiles, existingState = null) {
+  const completedBootstraps = Array.isArray(existingState?.completedBootstraps)
+    ? [...new Set(existingState.completedBootstraps.filter((entry) => typeof entry === "string"))].sort()
+    : [];
+
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     assetVersion: version,
-    managedFiles: managedFiles.map((entry) => entry.target)
+    managedFiles: managedFiles.map((entry) => entry.target),
+    completedBootstraps
   };
 }
 
@@ -325,7 +332,7 @@ function applySync({ targetRoot, dryRun = false, migrateTrackedAssets = false })
     };
   }
 
-  if (inspection.repoRole === "consumer" && inspection.isGitRepo) {
+  if (inspection.repoRole === "consumer") {
     const gitignorePath = path.join(inspection.targetRoot, gitignoreFile);
     const existingGitignore = fs.existsSync(gitignorePath) ? fs.readFileSync(gitignorePath, "utf8") : "";
     const desiredGitignore = updateGitignoreContents(existingGitignore);
@@ -397,7 +404,8 @@ function applySync({ targetRoot, dryRun = false, migrateTrackedAssets = false })
     logs,
     "CONFIG"
   );
-  const stateContents = JSON.stringify(buildState(inspection.managedFiles), null, 2) + "\n";
+  const stateContents =
+    JSON.stringify(buildState(inspection.managedFiles, inspection.existingState), null, 2) + "\n";
   writeFile(path.join(inspection.targetRoot, stateFile), stateContents, dryRun, logs, "STATE ");
 
   logs.push(

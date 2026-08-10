@@ -6,6 +6,8 @@ const testFiles = [
   "agent-orchestration-contracts.test.js",
   "agent-routing.test.js",
   "instruction-evaluation.test.js",
+  "repo-surface-index-bootstrap.test.js",
+  "repo-surface-index.test.js",
   "sync.test.js"
 ];
 
