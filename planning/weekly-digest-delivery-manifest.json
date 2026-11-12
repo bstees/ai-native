@@ -1,0 +1,184 @@
+{
+  "$schema": "../schemas/weekly-digest-delivery-manifest.schema.json",
+  "manifestVersion": 1,
+  "projectId": "weekly-ai-engineering-digests",
+  "updatedOn": "2026-11-12",
+  "sourceConversation": {
+    "conversationId": "6a6a57f2-9878-83ea-aaec-2594e4a75be4",
+    "title": "Friday AI engineering brief"
+  },
+  "repositories": {
+    "site": {
+      "remote": "git@github.com:bstees/brentstees.com.git",
+      "role": "published digest content and presentation",
+      "baseCommit": "465e4fc85cd0748f3428ef8e8aee789f91da496f",
+      "branch": "codex/weekly-ai-digests"
+    },
+    "aiNative": {
+      "remote": "git@github.com:bstees/ai-native.git",
+      "role": "canonical findings, backlog, implementation, and verification",
+      "baseCommit": "140e3ff2706ef5a9873d8bf3e4eb716ee86c8ae9",
+      "branch": "codex/weekly-digest-findings"
+    },
+    "nuk": {
+      "remote": "git@github.com:bstees/nuk.git",
+      "role": "future editorial intake and generation",
+      "status": "blocked_active_dirty_worktree"
+    }
+  },
+  "runEvents": [
+    {
+      "eventId": "run-failure-cc68ddd2",
+      "sourceMessageId": "cc68ddd2-d9d4-4ebb-be64-52d478bc889e",
+      "kind": "failed_scheduled_run",
+      "publicationDate": null,
+      "published": false
+    }
+  ],
+  "digests": [
+    {
+      "digestId": "digest-undated-cf95f16c",
+      "sourceMessageId": "cf95f16c-5708-46d9-b30b-00746d7f3db0",
+      "publicationDate": null,
+      "dateEvidence": "No explicit issue date in source output",
+      "siteSlug": null,
+      "siteContentPath": null,
+      "findingIds": [],
+      "publicationStatus": "blocked_missing_explicit_date"
+    },
+    {
+      "digestId": "digest-2026-08-14",
+      "sourceMessageId": "ce773536-ae53-48bd-948b-241e41df451e",
+      "publicationDate": "2026-08-14",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-08-14",
+      "siteContentPath": "src/content/digests/2026-08-14.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-08-21",
+      "sourceMessageId": "2bf722e1-4911-4792-88f4-d9e9bcd0be90",
+      "publicationDate": "2026-08-21",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-08-21",
+      "siteContentPath": "src/content/digests/2026-08-21.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-08-28",
+      "sourceMessageId": "9cfdb1b2-3dfd-4c7c-a354-64bcad200725",
+      "publicationDate": "2026-08-28",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-08-28",
+      "siteContentPath": "src/content/digests/2026-08-28.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-09-04",
+      "sourceMessageId": "e5f5f43b-cd18-4a97-b62f-67b98e358eb3",
+      "publicationDate": "2026-09-04",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-09-04",
+      "siteContentPath": "src/content/digests/2026-09-04.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-09-11",
+      "sourceMessageId": "fe0b7db2-0286-4d61-b422-dc1ee0e08fb8",
+      "publicationDate": "2026-09-11",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-09-11",
+      "siteContentPath": "src/content/digests/2026-09-11.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-09-18",
+      "sourceMessageId": "bc23984c-ad02-460c-8e6f-d58b1fffa7a9",
+      "publicationDate": "2026-09-18",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-09-18",
+      "siteContentPath": "src/content/digests/2026-09-18.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-09-25",
+      "sourceMessageId": "d0ad36e0-6827-453d-b734-086e2e9c8d9d",
+      "publicationDate": "2026-09-25",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-09-25",
+      "siteContentPath": "src/content/digests/2026-09-25.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-10-02",
+      "sourceMessageId": "e72a94b1-b358-4f71-b0f6-4b4f3f46e5ca",
+      "publicationDate": "2026-10-02",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-02",
+      "siteContentPath": "src/content/digests/2026-10-02.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-10-09",
+      "sourceMessageId": "1210d382-5fef-43c9-b479-2dc8ad12af53",
+      "publicationDate": "2026-10-09",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-09",
+      "siteContentPath": "src/content/digests/2026-10-09.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-10-16",
+      "sourceMessageId": "4fe28519-11bd-4138-b206-495bb83fabe4",
+      "publicationDate": "2026-10-16",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-16",
+      "siteContentPath": "src/content/digests/2026-10-16.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-10-23",
+      "sourceMessageId": "324bef99-2a0c-47dc-a708-d53319d857f9",
+      "publicationDate": "2026-10-23",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-23",
+      "siteContentPath": "src/content/digests/2026-10-23.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-10-30",
+      "sourceMessageId": "f4bc476a-f481-49dd-93bc-55d4efe9e526",
+      "publicationDate": "2026-10-30",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-30",
+      "siteContentPath": "src/content/digests/2026-10-30.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    },
+    {
+      "digestId": "digest-2026-11-06",
+      "sourceMessageId": "4f8a428b-f827-49a2-9a48-d5e20d9c5303",
+      "publicationDate": "2026-11-06",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-11-06",
+      "siteContentPath": "src/content/digests/2026-11-06.md",
+      "findingIds": [],
+      "publicationStatus": "inventory"
+    }
+  ],
+  "findings": [],
+  "backlogItems": [],
+  "implementations": [],
+  "verificationRuns": []
+}
