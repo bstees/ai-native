@@ -1404,7 +1404,7 @@
       "findingIds": ["F-2026-11-06-03"],
       "repositoryKey": "aiNative",
       "branch": "codex/weekly-digest-findings",
-      "commit": "bf301a9a921ad38536db63343879307cd9cc5b99",
+      "commit": "9f231f8e44e0207704b1bc19d39817dac4b68ab8",
       "paths": [
         "scripts/validate-weekly-digest-delivery-manifest.js",
         "tests/weekly-digest-delivery-manifest.test.js"
