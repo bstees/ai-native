@@ -1365,7 +1365,7 @@
       ],
       "repositoryKey": "aiNative",
       "branch": "codex/weekly-digest-findings",
-      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
+      "commit": "bf301a9a921ad38536db63343879307cd9cc5b99",
       "paths": [
         "assets/quality/contracts/task-evidence-bundle.schema.json",
         "assets/quality/task-evidence-bundle.md",
@@ -1386,20 +1386,31 @@
       "branch": "codex/weekly-digest-findings",
       "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
       "paths": [
-        "planning/weekly-digest-delivery-manifest.json",
         "schemas/weekly-digest-delivery-manifest.schema.json",
-        "scripts/validate-weekly-digest-delivery-manifest.js",
-        "tests/weekly-digest-delivery-manifest.test.js",
         "scripts/repo-surface-index.js",
         "tests/repo-surface-index.test.js"
       ],
       "status": "verified",
       "verificationRunIds": [
-        "VR-AF005-MANIFEST",
         "VR-AF005-REPO-PROVENANCE",
         "VR-AF005-FULL-SUITE",
         "VR-AF005-BUILD"
       ],
+      "pullRequestUrl": null
+    },
+    {
+      "implementationId": "IMP-AF005-MANIFEST-VALIDATION",
+      "backlogId": "AF-005",
+      "findingIds": ["F-2026-11-06-03"],
+      "repositoryKey": "aiNative",
+      "branch": "codex/weekly-digest-findings",
+      "commit": "bf301a9a921ad38536db63343879307cd9cc5b99",
+      "paths": [
+        "scripts/validate-weekly-digest-delivery-manifest.js",
+        "tests/weekly-digest-delivery-manifest.test.js"
+      ],
+      "status": "verified",
+      "verificationRunIds": ["VR-AF005-MANIFEST"],
       "pullRequestUrl": null
     },
     {
@@ -1446,7 +1457,7 @@
     },
     {
       "verificationRunId": "VR-AF005-MANIFEST",
-      "implementationId": "IMP-AF005-PROVENANCE",
+      "implementationId": "IMP-AF005-MANIFEST-VALIDATION",
       "command": "node tests/weekly-digest-delivery-manifest.test.js",
       "exitCode": 0,
       "result": "passed",
