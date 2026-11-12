@@ -163,6 +163,9 @@ function validateWeeklyDigestManifest(
       }
     }
     if (implementation.status === "verified") {
+      if (!implementation.commit) {
+        errors.push(`/${implementation.implementationId} verified status requires an implementation commit`);
+      }
       if (!(implementation.verificationRunIds || []).length) {
         errors.push(`/${implementation.implementationId} verified status requires verification runs`);
       }

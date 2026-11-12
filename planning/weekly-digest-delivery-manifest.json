@@ -1341,7 +1341,7 @@
       ],
       "repositoryKey": "aiNative",
       "branch": "codex/weekly-digest-findings",
-      "commit": null,
+      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
       "paths": [
         "assets/workflows/contracts/task-contract.schema.json",
         "assets/workflows/task-contract.md",
@@ -1365,7 +1365,7 @@
       ],
       "repositoryKey": "aiNative",
       "branch": "codex/weekly-digest-findings",
-      "commit": null,
+      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
       "paths": [
         "assets/quality/contracts/task-evidence-bundle.schema.json",
         "assets/quality/task-evidence-bundle.md",
@@ -1384,7 +1384,7 @@
       "findingIds": ["F-2026-11-06-03"],
       "repositoryKey": "aiNative",
       "branch": "codex/weekly-digest-findings",
-      "commit": null,
+      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
       "paths": [
         "planning/weekly-digest-delivery-manifest.json",
         "schemas/weekly-digest-delivery-manifest.schema.json",
@@ -1412,7 +1412,7 @@
       ],
       "repositoryKey": "aiNative",
       "branch": "codex/weekly-digest-findings",
-      "commit": null,
+      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
       "paths": [
         "assets/feedback/contracts/failure-record.schema.json",
         "assets/feedback/failure-learning-standard.md",

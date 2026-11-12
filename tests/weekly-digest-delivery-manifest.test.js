@@ -62,6 +62,12 @@ function run() {
   verifiedImplementation.verificationRunIds.push("VR-MISSING");
   expectInvalid(brokenVerification, "missing verification run");
 
+  const verifiedWithoutCommit = clone(manifest);
+  verifiedWithoutCommit.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).commit = null;
+  expectInvalid(verifiedWithoutCommit, "requires an implementation commit");
+
   console.log("Weekly digest delivery manifest validation passed.");
 }
 
