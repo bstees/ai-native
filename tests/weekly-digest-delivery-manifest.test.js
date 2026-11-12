@@ -86,6 +86,28 @@ function run() {
   ).paths.push("planning/weekly-digest-delivery-manifest.json");
   expectInvalid(selfAttestation, "attestation manifest attest to itself");
 
+  const aliasedSelfAttestation = clone(manifest);
+  aliasedSelfAttestation.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).paths.push("./planning/weekly-digest-delivery-manifest.json");
+  expectInvalid(aliasedSelfAttestation, "canonical repository-relative paths");
+
+  const preBaselineCommit = clone(manifest);
+  const preBaselineImplementation = preBaselineCommit.implementations.find(
+    (implementation) => implementation.status === "verified"
+  );
+  preBaselineImplementation.commit = "f8afa3f";
+  preBaselineImplementation.paths = ["README.md"];
+  expectInvalid(preBaselineCommit, "does not descend from repository baseCommit");
+
+  const unchangedPath = clone(manifest);
+  const unchangedImplementation = unchangedPath.implementations.find(
+    (implementation) => implementation.status === "verified"
+  );
+  unchangedImplementation.commit = manifest.repositories.aiNative.baseCommit;
+  unchangedImplementation.paths = ["README.md"];
+  expectInvalid(unchangedPath, "does not change declared path");
+
   const wrongBranch = clone(manifest);
   wrongBranch.implementations.find(
     (implementation) => implementation.status === "verified"

@@ -44,10 +44,13 @@ function resolveRepositoryPath(baseDirectory, relativePath) {
   if (typeof relativePath !== "string" || path.isAbsolute(relativePath)) return null;
   const base = path.resolve(baseDirectory);
   const resolved = path.resolve(base, relativePath);
-  return resolved.startsWith(`${base}${path.sep}`) ? resolved : null;
+  if (!resolved.startsWith(`${base}${path.sep}`)) return null;
+  const canonicalPath = path.relative(base, resolved).split(path.sep).join("/");
+  if (!canonicalPath || relativePath !== canonicalPath) return null;
+  return { canonicalPath, resolvedPath: resolved };
 }
 
-function validateLocalCommitBinding(baseDirectory, implementation) {
+function validateLocalCommitBinding(baseDirectory, implementation, repository) {
   const errors = [];
   const commit = implementation.commit;
   try {
@@ -58,6 +61,23 @@ function validateLocalCommitBinding(baseDirectory, implementation) {
     return [`/${implementation.implementationId}/commit does not resolve to a repository commit`];
   }
 
+  const baseCommit = repository?.baseCommit;
+  if (!baseCommit) {
+    return [`/${implementation.implementationId}/repository requires a baseCommit for local verification`];
+  }
+  try {
+    execFileSync("git", ["-C", baseDirectory, "cat-file", "-e", `${baseCommit}^{commit}`], {
+      stdio: "ignore"
+    });
+    execFileSync(
+      "git",
+      ["-C", baseDirectory, "merge-base", "--is-ancestor", baseCommit, commit],
+      { stdio: "ignore" }
+    );
+  } catch (error) {
+    return [`/${implementation.implementationId}/commit does not descend from repository baseCommit`];
+  }
+
   try {
     execFileSync("git", ["-C", baseDirectory, "merge-base", "--is-ancestor", commit, "HEAD"], {
       stdio: "ignore"
@@ -66,15 +86,41 @@ function validateLocalCommitBinding(baseDirectory, implementation) {
     errors.push(`/${implementation.implementationId}/commit is not an ancestor of the current branch`);
   }
 
+  const changedPaths = new Set(
+    execFileSync(
+      "git",
+      ["-C", baseDirectory, "diff", "--name-only", "-z", baseCommit, commit, "--"],
+      {
+        encoding: "utf8",
+        maxBuffer: 64 * 1024 * 1024,
+        stdio: ["ignore", "pipe", "ignore"]
+      }
+    )
+      .split("\0")
+      .filter(Boolean)
+  );
+
   for (const relativePath of implementation.paths || []) {
-    if (relativePath === "planning/weekly-digest-delivery-manifest.json") {
+    const pathInfo = resolveRepositoryPath(baseDirectory, relativePath);
+    if (!pathInfo) {
+      errors.push(`/${implementation.implementationId}/paths must contain canonical repository-relative paths: ${relativePath}`);
+      continue;
+    }
+    if (pathInfo.canonicalPath === "planning/weekly-digest-delivery-manifest.json") {
       errors.push(`/${implementation.implementationId}/paths cannot make the attestation manifest attest to itself`);
       continue;
     }
-    const resolvedPath = resolveRepositoryPath(baseDirectory, relativePath);
-    if (!resolvedPath || !fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
+    if (
+      !fs.existsSync(pathInfo.resolvedPath) ||
+      !fs.statSync(pathInfo.resolvedPath).isFile()
+    ) {
       errors.push(`/${implementation.implementationId}/paths is not a current repository file: ${relativePath}`);
       continue;
+    }
+    if (!changedPaths.has(pathInfo.canonicalPath)) {
+      errors.push(
+        `/${implementation.implementationId}/commit does not change declared path ${relativePath} after baseCommit`
+      );
     }
 
     let committedContents;
@@ -88,7 +134,7 @@ function validateLocalCommitBinding(baseDirectory, implementation) {
       errors.push(`/${implementation.implementationId}/commit does not contain path ${relativePath}`);
       continue;
     }
-    if (!committedContents.equals(fs.readFileSync(resolvedPath))) {
+    if (!committedContents.equals(fs.readFileSync(pathInfo.resolvedPath))) {
       errors.push(`/${implementation.implementationId}/commit contains a stale version of ${relativePath}`);
     }
   }
@@ -233,7 +279,7 @@ function validateWeeklyDigestManifest(
       if (!implementation.commit) {
         errors.push(`/${implementation.implementationId} verified status requires an implementation commit`);
       } else if (implementation.repositoryKey === localRepositoryKey) {
-        errors.push(...validateLocalCommitBinding(baseDirectory, implementation));
+        errors.push(...validateLocalCommitBinding(baseDirectory, implementation, repository));
       }
       if (!(implementation.verificationRunIds || []).length) {
         errors.push(`/${implementation.implementationId} verified status requires verification runs`);
