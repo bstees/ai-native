@@ -60,6 +60,8 @@ second for local adaptation.
 - [`repo-onboarding-audit.md`](./repo-onboarding-audit.md)
 - [`rollout-and-validation.md`](./rollout-and-validation.md)
 - [`usability-validation.md`](./usability-validation.md)
+- [`task-contract.md`](./task-contract.md)
+- [`independent-verification.md`](./independent-verification.md)
 
 All workflows in this directory should be read alongside
 [`../quality/engineering-quality.md`](../quality/engineering-quality.md).

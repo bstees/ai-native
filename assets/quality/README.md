@@ -12,3 +12,4 @@ must be true before work is treated as complete or ready for human approval.
 - [`ui-quality-standard.md`](./ui-quality-standard.md)
 - [`ui-review-checklist.md`](./ui-review-checklist.md)
 - [`usability-validation-standard.md`](./usability-validation-standard.md)
+- [`task-evidence-bundle.md`](./task-evidence-bundle.md)

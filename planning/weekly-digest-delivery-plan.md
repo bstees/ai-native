@@ -101,6 +101,8 @@ article.
 - The `nuk` working tree contains an unapproved November 6 draft and extensive
   concurrent edits. It is evidence for future integration, not a safe input to
   modify now.
+- The new task, evidence, and failure-learning contracts remain source-side.
+  Packaging them into the shared-assets catalog would overlap the active
+  `write-unit-tests` synchronization work and must follow that owner's handoff.
 - The undated source brief cannot be assigned a historical date without new
   evidence.
-

@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://brentstees.com/schemas/ai-native/task-contract-v1.json",
+  "title": "AI Native Task Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "taskId",
+    "revision",
+    "status",
+    "goal",
+    "repository",
+    "scope",
+    "constraints",
+    "assumptions",
+    "acceptanceCriteria",
+    "authority",
+    "humanGates",
+    "approval"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "contractVersion": { "const": 1 },
+    "taskId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,79}$" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["draft", "approved", "superseded"] },
+    "goal": { "type": "string", "minLength": 10 },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "revision", "branch"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 7 },
+        "branch": { "type": "string", "minLength": 1 }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["included", "excluded", "expectedChangedPaths", "excludedPaths"],
+      "properties": {
+        "included": { "$ref": "#/$defs/nonEmptyStrings" },
+        "excluded": { "$ref": "#/$defs/nonEmptyStrings" },
+        "expectedChangedPaths": { "$ref": "#/$defs/nonEmptyStrings" },
+        "excludedPaths": { "$ref": "#/$defs/nonEmptyStrings" }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/statement" }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "status", "evidenceRefs"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "statement": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["unvalidated", "validated", "rejected"] },
+          "evidenceRefs": { "$ref": "#/$defs/strings" }
+        }
+      }
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "evidenceRequired", "owner", "frozen"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "statement": { "type": "string", "minLength": 1 },
+          "evidenceRequired": { "$ref": "#/$defs/nonEmptyStrings" },
+          "owner": { "enum": ["human", "agent", "shared"] },
+          "frozen": { "type": "boolean" }
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "allowedActions", "prohibitedActions"],
+      "properties": {
+        "level": { "enum": ["read_only", "reversible_changes", "consequential_changes"] },
+        "allowedActions": { "$ref": "#/$defs/nonEmptyStrings" },
+        "prohibitedActions": { "$ref": "#/$defs/nonEmptyStrings" }
+      }
+    },
+    "humanGates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "decision", "when", "status"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "decision": { "type": "string", "minLength": 1 },
+          "when": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["pending", "approved", "rejected", "not_reached"] }
+        }
+      }
+    },
+    "approval": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["approvedBy", "approvedOn", "contractFingerprint"],
+          "properties": {
+            "approvedBy": { "type": "string", "minLength": 1 },
+            "approvedOn": { "type": "string", "pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$" },
+            "contractFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Z]+-[0-9]{3}$" },
+    "strings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "nonEmptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "statement": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

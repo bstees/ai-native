@@ -6,7 +6,7 @@ const os = require("os");
 const path = require("path");
 const { execFileSync } = require("child_process");
 
-const schemaVersion = 1;
+const schemaVersion = 2;
 const defaultLimit = 12;
 const maxFileBytes = 1024 * 1024;
 
@@ -104,6 +104,131 @@ function truncate(value, length = 280) {
 
 function compareText(left, right) {
   return left < right ? -1 : left > right ? 1 : 0;
+}
+
+function changedPathsFromStatus(status) {
+  const fields = status.toString("utf8").split("\0");
+  const paths = new Set();
+
+  for (let index = 0; index < fields.length; index += 1) {
+    const entry = fields[index];
+    if (!entry) continue;
+    if (entry.length < 4 || entry[2] !== " ") {
+      throw new Error(`Unexpected git status entry: ${JSON.stringify(entry)}`);
+    }
+    const statusCode = entry.slice(0, 2);
+    paths.add(entry.slice(3));
+    if (/[RC]/.test(statusCode)) {
+      const originalPath = fields[index + 1];
+      if (!originalPath) throw new Error("Git status rename/copy entry is missing its original path.");
+      paths.add(originalPath);
+      index += 1;
+    }
+  }
+
+  return [...paths].sort(compareText);
+}
+
+function workingTreeFingerprint(root, status) {
+  const resolvedRoot = path.resolve(root);
+  const rootPrefix = `${resolvedRoot}${path.sep}`;
+  const hash = crypto.createHash("sha256");
+  hash.update(status);
+
+  for (const relativePath of changedPathsFromStatus(status)) {
+    const absolutePath = path.resolve(resolvedRoot, relativePath);
+    if (absolutePath !== resolvedRoot && !absolutePath.startsWith(rootPrefix)) {
+      throw new Error(`Git status path escapes the repository root: ${relativePath}`);
+    }
+
+    hash.update("path\0");
+    hash.update(relativePath);
+    hash.update("\0");
+
+    let stat = null;
+    try {
+      stat = fs.lstatSync(absolutePath);
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+
+    if (!stat) {
+      hash.update("missing\0");
+    } else if (stat.isSymbolicLink()) {
+      hash.update("symlink\0");
+      hash.update(fs.readlinkSync(absolutePath));
+      hash.update("\0");
+    } else if (stat.isFile()) {
+      hash.update("file\0");
+      hash.update(fs.readFileSync(absolutePath));
+      hash.update("\0");
+    } else if (stat.isDirectory()) {
+      hash.update("directory\0");
+    } else {
+      hash.update(`other:${stat.mode}\0`);
+    }
+
+    hash.update("index\0");
+    hash.update(
+      execFileSync("git", ["-C", resolvedRoot, "ls-files", "-s", "-z", "--", relativePath], {
+        encoding: "buffer",
+        maxBuffer: 64 * 1024 * 1024,
+        stdio: ["ignore", "pipe", "ignore"]
+      })
+    );
+    hash.update("\0");
+  }
+  return hash.digest("hex");
+}
+
+function repositoryProvenance(root) {
+  try {
+    execFileSync("git", ["-C", root, "rev-parse", "--is-inside-work-tree"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"]
+    });
+  } catch (error) {
+    return {
+      repositoryKind: "directory",
+      revision: null,
+      dirty: null,
+      workingTreeFingerprint: null
+    };
+  }
+
+  let revision = null;
+  try {
+    revision = execFileSync("git", ["-C", root, "rev-parse", "HEAD"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"]
+    }).trim();
+  } catch (error) {
+    revision = null;
+  }
+
+  let status;
+  try {
+    status = execFileSync(
+      "git",
+      ["-C", root, "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+      { encoding: "buffer", maxBuffer: 64 * 1024 * 1024, stdio: ["ignore", "pipe", "ignore"] }
+    );
+  } catch (error) {
+    return {
+      repositoryKind: "git",
+      revision,
+      dirty: null,
+      workingTreeFingerprint: null
+    };
+  }
+
+  const dirty = status.length > 0;
+  return {
+    repositoryKind: "git",
+    revision,
+    dirty,
+    workingTreeFingerprint: dirty ? workingTreeFingerprint(root, status) : null
+  };
 }
 
 function lineNumberAt(source, index) {
@@ -1204,6 +1329,7 @@ function buildSurfaceIndex(root, { outputPath } = {}) {
     indexKind: "repository-surface-contracts",
     root: ".",
     fingerprint,
+    provenance: repositoryProvenance(resolvedRoot),
     summary: {
       filesConsidered: files.length,
       filesIndexed,
@@ -1260,7 +1386,12 @@ function ensureIndex(root, { outputPath } = {}) {
   const targetPath = outputPath ? path.resolve(root, outputPath) : defaultIndexPath(root);
   const existing = readIndex(targetPath);
   const current = buildSurfaceIndex(root, { outputPath: targetPath });
-  const state = !existing ? "created" : existing.fingerprint === current.fingerprint ? "current" : "refreshed";
+  const state = !existing
+    ? "created"
+    : existing.fingerprint === current.fingerprint &&
+        JSON.stringify(existing.provenance) === JSON.stringify(current.provenance)
+      ? "current"
+      : "refreshed";
   if (state !== "current") writeIndex(targetPath, current);
   return { index: state === "current" ? existing : current, targetPath, state };
 }
@@ -1422,7 +1553,12 @@ function runCli(argv = process.argv.slice(2)) {
   if (options.command === "status") {
     const existing = readIndex(targetPath);
     const current = buildSurfaceIndex(root, { outputPath: targetPath });
-    const state = !existing ? "missing" : existing.fingerprint === current.fingerprint ? "current" : "stale";
+    const state = !existing
+      ? "missing"
+      : existing.fingerprint === current.fingerprint &&
+          JSON.stringify(existing.provenance) === JSON.stringify(current.provenance)
+        ? "current"
+        : "stale";
     const result = {
       state,
       indexPath: displayPath(root, targetPath),
