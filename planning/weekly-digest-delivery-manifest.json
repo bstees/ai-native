@@ -1,0 +1,1504 @@
+{
+  "$schema": "../schemas/weekly-digest-delivery-manifest.schema.json",
+  "manifestVersion": 1,
+  "projectId": "weekly-ai-engineering-digests",
+  "updatedOn": "2026-11-12",
+  "sourceConversation": {
+    "conversationId": "6a6a57f2-9878-83ea-aaec-2594e4a75be4",
+    "title": "Friday AI engineering brief"
+  },
+  "repositories": {
+    "site": {
+      "remote": "git@github.com:bstees/brentstees.com.git",
+      "role": "published digest content and presentation",
+      "baseCommit": "465e4fc85cd0748f3428ef8e8aee789f91da496f",
+      "branch": "codex/weekly-ai-digests"
+    },
+    "aiNative": {
+      "remote": "git@github.com:bstees/ai-native.git",
+      "role": "canonical findings, backlog, implementation, and verification",
+      "baseCommit": "140e3ff2706ef5a9873d8bf3e4eb716ee86c8ae9",
+      "branch": "codex/weekly-digest-findings"
+    },
+    "nuk": {
+      "remote": "git@github.com:bstees/nuk.git",
+      "role": "future editorial intake and generation",
+      "status": "blocked_active_dirty_worktree"
+    }
+  },
+  "runEvents": [
+    {
+      "eventId": "run-failure-cc68ddd2",
+      "sourceMessageId": "cc68ddd2-d9d4-4ebb-be64-52d478bc889e",
+      "kind": "failed_scheduled_run",
+      "publicationDate": null,
+      "published": false
+    }
+  ],
+  "digests": [
+    {
+      "digestId": "digest-undated-cf95f16c",
+      "sourceMessageId": "cf95f16c-5708-46d9-b30b-00746d7f3db0",
+      "publicationDate": null,
+      "dateEvidence": "No explicit issue date in source output",
+      "siteSlug": null,
+      "siteContentPath": null,
+      "findingIds": [],
+      "publicationStatus": "blocked_missing_explicit_date"
+    },
+    {
+      "digestId": "digest-2026-08-14",
+      "sourceMessageId": "ce773536-ae53-48bd-948b-241e41df451e",
+      "publicationDate": "2026-08-14",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-08-14",
+      "siteContentPath": "src/content/digests/2026-08-14.md",
+      "findingIds": [
+        "F-2026-08-14-01",
+        "F-2026-08-14-02",
+        "F-2026-08-14-03",
+        "F-2026-08-14-04",
+        "F-2026-08-14-05"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-08-21",
+      "sourceMessageId": "2bf722e1-4911-4792-88f4-d9e9bcd0be90",
+      "publicationDate": "2026-08-21",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-08-21",
+      "siteContentPath": "src/content/digests/2026-08-21.md",
+      "findingIds": [
+        "F-2026-08-21-01",
+        "F-2026-08-21-02",
+        "F-2026-08-21-03",
+        "F-2026-08-21-04"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-08-28",
+      "sourceMessageId": "9cfdb1b2-3dfd-4c7c-a354-64bcad200725",
+      "publicationDate": "2026-08-28",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-08-28",
+      "siteContentPath": "src/content/digests/2026-08-28.md",
+      "findingIds": [
+        "F-2026-08-28-01",
+        "F-2026-08-28-02",
+        "F-2026-08-28-03",
+        "F-2026-08-28-04"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-09-04",
+      "sourceMessageId": "e5f5f43b-cd18-4a97-b62f-67b98e358eb3",
+      "publicationDate": "2026-09-04",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-09-04",
+      "siteContentPath": "src/content/digests/2026-09-04.md",
+      "findingIds": [
+        "F-2026-09-04-01",
+        "F-2026-09-04-02",
+        "F-2026-09-04-03",
+        "F-2026-09-04-04"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-09-11",
+      "sourceMessageId": "fe0b7db2-0286-4d61-b422-dc1ee0e08fb8",
+      "publicationDate": "2026-09-11",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-09-11",
+      "siteContentPath": "src/content/digests/2026-09-11.md",
+      "findingIds": [
+        "F-2026-09-11-01",
+        "F-2026-09-11-02",
+        "F-2026-09-11-03",
+        "F-2026-09-11-04",
+        "F-2026-09-11-05"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-09-18",
+      "sourceMessageId": "bc23984c-ad02-460c-8e6f-d58b1fffa7a9",
+      "publicationDate": "2026-09-18",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-09-18",
+      "siteContentPath": "src/content/digests/2026-09-18.md",
+      "findingIds": [
+        "F-2026-09-18-01",
+        "F-2026-09-18-02",
+        "F-2026-09-18-03",
+        "F-2026-09-18-04",
+        "F-2026-09-18-05"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-09-25",
+      "sourceMessageId": "d0ad36e0-6827-453d-b734-086e2e9c8d9d",
+      "publicationDate": "2026-09-25",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-09-25",
+      "siteContentPath": "src/content/digests/2026-09-25.md",
+      "findingIds": [
+        "F-2026-09-25-01",
+        "F-2026-09-25-02",
+        "F-2026-09-25-03",
+        "F-2026-09-25-04"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-10-02",
+      "sourceMessageId": "e72a94b1-b358-4f71-b0f6-4b4f3f46e5ca",
+      "publicationDate": "2026-10-02",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-02",
+      "siteContentPath": "src/content/digests/2026-10-02.md",
+      "findingIds": [
+        "F-2026-10-02-01",
+        "F-2026-10-02-02",
+        "F-2026-10-02-03",
+        "F-2026-10-02-04",
+        "F-2026-10-02-05"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-10-09",
+      "sourceMessageId": "1210d382-5fef-43c9-b479-2dc8ad12af53",
+      "publicationDate": "2026-10-09",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-09",
+      "siteContentPath": "src/content/digests/2026-10-09.md",
+      "findingIds": [
+        "F-2026-10-09-01",
+        "F-2026-10-09-02",
+        "F-2026-10-09-03",
+        "F-2026-10-09-04",
+        "F-2026-10-09-05"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-10-16",
+      "sourceMessageId": "4fe28519-11bd-4138-b206-495bb83fabe4",
+      "publicationDate": "2026-10-16",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-16",
+      "siteContentPath": "src/content/digests/2026-10-16.md",
+      "findingIds": [
+        "F-2026-10-16-01",
+        "F-2026-10-16-02",
+        "F-2026-10-16-03",
+        "F-2026-10-16-04",
+        "F-2026-10-16-05"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-10-23",
+      "sourceMessageId": "324bef99-2a0c-47dc-a708-d53319d857f9",
+      "publicationDate": "2026-10-23",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-23",
+      "siteContentPath": "src/content/digests/2026-10-23.md",
+      "findingIds": [
+        "F-2026-10-23-01",
+        "F-2026-10-23-02",
+        "F-2026-10-23-03",
+        "F-2026-10-23-04",
+        "F-2026-10-23-05"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-10-30",
+      "sourceMessageId": "f4bc476a-f481-49dd-93bc-55d4efe9e526",
+      "publicationDate": "2026-10-30",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-10-30",
+      "siteContentPath": "src/content/digests/2026-10-30.md",
+      "findingIds": [
+        "F-2026-10-30-01",
+        "F-2026-10-30-02",
+        "F-2026-10-30-03",
+        "F-2026-10-30-04",
+        "F-2026-10-30-05"
+      ],
+      "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-11-06",
+      "sourceMessageId": "4f8a428b-f827-49a2-9a48-d5e20d9c5303",
+      "publicationDate": "2026-11-06",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-11-06",
+      "siteContentPath": "src/content/digests/2026-11-06.md",
+      "findingIds": [
+        "F-2026-11-06-01",
+        "F-2026-11-06-02",
+        "F-2026-11-06-03",
+        "F-2026-11-06-04",
+        "F-2026-11-06-05"
+      ],
+      "publicationStatus": "content_ready"
+    }
+  ],
+  "findings": [
+    {
+      "findingId": "F-2026-08-14-01",
+      "digestId": "digest-2026-08-14",
+      "title": "Active-SWE: coding agents still struggle when nobody tells them exactly what the bug is.",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2608.04682"
+      ],
+      "practicalTakeaway": "Make problem discovery a gated phase: supply logs, failing tests, telemetry, issue history, and repository context; require diagnosis and evidence before implementation.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [
+        "AF-002",
+        "AF-004"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-14-02",
+      "digestId": "digest-2026-08-14",
+      "title": "Self-evolving coding agents are becoming a distinct engineering pattern.",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2608.03392"
+      ],
+      "practicalTakeaway": "Persist verified lessons rather than generic chat memory; promote human corrections into versioned instructions, skills, executable checks, or retrieval sources.",
+      "primaryBacklogId": "AF-006",
+      "secondaryBacklogIds": [
+        "AF-003",
+        "AF-005"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-14-03",
+      "digestId": "digest-2026-08-14",
+      "title": "Coding agents increase completion speed while potentially reducing developer understanding.",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2607.26375"
+      ],
+      "practicalTakeaway": "Use human gates to test understanding and judgment; have the agent summarize architectural impact, decisions, assumptions, risks, and evidence for explicit approval.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [
+        "AF-004"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-14-04",
+      "digestId": "digest-2026-08-14",
+      "title": "Agent-generated tests may be broader but less trustworthy operationally.",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2607.12068",
+        "https://arxiv.org/abs/2607.17927"
+      ],
+      "practicalTakeaway": "Separate implementation from verification; define or approve requirements-derived tests before implementation and check flakiness, mutation strength, and assertion quality.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001",
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-14-05",
+      "digestId": "digest-2026-08-14",
+      "title": "Repository knowledge is shifting from static documentation toward living engineering context.",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2607.18356",
+        "https://arxiv.org/abs/2602.11671"
+      ],
+      "practicalTakeaway": "Treat vectors as one retrieval mechanism alongside repository graphs, git history, tickets, tests, logs, and explicit instructions; route by question.",
+      "primaryBacklogId": "AF-005",
+      "secondaryBacklogIds": [
+        "AF-004"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-21-01",
+      "digestId": "digest-2026-08-21",
+      "title": "Warp is explicitly productizing the “software factory” model",
+      "sourceUrls": [
+        "https://www.warp.dev/blog/open-infrastructure-for-building-a-software-factory"
+      ],
+      "practicalTakeaway": "Keep development agent-agnostic; define requirements, lifecycle stages, evidence, and human gates outside the executor.",
+      "primaryBacklogId": "AF-009",
+      "secondaryBacklogIds": [
+        "AF-001"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-21-02",
+      "digestId": "digest-2026-08-21",
+      "title": "Slack Code pushes agentic development into a shared human/agent workspace",
+      "sourceUrls": [
+        "https://slack.com/blog/news/slack-code-channels-for-agents"
+      ],
+      "practicalTakeaway": "Preserve the agent trajectory as an engineering artifact: requirements, decisions, tests, failures, evidence, and approvals.",
+      "primaryBacklogId": "AF-004",
+      "secondaryBacklogIds": [
+        "AF-010"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-21-03",
+      "digestId": "digest-2026-08-21",
+      "title": "“Auditable agents” gives human-in-the-loop a better technical definition",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2604.05485",
+        "https://viterbischool.usc.edu/news/2026/08/giving-ai-agents-the-keys-usc-engineers-develop-tools-to-audit-and-monitor-ai-agents/",
+        "https://github.com/yzhao062/auditable"
+      ],
+      "practicalTakeaway": "Capture input, assumption, action, evidence, and decision for every lifecycle phase.",
+      "primaryBacklogId": "AF-004",
+      "secondaryBacklogIds": [
+        "AF-001",
+        "AF-007"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-21-04",
+      "digestId": "digest-2026-08-21",
+      "title": "The “humans cannot review all generated code” argument is getting sharper",
+      "sourceUrls": [
+        "https://www.infoq.com/news/2026/08/code-AI-write-only-disposable/",
+        "https://qconlondon.com/presentation/mar2026/complexity-and-creativity-software-engineering"
+      ],
+      "practicalTakeaway": "Center TDD on evidence produced before and during implementation: requirements-derived tests, static checks, mutation tests, runtime assertions, and targeted judgment.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-28-01",
+      "digestId": "digest-2026-08-28",
+      "title": "MAGE: turn engineering judgment into durable constraints, not repeated prompts",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2608.25174"
+      ],
+      "practicalTakeaway": "Classify knowledge along context→guidance→invariant→acceptance criterion→enforced gate; promote security boundaries and definition-of-done items to executable controls and evidence.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [
+        "AF-002",
+        "AF-007"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-28-02",
+      "digestId": "digest-2026-08-28",
+      "title": "Formal verification is becoming surprisingly practical when agents do the proof work",
+      "sourceUrls": [
+        "https://doi.org/10.1145/3828709"
+      ],
+      "practicalTakeaway": "Move verification toward independently computable mechanisms such as properties, mutation testing, schemas, static analysis, contracts, and invariants.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-28-03",
+      "digestId": "digest-2026-08-28",
+      "title": "Goldman is turning “tribal knowledge” into reusable agent skills",
+      "sourceUrls": [
+        "https://www.businessinsider.com/goldman-sachs-engineers-ai-marco-argenti-2026-8"
+      ],
+      "practicalTakeaway": "Promote repeated corrections through conversation correction→documented rule→reusable skill→automated check.",
+      "primaryBacklogId": "AF-003",
+      "secondaryBacklogIds": [
+        "AF-006"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-08-28-04",
+      "digestId": "digest-2026-08-28",
+      "title": "Security research is arguing for an “assurance case,” not a passing test suite",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2608.21107"
+      ],
+      "practicalTakeaway": "Require each phase to emit an evidence bundle covering requirements, tests, static/security checks, assumptions, unresolved uncertainty, and required human decisions.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-004",
+        "AF-007"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-04-01",
+      "digestId": "digest-2026-09-04",
+      "title": "Harness-of-Harness: sustained agent work improves when the outer loop controls progress",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.01481"
+      ],
+      "practicalTakeaway": "Make each orchestrated phase small, independently verifiable, and outcome-constrained; allow eager execution inside it and do not accept the implementer’s own tests as final evidence.",
+      "primaryBacklogId": "AF-009",
+      "secondaryBacklogIds": [
+        "AF-001",
+        "AF-002",
+        "AF-008"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-04-02",
+      "digestId": "digest-2026-09-04",
+      "title": "WiseSpec quantifies how much better requirements can improve agent performance",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.00568"
+      ],
+      "practicalTakeaway": "Expand phase contracts to goal→constraints/unknowns→acceptance evidence→definition of done→execute; force ambiguity challenge before implementation.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [
+        "AF-002"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-04-03",
+      "digestId": "digest-2026-09-04",
+      "title": "GitHub has useful production evidence that optimizing token counts can actually make agents worse",
+      "sourceUrls": [
+        "https://github.blog/ai-and-ml/github-copilot/how-we-make-ai-coding-more-cost-efficient-without-sacrificing-task-quality/"
+      ],
+      "practicalTakeaway": "Treat agent configuration as executable software and add behavioral evals/regression tests for instructions, skills, tools, and MCP configuration.",
+      "primaryBacklogId": "AF-003",
+      "secondaryBacklogIds": [
+        "AF-002"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-04-04",
+      "digestId": "digest-2026-09-04",
+      "title": "FrontierSWE v2 moves evaluation toward the kind of work where agents actually need engineering endurance",
+      "sourceUrls": [
+        "https://www.frontierswe.com/blog/v2"
+      ],
+      "practicalTakeaway": "Evaluate at least one multi-hour realistic task; measure human redirections, discarded work, and whether final evidence supports completion.",
+      "primaryBacklogId": "AF-008",
+      "secondaryBacklogIds": [
+        "AF-004",
+        "AF-010"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-11-01",
+      "digestId": "digest-2026-09-11",
+      "title": "Gartner formally identifies Coding Agent Harness Engineering as an emerging discipline",
+      "sourceUrls": [
+        "https://www.gartner.com/en/documents/8346017"
+      ],
+      "practicalTakeaway": "Keep models interchangeable; store requirements, lifecycle, evidence, and authority outside the executor.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [
+        "AF-009"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-11-02",
+      "digestId": "digest-2026-09-11",
+      "title": "A source-code study finds production coding agents aren't actually using vector RAG for code",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.00006"
+      ],
+      "practicalTakeaway": "Separate organizational knowledge retrieval from deterministic code navigation; use embeddings for docs/history and search, symbols, git, and tools for code.",
+      "primaryBacklogId": "AF-005",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-11-03",
+      "digestId": "digest-2026-09-11",
+      "title": "The strongest harness results suggest the system can learn, not just the model",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2604.25850"
+      ],
+      "practicalTakeaway": "Convert interventions into the most durable suitable control: instruction, skill, tool, validator, test, or workflow constraint.",
+      "primaryBacklogId": "AF-006",
+      "secondaryBacklogIds": [
+        "AF-002",
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-11-04",
+      "digestId": "digest-2026-09-11",
+      "title": "A new industry survey exposes a governance gap around agents",
+      "sourceUrls": [
+        "https://www.harness.io/state-of-agent-dlc-2026"
+      ],
+      "practicalTakeaway": "Maintain separate product-verification and agent-verification suites.",
+      "primaryBacklogId": "AF-007",
+      "secondaryBacklogIds": [
+        "AF-002",
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-11-05",
+      "digestId": "digest-2026-09-11",
+      "title": "Andrew Ng's new workflow puts the human precisely where verification stops being objective",
+      "sourceUrls": [
+        "https://www.linkedin.com/pulse/ai-engineering-skills-map-using-coding-agents-andrew-ng-h8yxc/"
+      ],
+      "practicalTakeaway": "Retain human checkpoints only where humans make judgment that cannot yet be reliably automated.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-18-01",
+      "digestId": "digest-2026-09-18",
+      "title": "AgentGuard turns previous agent failures into conditional guardrails",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.16287"
+      ],
+      "practicalTakeaway": "Add a failure-promotion loop: intervention→classify cause→generalizable guardrail→regression scenario; do not promote every correction.",
+      "primaryBacklogId": "AF-006",
+      "secondaryBacklogIds": [
+        "AF-002",
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-18-02",
+      "digestId": "digest-2026-09-18",
+      "title": "We now have evidence that the agent harness itself is becoming a software supply chain",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.07360v1"
+      ],
+      "practicalTakeaway": "Treat agent configuration as a supply chain: pin MCP versions, review skills, enumerate permissions, code-review configuration, and scan it in CI.",
+      "primaryBacklogId": "AF-007",
+      "secondaryBacklogIds": [
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-18-03",
+      "digestId": "digest-2026-09-18",
+      "title": "RAG research shows why retrieving knowledge about failures can beat retrieving similar code",
+      "sourceUrls": [
+        "https://doi.org/10.1145/3797277"
+      ],
+      "practicalTakeaway": "Split engineering retrieval by intent: code navigation, architecture, precedent, failure knowledge, and policy.",
+      "primaryBacklogId": "AF-005",
+      "secondaryBacklogIds": [
+        "AF-006",
+        "AF-007"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-18-04",
+      "digestId": "digest-2026-09-18",
+      "title": "1Password published unusually concrete production numbers for agent-assisted delivery",
+      "sourceUrls": [
+        "https://openai.com/index/1password/"
+      ],
+      "practicalTakeaway": "Measure AI rollout with delivery outcomes—cycle time, escaped defects, rework, failed changes, MTTR, and human intervention—not usage, tokens, or LOC.",
+      "primaryBacklogId": "AF-010",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-18-05",
+      "digestId": "digest-2026-09-18",
+      "title": "Anthropic's internal usage provides a useful reality check on “autonomy”",
+      "sourceUrls": [
+        "https://www.anthropic.com/institute/measuring-pace-of-ai-development",
+        "https://www.anthropic.com/research/how-ai-is-transforming-work-at-anthropic"
+      ],
+      "practicalTakeaway": "Track AI participation separately from where and why human judgment was required.",
+      "primaryBacklogId": "AF-010",
+      "secondaryBacklogIds": [
+        "AF-001",
+        "AF-006"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-25-01",
+      "digestId": "digest-2026-09-25",
+      "title": "Agent regression testing may have just become dramatically cheaper",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.24928"
+      ],
+      "practicalTakeaway": "Retain representative trajectories and use behaviorally representative subsets for harness CI; compare completion, violations, and human interventions after changes.",
+      "primaryBacklogId": "AF-003",
+      "secondaryBacklogIds": [
+        "AF-004",
+        "AF-010"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-25-02",
+      "digestId": "digest-2026-09-25",
+      "title": "Self-improving harnesses have acquired the same overfitting problem as ML models",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.24972"
+      ],
+      "practicalTakeaway": "Before promoting an intervention into a permanent rule, distinguish engineering invariant from incident-specific answer and regression-test it on unrelated tasks.",
+      "primaryBacklogId": "AF-006",
+      "secondaryBacklogIds": [
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-25-03",
+      "digestId": "digest-2026-09-25",
+      "title": "GPT-6 Astra materially raises the ceiling — but its design reinforces judgment-based HITL",
+      "sourceUrls": [
+        "https://openai.com/index/gpt-6-astra/"
+      ],
+      "practicalTakeaway": "Define human gates by decision type: proceed on reversible/verifiable work; record low-consequence assumptions; ask on architecture, security, or product judgment; require approval for irreversible/high-impact actions.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [
+        "AF-007"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-09-25-04",
+      "digestId": "digest-2026-09-25",
+      "title": "Engineering RAG: retrieval quality can matter more than model size",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.12190"
+      ],
+      "practicalTakeaway": "Prototype engineering knowledge with AST/symbol graphs, dependencies, generated architecture summaries, embeddings, and git/work-item/incident retrieval.",
+      "primaryBacklogId": "AF-005",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-02-01",
+      "digestId": "digest-2026-10-02",
+      "title": "Merged agent PRs need significantly more follow-up fixing than human PRs",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.26847"
+      ],
+      "practicalTakeaway": "Add 30/60-day post-merge quality metrics for rework, regressions, follow-up fixes, and escaped defects; optimize for production-qualified change.",
+      "primaryBacklogId": "AF-010",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-02-02",
+      "digestId": "digest-2026-10-02",
+      "title": "Meta's verification work makes an intriguing proposal: review the specification instead of all the generated code",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2607.09900",
+        "https://www.ucl.ac.uk/crest/events/2026/sep/71st-crest-open-workshop-agentic-testing-and-verification"
+      ],
+      "practicalTakeaway": "Have an independent agent derive a behavioral contract after implementation; review that contract plus tests/evidence instead of relying only on line-by-line review.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-02-03",
+      "digestId": "digest-2026-10-02",
+      "title": "“Green doesn't mean done” applies even to formal proofs",
+      "sourceUrls": [
+        "https://www.ucl.ac.uk/crest/events/2026/sep/71st-crest-open-workshop-agentic-testing-and-verification"
+      ],
+      "practicalTakeaway": "Move human checkpoints upstream: humans own or approve what must be true, machines implement/prove it, and humans decide unresolved judgment or exceptions.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [
+        "AF-002"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-02-04",
+      "digestId": "digest-2026-10-02",
+      "title": "Long-horizon agent memory may not require a fancy memory subsystem at all",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.34422"
+      ],
+      "practicalTakeaway": "Use simple, inspectable repository-local working-memory artifacts—plans, decisions, assumptions, evidence, and open questions—with git history and provenance.",
+      "primaryBacklogId": "AF-008",
+      "secondaryBacklogIds": [
+        "AF-004"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-02-05",
+      "digestId": "digest-2026-10-02",
+      "title": "Token efficiency is becoming an explicit agent optimization target",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2609.38885"
+      ],
+      "practicalTakeaway": "Evaluate verified outcome per total execution cost, including tokens, CI runs, elapsed time, discarded work, and human intervention.",
+      "primaryBacklogId": "AF-010",
+      "secondaryBacklogIds": [
+        "AF-004"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-09-01",
+      "digestId": "digest-2026-10-09",
+      "title": "SWE-CC: Coding agents violate 43% of applicable repository policies",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.06193"
+      ],
+      "practicalTakeaway": "Separate product verification from process verification and convert important repository policies into deterministic checks.",
+      "primaryBacklogId": "AF-007",
+      "secondaryBacklogIds": [
+        "AF-002",
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-09-02",
+      "digestId": "digest-2026-10-09",
+      "title": "Teaching Agents to Code Reliably: Better verification beats additional attempts",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.03984"
+      ],
+      "practicalTakeaway": "Enforce a boundary between implementation and acceptance; require evidence against pre-established requirements, independent of self-authored tests.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-09-03",
+      "digestId": "digest-2026-10-09",
+      "title": "GitHub's ReviewBench gives AI code review a more meaningful benchmark",
+      "sourceUrls": [
+        "https://github.blog/ai-and-ml/github-copilot/reviewbench-an-open-benchmark-for-ai-code-review/",
+        "https://github.com/review-bench/ReviewBench"
+      ],
+      "practicalTakeaway": "Evaluate AI reviewers on defect detection, false-positive rate, and human review effort.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-010"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-09-04",
+      "digestId": "digest-2026-10-09",
+      "title": "GitLab's governed software factory brings engineering RAG into the SDLC",
+      "sourceUrls": [
+        "https://about.gitlab.com/press/releases/2026-10-06-gitlab-announces-the-foundation-for-the-governed-software-factory/"
+      ],
+      "practicalTakeaway": "Provide unified engineering retrieval across code, git history, work items, CI results, operational telemetry, and decisions.",
+      "primaryBacklogId": "AF-005",
+      "secondaryBacklogIds": [
+        "AF-004"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-09-05",
+      "digestId": "digest-2026-10-09",
+      "title": "Microsoft demonstrates reinforcement learning directly against real coding-agent harnesses",
+      "sourceUrls": [
+        "https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/"
+      ],
+      "practicalTakeaway": "Preserve structured trajectories—tasks, tool calls, context, failures, interventions, verification, and outcomes—for future evals, harness improvement, or training.",
+      "primaryBacklogId": "AF-004",
+      "secondaryBacklogIds": [
+        "AF-003",
+        "AF-006"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-16-01",
+      "digestId": "digest-2026-10-16",
+      "title": "Doc2Harness: We can now benchmark the engineering system around an agent",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.20344"
+      ],
+      "practicalTakeaway": "Build a deterministic behavioral regression suite for permissions, tool execution, state persistence, error recovery, and approval gates using scripted model responses.",
+      "primaryBacklogId": "AF-003",
+      "secondaryBacklogIds": [
+        "AF-007",
+        "AF-008"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-16-02",
+      "digestId": "digest-2026-10-16",
+      "title": "Interaction-as-a-Judge: Testing the UI like a human beats inspecting code",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.17895"
+      ],
+      "practicalTakeaway": "Pair deterministic UI tests with an independent interaction agent that exercises user-facing acceptance criteria.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-16-03",
+      "digestId": "digest-2026-10-16",
+      "title": "StateHarness: Persistent project knowledge improves long-running coding agents",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.17616"
+      ],
+      "practicalTakeaway": "Separate project knowledge, working state, and historical knowledge; keep important working state inspectable and versioned.",
+      "primaryBacklogId": "AF-008",
+      "secondaryBacklogIds": [
+        "AF-004",
+        "AF-005"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-16-04",
+      "digestId": "digest-2026-10-16",
+      "title": "Tangent: Most agent testing is still surprisingly shallow",
+      "sourceUrls": [
+        "https://research.ibm.com/publications/tangent-an-empirical-study-of-testing-practices-for-llm-based-agent-applications"
+      ],
+      "practicalTakeaway": "Add fault-injection tests for tool failures, malformed responses, permission denials, interruptions, stale context, and failed recovery; assess constraint-safe recovery.",
+      "primaryBacklogId": "AF-003",
+      "secondaryBacklogIds": [
+        "AF-007",
+        "AF-008"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-16-05",
+      "digestId": "digest-2026-10-16",
+      "title": "REAG: RAG can generate better acceptance tests, not just better answers",
+      "sourceUrls": [
+        "https://conf.researchr.org/details/ase-2026/ase-2026-industry-showcase/29/Requirements-Augmented-Generation-for-Trustworthy-Acceptance-Testing-of-LLM-Based-Sof"
+      ],
+      "practicalTakeaway": "Use a separate acceptance-verification agent grounded in approved requirements, decisions, and policies; it must abstain or escalate when evidence is insufficient.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001",
+        "AF-005"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-23-01",
+      "digestId": "digest-2026-10-23",
+      "title": "REM: Coding agents improve when memory is selective and temporary",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.27377"
+      ],
+      "practicalTakeaway": "Separate durable organizational knowledge from temporary task experience; retrieve prior failures and solutions only when relevant.",
+      "primaryBacklogId": "AF-008",
+      "secondaryBacklogIds": [
+        "AF-005",
+        "AF-006"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-23-02",
+      "digestId": "digest-2026-10-23",
+      "title": "Skip the Compressor: Whole source files outperform compressed context",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.21073"
+      ],
+      "practicalTakeaway": "Use deterministic search and dependency relationships to identify candidate code, then provide complete source files instead of compressed fragments when budget permits.",
+      "primaryBacklogId": "AF-005",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-23-03",
+      "digestId": "digest-2026-10-23",
+      "title": "Agentic Verified Optimization: Agents can optimize software and prove equivalence",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.30188"
+      ],
+      "practicalTakeaway": "For performance refactors, use independently owned behavioral contracts and property-based tests.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-23-04",
+      "digestId": "digest-2026-10-23",
+      "title": "Automated migration testing exposes the limits of verification gates",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.27272"
+      ],
+      "practicalTakeaway": "Inject deliberate defects or mutations to measure whether AI-generated acceptance tests detect meaningful failures.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-23-05",
+      "digestId": "digest-2026-10-23",
+      "title": "AI-assisted development isn't necessarily producing more homogeneous or lower-quality code",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.24093"
+      ],
+      "practicalTakeaway": "Evaluate AI adoption with maintainability, defect density, rework, change-failure rate, and delivery speed—not code volume.",
+      "primaryBacklogId": "AF-010",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-30-01",
+      "digestId": "digest-2026-10-30",
+      "title": "Independent agent review delivers measurable gains at modest cost",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.34577"
+      ],
+      "practicalTakeaway": "Add a read-only independent reviewer given approved requirements, diff, and test evidence; reserve humans for disputed requirements, architecture, and unresolved risk.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-30-02",
+      "digestId": "digest-2026-10-30",
+      "title": "Rivet shows why engineering RAG needs dependency-aware context",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.34967"
+      ],
+      "practicalTakeaway": "Prioritize evidence completeness over semantic similarity: retrieve implementation, callers, dependencies, tests, and configuration constraints before broader documentation.",
+      "primaryBacklogId": "AF-005",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-30-03",
+      "digestId": "digest-2026-10-30",
+      "title": "InfraDev reveals how often passing tests conceal incorrect infrastructure changes",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.36589"
+      ],
+      "practicalTakeaway": "Verify latency, memory, concurrency, recovery, and operational constraints in addition to unit and mutation results; define these criteria before implementation.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001",
+        "AF-007"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-30-04",
+      "digestId": "digest-2026-10-30",
+      "title": "GitHub Copilot Fusion makes multi-model orchestration a mainstream IDE feature",
+      "sourceUrls": [
+        "https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion/"
+      ],
+      "practicalTakeaway": "Keep the lifecycle model-independent and benchmark task completion, verified quality, total cost, and human-intervention time.",
+      "primaryBacklogId": "AF-009",
+      "secondaryBacklogIds": [
+        "AF-001",
+        "AF-010"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-10-30-05",
+      "digestId": "digest-2026-10-30",
+      "title": "Instant Software Factories exposes a dangerous productivity measurement trap",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2610.36254"
+      ],
+      "practicalTakeaway": "Measure independently validated, production-qualified changes—not commits, merges, or issues—and keep acceptance criteria plus critical CI outside unrestricted agent authority.",
+      "primaryBacklogId": "AF-010",
+      "secondaryBacklogIds": [
+        "AF-002",
+        "AF-007"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-11-06-01",
+      "digestId": "digest-2026-11-06",
+      "title": "Agent skills are evolving faster than their reliability practices",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2611.04456"
+      ],
+      "practicalTakeaway": "Give every important skill an execution contract—prerequisites, allowed actions, evidence, recovery, and completion—and regression-test it on representative tasks.",
+      "primaryBacklogId": "AF-003",
+      "secondaryBacklogIds": [
+        "AF-001"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-11-06-02",
+      "digestId": "digest-2026-11-06",
+      "title": "GenDB-V demonstrates the power of fixed specifications and independent proof",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2611.02779"
+      ],
+      "practicalTakeaway": "Freeze acceptance contracts before implementation; agents may optimize within them but cannot weaken or rewrite success criteria.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [
+        "AF-002"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-11-06-03",
+      "digestId": "digest-2026-11-06",
+      "title": "Agent memory needs dependency tracking, not just retrieval",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2611.02912"
+      ],
+      "practicalTakeaway": "Attach source, date, repository version, and dependencies to retrieved knowledge; revalidate downstream decisions and runbooks when upstream assumptions change.",
+      "primaryBacklogId": "AF-005",
+      "secondaryBacklogIds": [
+        "AF-004",
+        "AF-007"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-11-06-04",
+      "digestId": "digest-2026-11-06",
+      "title": "OpenAI demonstrates a large-scale discover → reproduce → patch → review pipeline",
+      "sourceUrls": [
+        "https://openai.com/index/a-thousand-fewer-paths-to-root/"
+      ],
+      "practicalTakeaway": "Use a discover→reproduce→patch→regression-validate pipeline with independent analysis and human approval for consequential changes.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-001",
+        "AF-007"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-11-06-05",
+      "digestId": "digest-2026-11-06",
+      "title": "Launder-Bench reveals a new software provenance problem",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2611.01966"
+      ],
+      "practicalTakeaway": "Preserve licenses, source references, and derivation decisions whenever agents consult external repositories.",
+      "primaryBacklogId": "AF-007",
+      "secondaryBacklogIds": [
+        "AF-004"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "content_ready"
+    }
+  ],
+  "backlogItems": [
+    {
+      "backlogId": "AF-001",
+      "title": "Workflow Contracts and Human-Judgment Gates",
+      "status": "in_progress",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-001-workflow-contracts-and-human-judgment-gates",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-08-14-01", "F-2026-08-14-03", "F-2026-08-14-04", "F-2026-08-21-01", "F-2026-08-21-03",
+        "F-2026-08-21-04", "F-2026-08-28-01", "F-2026-08-28-02", "F-2026-09-04-01", "F-2026-09-04-02",
+        "F-2026-09-11-01", "F-2026-09-11-05", "F-2026-09-18-05", "F-2026-09-25-03", "F-2026-10-02-02",
+        "F-2026-10-02-03", "F-2026-10-09-02", "F-2026-10-16-05", "F-2026-10-23-03", "F-2026-10-30-01",
+        "F-2026-10-30-03", "F-2026-10-30-04", "F-2026-11-06-01", "F-2026-11-06-02", "F-2026-11-06-04"
+      ]
+    },
+    {
+      "backlogId": "AF-002",
+      "title": "Independent Verification and Acceptance Boundaries",
+      "status": "in_progress",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-002-independent-verification-and-acceptance-boundaries",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-08-14-01", "F-2026-08-14-04", "F-2026-08-21-04", "F-2026-08-28-01", "F-2026-08-28-02",
+        "F-2026-08-28-04", "F-2026-09-04-01", "F-2026-09-04-02", "F-2026-09-04-03", "F-2026-09-11-03",
+        "F-2026-09-11-04", "F-2026-09-18-01", "F-2026-10-02-02", "F-2026-10-02-03", "F-2026-10-09-01",
+        "F-2026-10-09-02", "F-2026-10-09-03", "F-2026-10-16-02", "F-2026-10-16-05", "F-2026-10-23-03",
+        "F-2026-10-23-04", "F-2026-10-30-01", "F-2026-10-30-03", "F-2026-10-30-05", "F-2026-11-06-02",
+        "F-2026-11-06-04"
+      ]
+    },
+    {
+      "backlogId": "AF-003",
+      "title": "Skills and Harness Quality",
+      "status": "in_progress_external",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-003-skills-and-harness-quality",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-08-14-02", "F-2026-08-14-04", "F-2026-08-28-03", "F-2026-09-04-03", "F-2026-09-11-03",
+        "F-2026-09-11-04", "F-2026-09-18-01", "F-2026-09-18-02", "F-2026-09-25-01", "F-2026-09-25-02",
+        "F-2026-10-09-01", "F-2026-10-09-05", "F-2026-10-16-01", "F-2026-10-16-04", "F-2026-10-23-04",
+        "F-2026-11-06-01"
+      ]
+    },
+    {
+      "backlogId": "AF-004",
+      "title": "Agent Trajectory Observability",
+      "status": "in_progress_external",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-004-agent-trajectory-observability",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-08-14-01", "F-2026-08-14-03", "F-2026-08-14-05", "F-2026-08-21-02", "F-2026-08-21-03",
+        "F-2026-08-28-04", "F-2026-09-04-04", "F-2026-09-25-01", "F-2026-10-02-04", "F-2026-10-02-05",
+        "F-2026-10-09-04", "F-2026-10-09-05", "F-2026-10-16-03", "F-2026-11-06-03", "F-2026-11-06-05"
+      ]
+    },
+    {
+      "backlogId": "AF-005",
+      "title": "Engineering Knowledge and Retrieval",
+      "status": "in_progress",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-005-engineering-knowledge-and-retrieval",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-08-14-02", "F-2026-08-14-05", "F-2026-09-11-02", "F-2026-09-18-03", "F-2026-09-25-04",
+        "F-2026-10-09-04", "F-2026-10-16-03", "F-2026-10-16-05", "F-2026-10-23-01", "F-2026-10-23-02",
+        "F-2026-10-30-02", "F-2026-11-06-03"
+      ]
+    },
+    {
+      "backlogId": "AF-006",
+      "title": "Failure Learning and Guardrail Promotion",
+      "status": "in_progress",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-006-failure-learning-and-guardrail-promotion",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-08-14-02", "F-2026-08-28-03", "F-2026-09-11-03", "F-2026-09-18-01", "F-2026-09-18-03",
+        "F-2026-09-18-05", "F-2026-09-25-02", "F-2026-10-09-05", "F-2026-10-23-01"
+      ]
+    },
+    {
+      "backlogId": "AF-007",
+      "title": "Agent Security and Governance",
+      "status": "planned",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-007-agent-security-and-governance",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-08-21-03", "F-2026-08-28-01", "F-2026-08-28-04", "F-2026-09-11-04", "F-2026-09-18-02",
+        "F-2026-09-18-03", "F-2026-09-25-03", "F-2026-10-09-01", "F-2026-10-16-01", "F-2026-10-16-04",
+        "F-2026-10-30-03", "F-2026-10-30-05", "F-2026-11-06-03", "F-2026-11-06-04", "F-2026-11-06-05"
+      ]
+    },
+    {
+      "backlogId": "AF-008",
+      "title": "Long-Running Execution and Working State",
+      "status": "deferred_dependency",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-008-long-running-execution-and-working-state",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-09-04-01", "F-2026-09-04-04", "F-2026-10-02-04", "F-2026-10-16-01", "F-2026-10-16-03",
+        "F-2026-10-16-04", "F-2026-10-23-01"
+      ]
+    },
+    {
+      "backlogId": "AF-009",
+      "title": "Multi-Agent and Multi-Model Orchestration",
+      "status": "deferred_dependency",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-009-multi-agent-and-multi-model-orchestration",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-08-21-01", "F-2026-09-04-01", "F-2026-09-11-01", "F-2026-10-30-04"
+      ]
+    },
+    {
+      "backlogId": "AF-010",
+      "title": "Delivery Intelligence and Production-Qualified Outcomes",
+      "status": "in_progress_external",
+      "recordPath": "decisions/weekly-digest-backlog.md#af-010-delivery-intelligence-and-production-qualified-outcomes",
+      "issueUrl": null,
+      "pullRequestUrl": null,
+      "branch": "codex/weekly-digest-findings",
+      "findingIds": [
+        "F-2026-08-21-02", "F-2026-09-04-04", "F-2026-09-18-04", "F-2026-09-18-05", "F-2026-09-25-01",
+        "F-2026-10-02-01", "F-2026-10-02-05", "F-2026-10-09-03", "F-2026-10-23-05", "F-2026-10-30-04",
+        "F-2026-10-30-05"
+      ]
+    }
+  ],
+  "implementations": [
+    {
+      "implementationId": "IMP-AF001-TASK-CONTRACT",
+      "backlogId": "AF-001",
+      "findingIds": [
+        "F-2026-09-04-02",
+        "F-2026-09-25-03",
+        "F-2026-10-02-03",
+        "F-2026-11-06-02"
+      ],
+      "repositoryKey": "aiNative",
+      "branch": "codex/weekly-digest-findings",
+      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
+      "paths": [
+        "assets/workflows/contracts/task-contract.schema.json",
+        "assets/workflows/task-contract.md",
+        "assets/workflows/examples/task-contract.json",
+        "scripts/validate-task-contract.js",
+        "tests/task-contract.test.js"
+      ],
+      "status": "verified",
+      "verificationRunIds": ["VR-AF001-TASK-CONTRACT"],
+      "pullRequestUrl": null
+    },
+    {
+      "implementationId": "IMP-AF002-EVIDENCE-BUNDLE",
+      "backlogId": "AF-002",
+      "findingIds": [
+        "F-2026-08-14-04",
+        "F-2026-08-28-04",
+        "F-2026-10-09-02",
+        "F-2026-10-30-01",
+        "F-2026-11-06-04"
+      ],
+      "repositoryKey": "aiNative",
+      "branch": "codex/weekly-digest-findings",
+      "commit": "bf301a9a921ad38536db63343879307cd9cc5b99",
+      "paths": [
+        "assets/quality/contracts/task-evidence-bundle.schema.json",
+        "assets/quality/task-evidence-bundle.md",
+        "assets/quality/examples/task-evidence-bundle.json",
+        "assets/workflows/independent-verification.md",
+        "scripts/validate-task-evidence.js",
+        "tests/task-evidence.test.js"
+      ],
+      "status": "verified",
+      "verificationRunIds": ["VR-AF002-EVIDENCE-BUNDLE"],
+      "pullRequestUrl": null
+    },
+    {
+      "implementationId": "IMP-AF005-PROVENANCE",
+      "backlogId": "AF-005",
+      "findingIds": ["F-2026-11-06-03"],
+      "repositoryKey": "aiNative",
+      "branch": "codex/weekly-digest-findings",
+      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
+      "paths": [
+        "schemas/weekly-digest-delivery-manifest.schema.json",
+        "scripts/repo-surface-index.js",
+        "tests/repo-surface-index.test.js"
+      ],
+      "status": "verified",
+      "verificationRunIds": [
+        "VR-AF005-REPO-PROVENANCE",
+        "VR-AF005-FULL-SUITE",
+        "VR-AF005-BUILD"
+      ],
+      "pullRequestUrl": null
+    },
+    {
+      "implementationId": "IMP-AF005-MANIFEST-VALIDATION",
+      "backlogId": "AF-005",
+      "findingIds": ["F-2026-11-06-03"],
+      "repositoryKey": "aiNative",
+      "branch": "codex/weekly-digest-findings",
+      "commit": "9f231f8e44e0207704b1bc19d39817dac4b68ab8",
+      "paths": [
+        "scripts/validate-weekly-digest-delivery-manifest.js",
+        "tests/weekly-digest-delivery-manifest.test.js"
+      ],
+      "status": "verified",
+      "verificationRunIds": ["VR-AF005-MANIFEST"],
+      "pullRequestUrl": null
+    },
+    {
+      "implementationId": "IMP-AF006-FAILURE-PROMOTION",
+      "backlogId": "AF-006",
+      "findingIds": [
+        "F-2026-09-11-03",
+        "F-2026-09-18-01",
+        "F-2026-09-25-02"
+      ],
+      "repositoryKey": "aiNative",
+      "branch": "codex/weekly-digest-findings",
+      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
+      "paths": [
+        "assets/feedback/contracts/failure-record.schema.json",
+        "assets/feedback/failure-learning-standard.md",
+        "assets/feedback/examples/failure-record.json",
+        "scripts/validate-failure-records.js",
+        "tests/failure-learning.test.js"
+      ],
+      "status": "verified",
+      "verificationRunIds": ["VR-AF006-FAILURE-PROMOTION"],
+      "pullRequestUrl": null
+    }
+  ],
+  "verificationRuns": [
+    {
+      "verificationRunId": "VR-AF001-TASK-CONTRACT",
+      "implementationId": "IMP-AF001-TASK-CONTRACT",
+      "command": "node tests/task-contract.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-12",
+      "evidenceRefs": ["tests/task-contract.test.js"]
+    },
+    {
+      "verificationRunId": "VR-AF002-EVIDENCE-BUNDLE",
+      "implementationId": "IMP-AF002-EVIDENCE-BUNDLE",
+      "command": "node tests/task-evidence.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-12",
+      "evidenceRefs": ["tests/task-evidence.test.js"]
+    },
+    {
+      "verificationRunId": "VR-AF005-MANIFEST",
+      "implementationId": "IMP-AF005-MANIFEST-VALIDATION",
+      "command": "node tests/weekly-digest-delivery-manifest.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-12",
+      "evidenceRefs": ["tests/weekly-digest-delivery-manifest.test.js"]
+    },
+    {
+      "verificationRunId": "VR-AF005-REPO-PROVENANCE",
+      "implementationId": "IMP-AF005-PROVENANCE",
+      "command": "node tests/repo-surface-index.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-12",
+      "evidenceRefs": ["tests/repo-surface-index.test.js"]
+    },
+    {
+      "verificationRunId": "VR-AF005-FULL-SUITE",
+      "implementationId": "IMP-AF005-PROVENANCE",
+      "command": "npm test",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-12",
+      "evidenceRefs": ["tests/run.js"]
+    },
+    {
+      "verificationRunId": "VR-AF005-BUILD",
+      "implementationId": "IMP-AF005-PROVENANCE",
+      "command": "npm run build",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-12",
+      "evidenceRefs": ["package.json#scripts.build"]
+    },
+    {
+      "verificationRunId": "VR-AF006-FAILURE-PROMOTION",
+      "implementationId": "IMP-AF006-FAILURE-PROMOTION",
+      "command": "node tests/failure-learning.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-12",
+      "evidenceRefs": ["tests/failure-learning.test.js"]
+    }
+  ]
+}

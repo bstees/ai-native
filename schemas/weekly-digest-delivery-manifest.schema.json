@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://brentstees.com/schemas/ai-native/weekly-digest-delivery-manifest-v1.json",
+  "title": "Weekly AI Engineering Digest Delivery Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifestVersion",
+    "projectId",
+    "updatedOn",
+    "sourceConversation",
+    "repositories",
+    "runEvents",
+    "digests",
+    "findings",
+    "backlogItems",
+    "implementations",
+    "verificationRuns"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "manifestVersion": { "const": 1 },
+    "projectId": { "const": "weekly-ai-engineering-digests" },
+    "updatedOn": { "$ref": "#/$defs/date" },
+    "sourceConversation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conversationId", "title"],
+      "properties": {
+        "conversationId": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 }
+      }
+    },
+    "repositories": {
+      "type": "object",
+      "minProperties": 3,
+      "additionalProperties": { "$ref": "#/$defs/repository" }
+    },
+    "runEvents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["eventId", "sourceMessageId", "kind", "publicationDate", "published"],
+        "properties": {
+          "eventId": { "type": "string", "minLength": 1 },
+          "sourceMessageId": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["failed_scheduled_run"] },
+          "publicationDate": { "type": "null" },
+          "published": { "const": false }
+        }
+      }
+    },
+    "digests": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/digest" }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "backlogItems": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/backlogItem" }
+    },
+    "implementations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/implementation" }
+    },
+    "verificationRuns": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/verificationRun" }
+    }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$" },
+    "nullableDate": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/date" }]
+    },
+    "nullableUrl": {
+      "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^https://" }]
+    },
+    "strings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "nonEmptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["remote", "role"],
+      "properties": {
+        "remote": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 },
+        "baseCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "branch": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "minLength": 1 }
+      }
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "digestId",
+        "sourceMessageId",
+        "publicationDate",
+        "dateEvidence",
+        "siteSlug",
+        "siteContentPath",
+        "findingIds",
+        "publicationStatus"
+      ],
+      "properties": {
+        "digestId": { "type": "string", "pattern": "^digest-(?:20[0-9]{2}-[0-9]{2}-[0-9]{2}|undated-[a-f0-9]{8})$" },
+        "sourceMessageId": { "type": "string", "minLength": 1 },
+        "publicationDate": { "$ref": "#/$defs/nullableDate" },
+        "dateEvidence": { "type": "string", "minLength": 1 },
+        "siteSlug": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$" }]
+        },
+        "siteContentPath": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^src/content/digests/20[0-9]{2}-[0-9]{2}-[0-9]{2}\\.md$" }]
+        },
+        "findingIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/findingId" }
+        },
+        "publicationStatus": {
+          "enum": ["inventory", "content_ready", "published", "blocked_missing_explicit_date"]
+        }
+      }
+    },
+    "findingId": { "type": "string", "pattern": "^F-20[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$" },
+    "backlogId": { "type": "string", "pattern": "^AF-[0-9]{3}$" },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "findingId",
+        "digestId",
+        "title",
+        "sourceUrls",
+        "practicalTakeaway",
+        "primaryBacklogId",
+        "secondaryBacklogIds",
+        "disposition",
+        "publishedStatus"
+      ],
+      "properties": {
+        "findingId": { "$ref": "#/$defs/findingId" },
+        "digestId": { "type": "string", "pattern": "^digest-20[0-9]{2}-[0-9]{2}-[0-9]{2}$" },
+        "title": { "type": "string", "minLength": 3 },
+        "sourceUrls": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^https://" }
+        },
+        "practicalTakeaway": { "type": "string", "minLength": 10 },
+        "primaryBacklogId": { "$ref": "#/$defs/backlogId" },
+        "secondaryBacklogIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/backlogId" }
+        },
+        "disposition": { "enum": ["mapped", "deferred"] },
+        "publishedStatus": { "enum": ["content_ready", "published"] }
+      }
+    },
+    "backlogItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backlogId",
+        "title",
+        "status",
+        "recordPath",
+        "issueUrl",
+        "pullRequestUrl",
+        "branch",
+        "findingIds"
+      ],
+      "properties": {
+        "backlogId": { "$ref": "#/$defs/backlogId" },
+        "title": { "type": "string", "minLength": 3 },
+        "status": { "enum": ["implemented", "in_progress", "in_progress_external", "planned", "deferred_dependency"] },
+        "recordPath": { "type": "string", "minLength": 1 },
+        "issueUrl": { "$ref": "#/$defs/nullableUrl" },
+        "pullRequestUrl": { "$ref": "#/$defs/nullableUrl" },
+        "branch": { "type": "string", "minLength": 1 },
+        "findingIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/findingId" }
+        }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementationId",
+        "backlogId",
+        "findingIds",
+        "repositoryKey",
+        "branch",
+        "commit",
+        "paths",
+        "status",
+        "verificationRunIds",
+        "pullRequestUrl"
+      ],
+      "properties": {
+        "implementationId": { "type": "string", "pattern": "^IMP-[A-Z0-9-]+$" },
+        "backlogId": { "$ref": "#/$defs/backlogId" },
+        "findingIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/findingId" }
+        },
+        "repositoryKey": { "type": "string", "minLength": 1 },
+        "branch": { "type": "string", "minLength": 1 },
+        "commit": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^[a-f0-9]{7,40}$" }]
+        },
+        "paths": { "$ref": "#/$defs/nonEmptyStrings" },
+        "status": { "enum": ["planned", "implemented", "verified"] },
+        "verificationRunIds": { "$ref": "#/$defs/strings" },
+        "pullRequestUrl": { "$ref": "#/$defs/nullableUrl" }
+      }
+    },
+    "verificationRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verificationRunId",
+        "implementationId",
+        "command",
+        "exitCode",
+        "result",
+        "completedOn",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "verificationRunId": { "type": "string", "pattern": "^VR-[A-Z0-9-]+$" },
+        "implementationId": { "type": "string", "pattern": "^IMP-[A-Z0-9-]+$" },
+        "command": { "type": "string", "minLength": 1 },
+        "exitCode": { "type": "integer", "minimum": 0 },
+        "result": { "enum": ["passed", "failed"] },
+        "completedOn": { "$ref": "#/$defs/date" },
+        "evidenceRefs": { "$ref": "#/$defs/nonEmptyStrings" }
+      }
+    }
+  }
+}

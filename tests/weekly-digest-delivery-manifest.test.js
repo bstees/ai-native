@@ -1,0 +1,120 @@
+const assert = require("assert");
+const fs = require("fs");
+const path = require("path");
+
+const {
+  validateWeeklyDigestManifest
+} = require("../scripts/validate-weekly-digest-delivery-manifest");
+
+const manifestPath = path.join(
+  __dirname,
+  "..",
+  "planning",
+  "weekly-digest-delivery-manifest.json"
+);
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function expectInvalid(manifest, fragment) {
+  const result = validateWeeklyDigestManifest(manifest);
+  assert.strictEqual(result.valid, false);
+  assert.ok(
+    result.errors.some((error) => error.includes(fragment)),
+    `Expected an error containing ${fragment}; received ${result.errors.join("; ")}`
+  );
+}
+
+function run() {
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  assert.deepStrictEqual(validateWeeklyDigestManifest(manifest), { valid: true, errors: [] });
+  assert.strictEqual(manifest.digests.filter((digest) => digest.publicationDate).length, 13);
+  assert.strictEqual(manifest.findings.length, 61);
+  assert.strictEqual(manifest.backlogItems.length, 10);
+
+  const duplicate = clone(manifest);
+  duplicate.findings.push(clone(duplicate.findings[0]));
+  expectInvalid(duplicate, "duplicate findingId");
+
+  const orphanFinding = clone(manifest);
+  orphanFinding.findings[0].digestId = "digest-2099-01-01";
+  expectInvalid(orphanFinding, "missing digest");
+
+  const inventedDate = clone(manifest);
+  const undated = inventedDate.digests.find((digest) => digest.publicationDate === null);
+  undated.publicationDate = "2026-08-07";
+  expectInvalid(inventedDate, "siteSlug");
+
+  const missingBacklog = clone(manifest);
+  missingBacklog.findings[0].primaryBacklogId = "AF-999";
+  expectInvalid(missingBacklog, "missing backlog item");
+
+  const mismatchedPublication = clone(manifest);
+  mismatchedPublication.findings[0].publishedStatus = "published";
+  expectInvalid(mismatchedPublication, "publicationStatus");
+
+  const brokenVerification = clone(manifest);
+  const verifiedImplementation = brokenVerification.implementations.find(
+    (implementation) => implementation.status === "verified"
+  );
+  assert.ok(verifiedImplementation, "fixture should contain at least one verified implementation");
+  verifiedImplementation.verificationRunIds.push("VR-MISSING");
+  expectInvalid(brokenVerification, "missing verification run");
+
+  const verifiedWithoutCommit = clone(manifest);
+  verifiedWithoutCommit.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).commit = null;
+  expectInvalid(verifiedWithoutCommit, "requires an implementation commit");
+
+  const missingCommit = clone(manifest);
+  missingCommit.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).commit = "deadbee";
+  expectInvalid(missingCommit, "does not resolve to a repository commit");
+
+  const missingPath = clone(manifest);
+  missingPath.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).paths.push("does/not/exist.js");
+  expectInvalid(missingPath, "not a current repository file");
+
+  const selfAttestation = clone(manifest);
+  selfAttestation.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).paths.push("planning/weekly-digest-delivery-manifest.json");
+  expectInvalid(selfAttestation, "attestation manifest attest to itself");
+
+  const aliasedSelfAttestation = clone(manifest);
+  aliasedSelfAttestation.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).paths.push("./planning/weekly-digest-delivery-manifest.json");
+  expectInvalid(aliasedSelfAttestation, "canonical repository-relative paths");
+
+  const preBaselineCommit = clone(manifest);
+  const preBaselineImplementation = preBaselineCommit.implementations.find(
+    (implementation) => implementation.status === "verified"
+  );
+  preBaselineImplementation.commit = "f8afa3f";
+  preBaselineImplementation.paths = ["README.md"];
+  expectInvalid(preBaselineCommit, "does not descend from repository baseCommit");
+
+  const unchangedPath = clone(manifest);
+  const unchangedImplementation = unchangedPath.implementations.find(
+    (implementation) => implementation.status === "verified"
+  );
+  unchangedImplementation.commit = manifest.repositories.aiNative.baseCommit;
+  unchangedImplementation.paths = ["README.md"];
+  expectInvalid(unchangedPath, "does not change declared path");
+
+  const wrongBranch = clone(manifest);
+  wrongBranch.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).branch = "unapproved/branch";
+  expectInvalid(wrongBranch, "does not match its repository branch");
+
+  console.log("Weekly digest delivery manifest validation passed.");
+}
+
+run();

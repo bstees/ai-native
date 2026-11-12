@@ -1,0 +1,43 @@
+{
+  "$schema": "../contracts/failure-record.schema.json",
+  "failureVersion": 1,
+  "failureId": "FAIL-2026-11-12-MISSING-HUMAN-GATE",
+  "observedOn": "2026-11-12",
+  "classification": "authority",
+  "summary": "A consequential task could be represented without an explicit human approval gate.",
+  "evidenceRefs": [
+    "tests/task-contract.test.js#consequentialWithoutGate",
+    "tests/task-evidence.test.js#pendingGateEvidence"
+  ],
+  "reproducible": true,
+  "generalizability": {
+    "scope": "repository_pattern",
+    "recurrenceCount": 2,
+    "occurrenceRefs": [
+      "tests/task-contract.test.js#consequentialWithoutGate",
+      "tests/task-evidence.test.js#pendingGateEvidence"
+    ],
+    "rationale": "The same missing-gate condition was reproduced across two consequential task fixtures."
+  },
+  "remediation": {
+    "type": "validator",
+    "instructions": "Reject consequential task contracts that do not contain a human gate.",
+    "owner": "AI Native maintainers"
+  },
+  "regression": {
+    "status": "passing",
+    "caseRefs": [
+      "tests/task-contract.test.js#consequentialWithoutGate",
+      "tests/task-evidence.test.js#pendingGateEvidence"
+    ],
+    "resultEvidenceRefs": ["verification:task-contract-focused"]
+  },
+  "promotion": {
+    "decision": "promoted",
+    "targetRefs": ["scripts/validate-task-contract.js"],
+    "approvedBy": "example-human-owner",
+    "approvedOn": "2026-11-12"
+  },
+  "status": "closed",
+  "outcomeEvidenceRefs": ["tests/task-contract.test.js passes"]
+}

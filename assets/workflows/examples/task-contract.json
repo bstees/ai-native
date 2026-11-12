@@ -1,0 +1,77 @@
+{
+  "$schema": "../contracts/task-contract.schema.json",
+  "contractVersion": 1,
+  "taskId": "weekly-digest-contracts",
+  "revision": 1,
+  "status": "approved",
+  "goal": "Add validated task and evidence contracts without changing active consumer repositories.",
+  "repository": {
+    "name": "bstees/ai-native",
+    "revision": "140e3ff2706ef5a9873d8bf3e4eb716ee86c8ae9",
+    "branch": "codex/weekly-digest-findings"
+  },
+  "scope": {
+    "included": ["Source-side workflow contracts and their validation tests"],
+    "excluded": ["Consumer rollout, production deployment, and active telemetry files"],
+    "expectedChangedPaths": [
+      "assets/workflows/contracts/task-contract.schema.json",
+      "assets/workflows/task-contract.md",
+      "assets/workflows/examples/task-contract.json",
+      "scripts/validate-task-contract.js",
+      "tests/task-contract.test.js"
+    ],
+    "excludedPaths": [
+      ".agents/skills/write-unit-tests",
+      "scripts/shared-assets-manifest.js",
+      "server/telemetry-lake.js"
+    ]
+  },
+  "constraints": [
+    {
+      "id": "CON-001",
+      "statement": "Do not modify files owned by concurrent workstreams."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-001",
+      "statement": "The isolated worktree is based on the recorded main-branch commit.",
+      "status": "validated",
+      "evidenceRefs": ["planning/weekly-digest-delivery-manifest.json"]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-001",
+      "statement": "Valid task contracts pass schema and semantic validation.",
+      "evidenceRequired": ["tests/task-contract.test.js passes"],
+      "owner": "shared",
+      "frozen": true
+    },
+    {
+      "id": "AC-002",
+      "statement": "Consequential authority without a human gate is rejected.",
+      "evidenceRequired": ["A negative validator test demonstrates rejection"],
+      "owner": "human",
+      "frozen": true
+    }
+  ],
+  "authority": {
+    "level": "reversible_changes",
+    "allowedActions": ["Add source-side contract assets and tests on the feature branch"],
+    "prohibitedActions": ["Merge, deploy, or sync into consumer repositories"]
+  },
+  "humanGates": [
+    {
+      "id": "GATE-001",
+      "decision": "Approve merge and consumer rollout.",
+      "when": "After independent review and passing repository verification.",
+      "status": "pending"
+    }
+  ],
+  "approval": {
+    "approvedBy": "example-human-owner",
+    "approvedOn": "2026-11-12",
+    "contractFingerprint": "e79f590d19a583d01d4d650d24b582f55fef48571a3efd5e459c435c00f4d1e6"
+  }
+}

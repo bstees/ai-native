@@ -25,6 +25,7 @@ function findRecord(index, kind, name) {
 function run() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "repo-surface-index-test-"));
   const nonGitRoot = fs.mkdtempSync(path.join(os.tmpdir(), "repo-surface-index-non-git-test-"));
+  const provenanceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "repo-surface-index-provenance-test-"));
   const toolPath = path.join(__dirname, "..", "scripts", "repo-surface-index.js");
 
   try {
@@ -222,8 +223,12 @@ function run() {
 
     const first = buildSurfaceIndex(tempRoot);
     const second = buildSurfaceIndex(tempRoot);
-    assert.strictEqual(first.schemaVersion, 1);
+    assert.strictEqual(first.schemaVersion, 2);
     assert.strictEqual(first.indexKind, "repository-surface-contracts");
+    assert.strictEqual(first.provenance.repositoryKind, "git");
+    assert.strictEqual(first.provenance.revision, null);
+    assert.strictEqual(first.provenance.dirty, true);
+    assert.match(first.provenance.workingTreeFingerprint, /^[a-f0-9]{64}$/);
     assert.strictEqual(serializeIndex(first), serializeIndex(second));
     assert.ok(first.summary.records > 10);
 
@@ -308,11 +313,14 @@ function run() {
       accessPath,
       fs.readFileSync(accessPath, "utf8").replace("PRIVATE_BODY_SECRET", "PRIVATE_BODY_CHANGED")
     );
+    const bodyOnlyRefresh = ensureIndex(tempRoot);
+    assert.strictEqual(bodyOnlyRefresh.state, "refreshed");
     assert.strictEqual(
-      ensureIndex(tempRoot).state,
-      "current",
-      "private body-only changes must not invalidate the surface index"
+      bodyOnlyRefresh.index.fingerprint,
+      created.index.fingerprint,
+      "private body-only changes must preserve the public surface fingerprint"
     );
+    assert.strictEqual(ensureIndex(tempRoot).state, "current");
 
     const documentsPath = path.join(tempRoot, "src", "documents.tsx");
     fs.writeFileSync(
@@ -366,6 +374,12 @@ function run() {
       "export function nonGitInstalledTool() { return 'NON_GIT_INTERNAL'; }\n"
     );
     const nonGitIndex = buildSurfaceIndex(nonGitRoot);
+    assert.deepStrictEqual(nonGitIndex.provenance, {
+      repositoryKind: "directory",
+      revision: null,
+      dirty: null,
+      workingTreeFingerprint: null
+    });
     assert.ok(findRecord(nonGitIndex, "function", "visibleSurface"));
     assert.ok(!nonGitIndex.records.some((record) => record.name === "nonGitInstalledTool"));
     assert.ok(!nonGitIndex.records.some((record) => record.name === "ignoredBeforeGitInit"));
@@ -376,10 +390,93 @@ function run() {
       path.join(nonGitRoot, ".ai-native", "cache", "repo-surface-index.json")
     );
 
+    write(
+      provenanceRoot,
+      "src/public.js",
+      [
+        "/** Return a stable public value. */",
+        "export function publicValue(input) {",
+        "  const privateBody = 'PRIVATE_PROVENANCE_BODY';",
+        "  return input + privateBody.length;",
+        "}",
+        ""
+      ].join("\n")
+    );
+    write(
+      provenanceRoot,
+      "src/oversized-private.js",
+      `// Private implementation body used to exercise large dirty snapshots.\n${"A".repeat(2 * 1024 * 1024)}\n`
+    );
+    execFileSync("git", ["init"], { cwd: provenanceRoot, stdio: "ignore" });
+    execFileSync("git", ["config", "user.name", "Surface Index Test"], {
+      cwd: provenanceRoot,
+      stdio: "ignore"
+    });
+    execFileSync("git", ["config", "user.email", "surface-index@example.test"], {
+      cwd: provenanceRoot,
+      stdio: "ignore"
+    });
+    execFileSync("git", ["config", "commit.gpgsign", "false"], {
+      cwd: provenanceRoot,
+      stdio: "ignore"
+    });
+    execFileSync("git", ["add", "."], { cwd: provenanceRoot, stdio: "ignore" });
+    execFileSync("git", ["commit", "-m", "fixture"], { cwd: provenanceRoot, stdio: "ignore" });
+
+    const committedRevision = execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: provenanceRoot,
+      encoding: "utf8"
+    }).trim();
+    const cleanIndex = buildSurfaceIndex(provenanceRoot);
+    assert.deepStrictEqual(cleanIndex.provenance, {
+      repositoryKind: "git",
+      revision: committedRevision,
+      dirty: false,
+      workingTreeFingerprint: null
+    });
+    assert.ok(!serializeIndex(cleanIndex).includes(provenanceRoot));
+    assert.ok(!serializeIndex(cleanIndex).includes("PRIVATE_PROVENANCE_BODY"));
+
+    assert.strictEqual(ensureIndex(provenanceRoot).state, "created");
+    const publicPath = path.join(provenanceRoot, "src", "public.js");
+    fs.writeFileSync(
+      publicPath,
+      fs.readFileSync(publicPath, "utf8").replace("PRIVATE_PROVENANCE_BODY", "PRIVATE_BODY_CHANGED")
+    );
+    const dirtyIndex = buildSurfaceIndex(provenanceRoot);
+    assert.strictEqual(dirtyIndex.fingerprint, cleanIndex.fingerprint);
+    assert.strictEqual(dirtyIndex.provenance.dirty, true);
+    assert.match(dirtyIndex.provenance.workingTreeFingerprint, /^[a-f0-9]{64}$/);
+    assert.strictEqual(
+      ensureIndex(provenanceRoot).state,
+      "refreshed",
+      "provenance changes should refresh the cached index without changing its surface fingerprint"
+    );
+    assert.strictEqual(ensureIndex(provenanceRoot).state, "current");
+
+    const oversizedPath = path.join(provenanceRoot, "src", "oversized-private.js");
+    fs.writeFileSync(
+      oversizedPath,
+      `// Private implementation body used to exercise large dirty snapshots.\n${"B".repeat(2 * 1024 * 1024)}\n`
+    );
+    const firstLargeDirtyIndex = buildSurfaceIndex(provenanceRoot);
+    fs.writeFileSync(
+      oversizedPath,
+      `// Private implementation body used to exercise large dirty snapshots.\n${"C".repeat(2 * 1024 * 1024)}\n`
+    );
+    const secondLargeDirtyIndex = buildSurfaceIndex(provenanceRoot);
+    assert.strictEqual(firstLargeDirtyIndex.fingerprint, secondLargeDirtyIndex.fingerprint);
+    assert.notStrictEqual(
+      firstLargeDirtyIndex.provenance.workingTreeFingerprint,
+      secondLargeDirtyIndex.provenance.workingTreeFingerprint,
+      "distinct large body-only changes must have distinct dirty snapshot fingerprints"
+    );
+
     console.log("Repository surface index tests passed.");
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
     fs.rmSync(nonGitRoot, { recursive: true, force: true });
+    fs.rmSync(provenanceRoot, { recursive: true, force: true });
   }
 }
 

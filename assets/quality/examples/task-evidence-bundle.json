@@ -1,0 +1,58 @@
+{
+  "$schema": "../contracts/task-evidence-bundle.schema.json",
+  "bundleVersion": 1,
+  "bundleId": "EVB-2026-11-12-DIGEST-CONTRACTS",
+  "createdOn": "2026-11-12",
+  "task": {
+    "taskId": "weekly-digest-contracts",
+    "revision": 1,
+    "contractPath": "assets/workflows/examples/task-contract.json",
+    "contractFingerprint": "e79f590d19a583d01d4d650d24b582f55fef48571a3efd5e459c435c00f4d1e6"
+  },
+  "implementation": {
+    "actorId": "delivery-agent",
+    "actorType": "agent",
+    "branch": "codex/weekly-digest-findings",
+    "commit": null,
+    "changedPaths": [
+      "assets/workflows/contracts/task-contract.schema.json",
+      "assets/workflows/task-contract.md",
+      "assets/workflows/examples/task-contract.json",
+      "scripts/validate-task-contract.js",
+      "tests/task-contract.test.js"
+    ],
+    "changeFingerprint": "99b96486dc1553f96872f173b247633e26f9aefea210829169e37da2283b696f"
+  },
+  "commandEvidence": [
+    {
+      "command": "node tests/task-contract.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": ["verification:task-contract-focused"]
+    }
+  ],
+  "criterionEvidence": [
+    {
+      "criterionId": "AC-001",
+      "status": "passed",
+      "evidenceRefs": ["tests/task-contract.test.js"]
+    },
+    {
+      "criterionId": "AC-002",
+      "status": "passed",
+      "evidenceRefs": ["tests/task-contract.test.js#consequentialWithoutGate"]
+    }
+  ],
+  "review": {
+    "reviewerId": "independent-reviewer",
+    "profilePath": "assets/agent-orchestration/profiles/reviewer.json",
+    "independent": true,
+    "readOnly": true,
+    "findings": [],
+    "unresolvedRisks": [
+      "The implementation must be committed before an independent reviewer can mark the bundle verified."
+    ],
+    "disposition": "changes_required",
+    "reviewedOn": "2026-11-12"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://brentstees.com/schemas/ai-native/failure-record-v1.json",
+  "title": "AI Native Failure Learning Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "failureVersion",
+    "failureId",
+    "observedOn",
+    "classification",
+    "summary",
+    "evidenceRefs",
+    "reproducible",
+    "generalizability",
+    "remediation",
+    "regression",
+    "promotion",
+    "status",
+    "outcomeEvidenceRefs"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "failureVersion": { "const": 1 },
+    "failureId": { "type": "string", "pattern": "^FAIL-20[0-9]{2}-[0-9]{2}-[0-9]{2}-[A-Z0-9-]+$" },
+    "observedOn": { "$ref": "#/$defs/date" },
+    "classification": {
+      "enum": [
+        "requirements",
+        "authority",
+        "context",
+        "tool",
+        "implementation",
+        "verification",
+        "environment",
+        "recovery",
+        "human_correction"
+      ]
+    },
+    "summary": { "type": "string", "minLength": 10 },
+    "evidenceRefs": { "$ref": "#/$defs/nonEmptyStrings" },
+    "reproducible": { "type": "boolean" },
+    "generalizability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "recurrenceCount", "occurrenceRefs", "rationale"],
+      "properties": {
+        "scope": { "enum": ["incident_specific", "repository_pattern", "cross_repository"] },
+        "recurrenceCount": { "type": "integer", "minimum": 1 },
+        "occurrenceRefs": { "$ref": "#/$defs/nonEmptyStrings" },
+        "rationale": { "type": "string", "minLength": 10 }
+      }
+    },
+    "remediation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "instructions", "owner"],
+      "properties": {
+        "type": {
+          "enum": [
+            "instruction",
+            "skill",
+            "tool",
+            "validator",
+            "test",
+            "workflow_constraint",
+            "no_change"
+          ]
+        },
+        "instructions": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string", "minLength": 1 }
+      }
+    },
+    "regression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "caseRefs", "resultEvidenceRefs"],
+      "properties": {
+        "status": { "enum": ["not_required", "planned", "failing", "passing"] },
+        "caseRefs": { "$ref": "#/$defs/strings" },
+        "resultEvidenceRefs": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "promotion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "targetRefs", "approvedBy", "approvedOn"],
+      "properties": {
+        "decision": { "enum": ["do_not_promote", "candidate", "promoted"] },
+        "targetRefs": { "$ref": "#/$defs/strings" },
+        "approvedBy": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "minLength": 1 }]
+        },
+        "approvedOn": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/date" }]
+        }
+      }
+    },
+    "status": { "enum": ["open", "mitigated", "closed"] },
+    "outcomeEvidenceRefs": { "$ref": "#/$defs/strings" }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$" },
+    "strings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "nonEmptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}
