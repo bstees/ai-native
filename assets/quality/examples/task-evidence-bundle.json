@@ -49,8 +49,10 @@
     "independent": true,
     "readOnly": true,
     "findings": [],
-    "unresolvedRisks": [],
-    "disposition": "verified",
+    "unresolvedRisks": [
+      "The implementation must be committed before an independent reviewer can mark the bundle verified."
+    ],
+    "disposition": "changes_required",
     "reviewedOn": "2026-11-12"
   }
 }

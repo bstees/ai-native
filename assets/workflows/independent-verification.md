@@ -5,8 +5,9 @@ the implementer did not define or weaken after seeing the solution.
 
 1. Freeze and approve the applicable task-contract revision.
 2. Let the implementation actor work within the approved scope and authority.
-3. Record changed paths, exact commands, exit results, and evidence for every
-   acceptance-criterion ID in a task evidence bundle.
+3. Commit the implementation, then record its commit, exact changed paths,
+   commands, exit results, and evidence for every acceptance-criterion ID in a
+   task evidence bundle.
 4. Give a fresh, read-only reviewer the approved contract, diff, and evidence
    bundle. Do not give it authority to patch what it reviews.
 5. Resolve blocking findings through a new implementation pass, then ask for a

@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { execFileSync } = require("child_process");
 const Ajv2020 = require("ajv/dist/2020");
 
 const defaultManifestPath = path.join(
@@ -39,9 +40,69 @@ function sameMembers(left, right) {
   return left.every((value) => rightSet.has(value));
 }
 
+function resolveRepositoryPath(baseDirectory, relativePath) {
+  if (typeof relativePath !== "string" || path.isAbsolute(relativePath)) return null;
+  const base = path.resolve(baseDirectory);
+  const resolved = path.resolve(base, relativePath);
+  return resolved.startsWith(`${base}${path.sep}`) ? resolved : null;
+}
+
+function validateLocalCommitBinding(baseDirectory, implementation) {
+  const errors = [];
+  const commit = implementation.commit;
+  try {
+    execFileSync("git", ["-C", baseDirectory, "cat-file", "-e", `${commit}^{commit}`], {
+      stdio: "ignore"
+    });
+  } catch (error) {
+    return [`/${implementation.implementationId}/commit does not resolve to a repository commit`];
+  }
+
+  try {
+    execFileSync("git", ["-C", baseDirectory, "merge-base", "--is-ancestor", commit, "HEAD"], {
+      stdio: "ignore"
+    });
+  } catch (error) {
+    errors.push(`/${implementation.implementationId}/commit is not an ancestor of the current branch`);
+  }
+
+  for (const relativePath of implementation.paths || []) {
+    if (relativePath === "planning/weekly-digest-delivery-manifest.json") {
+      errors.push(`/${implementation.implementationId}/paths cannot make the attestation manifest attest to itself`);
+      continue;
+    }
+    const resolvedPath = resolveRepositoryPath(baseDirectory, relativePath);
+    if (!resolvedPath || !fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
+      errors.push(`/${implementation.implementationId}/paths is not a current repository file: ${relativePath}`);
+      continue;
+    }
+
+    let committedContents;
+    try {
+      committedContents = execFileSync(
+        "git",
+        ["-C", baseDirectory, "show", `${commit}:${relativePath}`],
+        { encoding: "buffer", maxBuffer: 256 * 1024 * 1024, stdio: ["ignore", "pipe", "ignore"] }
+      );
+    } catch (error) {
+      errors.push(`/${implementation.implementationId}/commit does not contain path ${relativePath}`);
+      continue;
+    }
+    if (!committedContents.equals(fs.readFileSync(resolvedPath))) {
+      errors.push(`/${implementation.implementationId}/commit contains a stale version of ${relativePath}`);
+    }
+  }
+
+  return errors;
+}
+
 function validateWeeklyDigestManifest(
   manifest,
-  { schemaPath = defaultSchemaPath } = {}
+  {
+    schemaPath = defaultSchemaPath,
+    baseDirectory = path.join(__dirname, ".."),
+    localRepositoryKey = "aiNative"
+  } = {}
 ) {
   const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
   const ajv = new Ajv2020({ allErrors: true, strict: true });
@@ -141,8 +202,14 @@ function validateWeeklyDigestManifest(
 
   for (const implementation of manifest.implementations || []) {
     const backlog = backlogItems.get(implementation.backlogId);
+    const repository = manifest.repositories?.[implementation.repositoryKey];
     if (!backlog) {
       errors.push(`/${implementation.implementationId} references missing backlog ${implementation.backlogId}`);
+    }
+    if (!repository) {
+      errors.push(`/${implementation.implementationId} references missing repository ${implementation.repositoryKey}`);
+    } else if (repository.branch && implementation.branch !== repository.branch) {
+      errors.push(`/${implementation.implementationId}/branch does not match its repository branch`);
     }
     for (const findingId of implementation.findingIds || []) {
       const finding = findings.get(findingId);
@@ -165,6 +232,8 @@ function validateWeeklyDigestManifest(
     if (implementation.status === "verified") {
       if (!implementation.commit) {
         errors.push(`/${implementation.implementationId} verified status requires an implementation commit`);
+      } else if (implementation.repositoryKey === localRepositoryKey) {
+        errors.push(...validateLocalCommitBinding(baseDirectory, implementation));
       }
       if (!(implementation.verificationRunIds || []).length) {
         errors.push(`/${implementation.implementationId} verified status requires verification runs`);

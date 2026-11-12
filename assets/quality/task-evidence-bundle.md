@@ -11,8 +11,9 @@ A complete example is
 
 ## Required Boundary
 
-- The implementer records changed paths, a content fingerprint (or durable
-  commit), and exact verification commands.
+- The implementer records changed paths, a content fingerprint, and exact
+  verification commands. An uncommitted bundle may be reviewed provisionally,
+  but a `verified` disposition requires a durable commit.
 - Every acceptance-criterion ID has explicit evidence and a result.
 - A reviewer using the read-only
   [`reviewer` profile](../agent-orchestration/profiles/reviewer.json) examines
@@ -21,9 +22,9 @@ A complete example is
   implementation while acting as the independent reviewer.
 - The validator loads the referenced approved task contract and requires exact
   task identity, revision, contract fingerprint, and criterion coverage.
-- A bundle cannot be `verified` when the reviewer is the implementer, a
-  command failed, criterion evidence is incomplete, or a blocking finding is
-  unresolved.
+- A bundle cannot be `verified` when it lacks a commit, the reviewer is the
+  implementer, a command failed, criterion evidence is incomplete, or a
+  blocking finding is unresolved.
 
 Store durable references and concise outcomes. Raw prompts, chain-of-thought,
 secret-bearing output, and entire terminal transcripts are neither required

@@ -229,6 +229,9 @@ function validateTaskEvidence(
   }
 
   if (review.disposition === "verified") {
+    if (typeof implementation.commit !== "string") {
+      errors.push("/implementation/commit is required for verified evidence");
+    }
     if (
       contract?.authority?.level === "consequential_changes" &&
       !(

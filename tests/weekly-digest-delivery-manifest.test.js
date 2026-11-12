@@ -68,6 +68,30 @@ function run() {
   ).commit = null;
   expectInvalid(verifiedWithoutCommit, "requires an implementation commit");
 
+  const missingCommit = clone(manifest);
+  missingCommit.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).commit = "deadbee";
+  expectInvalid(missingCommit, "does not resolve to a repository commit");
+
+  const missingPath = clone(manifest);
+  missingPath.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).paths.push("does/not/exist.js");
+  expectInvalid(missingPath, "not a current repository file");
+
+  const selfAttestation = clone(manifest);
+  selfAttestation.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).paths.push("planning/weekly-digest-delivery-manifest.json");
+  expectInvalid(selfAttestation, "attestation manifest attest to itself");
+
+  const wrongBranch = clone(manifest);
+  wrongBranch.implementations.find(
+    (implementation) => implementation.status === "verified"
+  ).branch = "unapproved/branch";
+  expectInvalid(wrongBranch, "does not match its repository branch");
+
   console.log("Weekly digest delivery manifest validation passed.");
 }
 

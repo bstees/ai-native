@@ -2,9 +2,11 @@ const assert = require("assert");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 const {
   changedPathsFingerprint,
+  commitPathsFingerprint,
   validateTaskEvidence
 } = require("../scripts/validate-task-evidence");
 const { contractFingerprint } = require("../scripts/validate-task-contract");
@@ -34,6 +36,11 @@ function expectInvalid(bundle, fragment) {
 function run() {
   const valid = JSON.parse(fs.readFileSync(examplePath, "utf8"));
   assert.deepStrictEqual(validateTaskEvidence(valid), { valid: true, errors: [] });
+
+  const uncommittedVerified = clone(valid);
+  uncommittedVerified.review.disposition = "verified";
+  uncommittedVerified.review.unresolvedRisks = [];
+  expectInvalid(uncommittedVerified, "required for verified evidence");
 
   const missingContract = clone(valid);
   missingContract.task.contractPath = "assets/workflows/examples/does-not-exist.json";
@@ -82,6 +89,8 @@ function run() {
   expectInvalid(selfReview, "must differ");
 
   const blocking = clone(valid);
+  blocking.review.disposition = "verified";
+  blocking.review.unresolvedRisks = [];
   blocking.review.findings.push({
     id: "REV-001",
     severity: "blocking",
@@ -92,6 +101,8 @@ function run() {
   expectInvalid(blocking, "blocking");
 
   const failedCriterion = clone(valid);
+  failedCriterion.review.disposition = "verified";
+  failedCriterion.review.unresolvedRisks = [];
   failedCriterion.criterionEvidence[0].status = "insufficient";
   expectInvalid(failedCriterion, "every acceptance criterion");
 
@@ -125,6 +136,8 @@ function run() {
       `${JSON.stringify(consequentialContract, null, 2)}\n`
     );
     const pendingGateEvidence = clone(valid);
+    pendingGateEvidence.review.disposition = "verified";
+    pendingGateEvidence.review.unresolvedRisks = [];
     pendingGateEvidence.task.contractFingerprint = consequentialContract.approval.contractFingerprint;
     pendingGateEvidence.implementation.changeFingerprint = changedPathsFingerprint(
       temporaryRoot,
@@ -137,6 +150,75 @@ function run() {
     assert.ok(pendingResult.errors.some((error) => error.includes("approved human gate")));
   } finally {
     fs.rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+
+  const committedRoot = fs.mkdtempSync(path.join(os.tmpdir(), "task-evidence-commit-test-"));
+  try {
+    const sourceContractPath = path.join(__dirname, "..", valid.task.contractPath);
+    const committedContract = JSON.parse(fs.readFileSync(sourceContractPath, "utf8"));
+    committedContract.repository.revision = "BASELINE";
+    committedContract.repository.branch = "feature/committed-evidence";
+    committedContract.scope.expectedChangedPaths = ["src/example.js"];
+    committedContract.approval.contractFingerprint = contractFingerprint(committedContract);
+
+    const committedContractPath = path.join(committedRoot, valid.task.contractPath);
+    fs.mkdirSync(path.dirname(committedContractPath), { recursive: true });
+    fs.writeFileSync(committedContractPath, `${JSON.stringify(committedContract, null, 2)}\n`);
+    fs.mkdirSync(path.join(committedRoot, "src"), { recursive: true });
+    fs.writeFileSync(path.join(committedRoot, "src", "example.js"), "export const value = 1;\n");
+
+    execFileSync("git", ["init"], { cwd: committedRoot, stdio: "ignore" });
+    execFileSync("git", ["config", "user.name", "Evidence Test"], {
+      cwd: committedRoot,
+      stdio: "ignore"
+    });
+    execFileSync("git", ["config", "user.email", "evidence@example.test"], {
+      cwd: committedRoot,
+      stdio: "ignore"
+    });
+    execFileSync("git", ["config", "commit.gpgsign", "false"], {
+      cwd: committedRoot,
+      stdio: "ignore"
+    });
+    execFileSync("git", ["add", "."], { cwd: committedRoot, stdio: "ignore" });
+    execFileSync("git", ["commit", "-m", "baseline"], {
+      cwd: committedRoot,
+      stdio: "ignore"
+    });
+    execFileSync("git", ["tag", "BASELINE"], { cwd: committedRoot, stdio: "ignore" });
+    execFileSync("git", ["checkout", "-b", "feature/committed-evidence"], {
+      cwd: committedRoot,
+      stdio: "ignore"
+    });
+    fs.writeFileSync(path.join(committedRoot, "src", "example.js"), "export const value = 2;\n");
+    execFileSync("git", ["add", "src/example.js"], { cwd: committedRoot, stdio: "ignore" });
+    execFileSync("git", ["commit", "-m", "implement example"], {
+      cwd: committedRoot,
+      stdio: "ignore"
+    });
+    const implementationCommit = execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: committedRoot,
+      encoding: "utf8"
+    }).trim();
+
+    const committedEvidence = clone(valid);
+    committedEvidence.task.contractFingerprint = committedContract.approval.contractFingerprint;
+    committedEvidence.implementation.branch = committedContract.repository.branch;
+    committedEvidence.implementation.commit = implementationCommit;
+    committedEvidence.implementation.changedPaths = ["src/example.js"];
+    committedEvidence.implementation.changeFingerprint = commitPathsFingerprint(
+      committedRoot,
+      implementationCommit,
+      committedEvidence.implementation.changedPaths
+    );
+    committedEvidence.review.disposition = "verified";
+    committedEvidence.review.unresolvedRisks = [];
+    assert.deepStrictEqual(
+      validateTaskEvidence(committedEvidence, { baseDirectory: committedRoot }),
+      { valid: true, errors: [] }
+    );
+  } finally {
+    fs.rmSync(committedRoot, { recursive: true, force: true });
   }
 
   assert.strictEqual(
