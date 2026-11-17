@@ -32,6 +32,9 @@ function contractFingerprint(contract) {
     goal: contract.goal,
     repository: contract.repository,
     scope: contract.scope,
+    sourceEvidence: contract.sourceEvidence,
+    risks: contract.risks,
+    verificationCommands: contract.verificationCommands,
     constraints: contract.constraints,
     assumptions: contract.assumptions,
     acceptanceCriteria: contract.acceptanceCriteria,
@@ -69,6 +72,8 @@ function validateTaskContract(contract, { schemaPath = defaultSchemaPath } = {})
   if (!schemaValid) return { valid: false, errors };
 
   for (const [name, items] of [
+    ["sourceEvidence", contract.sourceEvidence || []],
+    ["risks", contract.risks || []],
     ["constraints", contract.constraints || []],
     ["assumptions", contract.assumptions || []],
     ["acceptanceCriteria", contract.acceptanceCriteria || []],

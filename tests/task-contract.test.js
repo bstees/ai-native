@@ -48,6 +48,22 @@ function run() {
 
   const approved = clone(draft);
   approved.status = "approved";
+  approved.sourceEvidence = [
+    {
+      id: "SRC-001",
+      source: "Official documentation",
+      claim: "The proposed workflow is supported.",
+      limitations: "Repository-specific behavior still requires local verification.",
+      evidenceRefs: ["https://example.test/official-docs"]
+    }
+  ];
+  approved.risks = [
+    {
+      id: "RISK-001",
+      statement: "An incomplete verification boundary could create false confidence."
+    }
+  ];
+  approved.verificationCommands = ["npm test", "npm run build"];
   approved.acceptanceCriteria.forEach((criterion) => {
     criterion.frozen = true;
   });
@@ -57,6 +73,22 @@ function run() {
     contractFingerprint: contractFingerprint(approved)
   };
   assert.deepStrictEqual(validateTaskContract(approved), { valid: true, errors: [] });
+
+  for (const mutateBoundary of [
+    (contract) => {
+      contract.sourceEvidence[0].claim = "A different post-approval claim.";
+    },
+    (contract) => {
+      contract.risks[0].statement = "A different post-approval risk.";
+    },
+    (contract) => {
+      contract.verificationCommands.push("npm run eval:instructions");
+    }
+  ]) {
+    const changedBoundary = clone(approved);
+    mutateBoundary(changedBoundary);
+    expectInvalid(changedBoundary, "contractFingerprint");
+  }
 
   approved.acceptanceCriteria[0].statement = "Silently changed after approval.";
   expectInvalid(approved, "contractFingerprint");

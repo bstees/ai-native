@@ -21,7 +21,7 @@
       "scripts/validate-task-contract.js",
       "tests/task-contract.test.js"
     ],
-    "changeFingerprint": "99b96486dc1553f96872f173b247633e26f9aefea210829169e37da2283b696f"
+    "changeFingerprint": "12b6bdc134dc93f020f38dd035f023e9c18e9a24e20ac0d5019bcdc54d52526e"
   },
   "commandEvidence": [
     {

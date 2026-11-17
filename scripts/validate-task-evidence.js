@@ -248,13 +248,13 @@ function validateTaskEvidence(
         );
       }
     }
-    if (deviation.impact === "material" && deviation.status === "approved") {
+    if (deviation.status === "approved") {
       const gate = Array.isArray(contract?.humanGates)
         ? contract.humanGates.find((candidate) => candidate.id === deviation.humanGateId)
         : null;
       if (!gate || gate.status !== "approved") {
         errors.push(
-          `/requirementDeviations ${deviation.id} approved material deviation requires its referenced contract human gate to be approved`
+          `/requirementDeviations ${deviation.id} approved deviation requires its referenced contract human gate to be approved`
         );
       }
     }
@@ -358,15 +358,10 @@ function validateTaskEvidence(
     }
     if (
       Array.isArray(bundle.requirementDeviations) &&
-      bundle.requirementDeviations.some(
-        (item) =>
-          item.impact === "material" &&
-          item.status !== "approved" &&
-          item.status !== "resolved"
-      )
+      bundle.requirementDeviations.some((item) => item.status !== "resolved")
     ) {
       errors.push(
-        "/requirementDeviations unapproved material deviations prevent verified disposition"
+        "/requirementDeviations every deviation must be resolved for verified disposition; approval of a contract change requires a superseding contract revision"
       );
     }
     if (

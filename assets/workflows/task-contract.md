@@ -14,13 +14,17 @@ A valid example lives at
 
 1. Create a draft with a bounded goal, included and excluded scope, the exact
    expected changed-path set, explicit path exclusions, constraints,
-   assumptions, and stable acceptance-criterion IDs.
+   assumptions, source evidence and its limitations, risks, exact verification
+   commands, and stable acceptance-criterion IDs. Historical contracts may
+   omit the three newer evidence fields, but weekly-brief delivery requires
+   them.
 2. Assign an authority level and name the actions that remain prohibited.
 3. Add human gates for consequential, irreversible, architectural, security,
    or product-judgment decisions.
 4. Approve the contract by freezing every acceptance criterion and recording
-   a fingerprint covering the goal, repository revision, path set, scope, constraints,
-   assumptions, acceptance criteria, authority, and human-gate definitions.
+   a fingerprint covering the goal, repository revision, path set, scope,
+   source evidence, risks, verification commands, constraints, assumptions,
+   acceptance criteria, authority, and human-gate definitions.
 5. Implement against the approved revision. The implementation agent may not
    edit the approved boundaries or their fingerprint. Gate status may advance,
    but the gate's decision and trigger remain part of the approved boundary.
