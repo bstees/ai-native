@@ -74,6 +74,22 @@ function run() {
   };
   assert.deepStrictEqual(validateTaskContract(approved), { valid: true, errors: [] });
 
+  const superseded = clone(approved);
+  superseded.status = "superseded";
+  assert.deepStrictEqual(validateTaskContract(superseded), { valid: true, errors: [] });
+
+  const changedSuperseded = clone(superseded);
+  changedSuperseded.goal = "Silently changed after the approved revision was superseded.";
+  expectInvalid(changedSuperseded, "contractFingerprint");
+
+  const supersededWithoutApproval = clone(superseded);
+  supersededWithoutApproval.approval = null;
+  expectInvalid(supersededWithoutApproval, "approved or superseded");
+
+  const unfrozenSuperseded = clone(superseded);
+  unfrozenSuperseded.acceptanceCriteria[0].frozen = false;
+  expectInvalid(unfrozenSuperseded, "remain frozen");
+
   for (const mutateBoundary of [
     (contract) => {
       contract.sourceEvidence[0].claim = "A different post-approval claim.";

@@ -153,6 +153,20 @@ function validateTaskEvidence(
           errors.push("/criterionEvidence must cover the exact approved acceptance-criterion set");
         }
       }
+      if (Array.isArray(contract.verificationCommands)) {
+        const recordedCommands = new Set(
+          Array.isArray(bundle.commandEvidence)
+            ? bundle.commandEvidence.map((item) => item.command)
+            : []
+        );
+        for (const requiredCommand of contract.verificationCommands) {
+          if (!recordedCommands.has(requiredCommand)) {
+            errors.push(
+              `/commandEvidence missing approved verification command: ${requiredCommand}`
+            );
+          }
+        }
+      }
     } catch (error) {
       errors.push(`/task/contractPath could not be validated: ${error.message}`);
     }

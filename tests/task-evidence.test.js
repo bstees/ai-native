@@ -242,6 +242,7 @@ function run() {
     const consequentialContract = JSON.parse(fs.readFileSync(sourceContractPath, "utf8"));
     consequentialContract.authority.level = "consequential_changes";
     consequentialContract.humanGates[0].status = "pending";
+    consequentialContract.verificationCommands = ["node tests/task-contract.test.js"];
     consequentialContract.approval.contractFingerprint = contractFingerprint(consequentialContract);
     const temporaryContractPath = path.join(temporaryRoot, valid.task.contractPath);
     fs.mkdirSync(path.dirname(temporaryContractPath), { recursive: true });
@@ -290,6 +291,17 @@ function run() {
     assert.deepStrictEqual(
       validateTaskEvidence(approvedDeviationEvidence, { baseDirectory: temporaryRoot }),
       { valid: true, errors: [] }
+    );
+    const missingRequiredCommand = clone(approvedDeviationEvidence);
+    missingRequiredCommand.commandEvidence[0].command = "true";
+    const missingCommandResult = validateTaskEvidence(missingRequiredCommand, {
+      baseDirectory: temporaryRoot
+    });
+    assert.strictEqual(missingCommandResult.valid, false);
+    assert.ok(
+      missingCommandResult.errors.some((error) =>
+        error.includes("missing approved verification command")
+      )
     );
     approvedDeviationEvidence.review.disposition = "verified";
     approvedDeviationEvidence.review.unresolvedRisks = [];

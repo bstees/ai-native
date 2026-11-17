@@ -92,15 +92,17 @@ function validateTaskContract(contract, { schemaPath = defaultSchemaPath } = {})
     errors.push("/humanGates consequential_changes authority requires a pending or approved human gate");
   }
 
-  if (contract.status === "approved") {
+  if (contract.status === "approved" || contract.status === "superseded") {
     if (!contract.approval) {
-      errors.push("/approval is required when status is approved");
+      errors.push("/approval is required when status is approved or superseded");
     }
     if (
       Array.isArray(contract.acceptanceCriteria) &&
       contract.acceptanceCriteria.some((criterion) => !criterion.frozen)
     ) {
-      errors.push("/acceptanceCriteria every criterion must be frozen when status is approved");
+      errors.push(
+        "/acceptanceCriteria every criterion must remain frozen when status is approved or superseded"
+      );
     }
     if (
       contract.approval?.contractFingerprint &&

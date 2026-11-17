@@ -29,7 +29,8 @@ A valid example lives at
    edit the approved boundaries or their fingerprint. Gate status may advance,
    but the gate's decision and trigger remain part of the approved boundary.
 6. If success criteria change, supersede the contract and approve a new
-   revision. Never silently rewrite the old one.
+   revision. A superseded revision retains its approval, frozen criteria, and
+   matching fingerprint. Never silently rewrite the old one.
 
 ## Authority Rule
 

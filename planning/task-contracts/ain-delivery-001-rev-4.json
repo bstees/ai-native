@@ -3,7 +3,7 @@
   "contractVersion": 1,
   "taskId": "ain-delivery-001",
   "revision": 4,
-  "status": "approved",
+  "status": "superseded",
   "goal": "Deliver approved AI Native weekly-brief opportunities through one front-door human gate, automated implementation and verification, and a CI-green pull request ready for human review.",
   "repository": {
     "name": "bstees/ai-native",
@@ -275,4 +275,3 @@
     "contractFingerprint": "e9adc088b1cef5d37bf3ccaace481ecb91aaa29e10547df872c2ececfd7d93bf"
   }
 }
-
