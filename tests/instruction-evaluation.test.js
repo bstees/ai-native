@@ -52,7 +52,7 @@ function writeRun(directory, name, overrides = {}) {
 function run() {
   const loadedCases = loadCases(root);
   assert.deepStrictEqual(loadedCases.errors, []);
-  assert.strictEqual(loadedCases.cases.size, 4);
+  assert.strictEqual(loadedCases.cases.size, 5);
 
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "instruction-eval-test-"));
   fs.writeFileSync(path.join(directory, "instructions.md"), "Use the narrowest safe change.\n");

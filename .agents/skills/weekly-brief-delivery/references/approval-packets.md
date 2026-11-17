@@ -13,6 +13,9 @@ these private AI Native packets.
 - Included scope: exact behaviors and components included.
 - Excluded scope: explicit non-goals.
 - Expected changed paths: exact repository-relative path set.
+- Contract and evidence locations: include every repository-stored revision and
+  bundle in the changed-path set, or name the durable pull-request record for
+  an external evidence bundle.
 - Excluded paths: exact paths or bounded path groups that must not change.
 - Constraints: stable IDs and statements.
 - Assumptions: stable IDs, validation status, and evidence.
@@ -52,4 +55,5 @@ Ask for exactly one decision:
 - `Abandon <stable ID>.`
 
 Do not resume on ambiguity or silence. Preserve the old revision after a new
-revision is approved.
+revision is approved; create a separately named revision file rather than
+overwriting it.

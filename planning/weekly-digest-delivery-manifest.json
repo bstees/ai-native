@@ -18,7 +18,7 @@
       "remote": "git@github.com:bstees/ai-native.git",
       "role": "canonical findings, backlog, implementation, and verification",
       "baseCommit": "140e3ff2706ef5a9873d8bf3e4eb716ee86c8ae9",
-      "branch": "codex/weekly-digest-findings"
+      "branch": "codex/weekly-brief-delivery"
     },
     "nuk": {
       "remote": "git@github.com:bstees/nuk.git",
@@ -1550,8 +1550,8 @@
         "F-2026-11-06-02"
       ],
       "repositoryKey": "aiNative",
-      "branch": "codex/weekly-digest-findings",
-      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
+      "branch": "codex/weekly-brief-delivery",
+      "commit": "822e2730d130b1b051d7211ac9d92a539b68962f",
       "paths": [
         "assets/workflows/contracts/task-contract.schema.json",
         "assets/workflows/task-contract.md",
@@ -1649,8 +1649,8 @@
         "F-2026-09-25-02"
       ],
       "repositoryKey": "aiNative",
-      "branch": "codex/weekly-digest-findings",
-      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
+      "branch": "codex/weekly-brief-delivery",
+      "commit": "822e2730d130b1b051d7211ac9d92a539b68962f",
       "paths": [
         "assets/feedback/contracts/failure-record.schema.json",
         "assets/feedback/failure-learning-standard.md",

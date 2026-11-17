@@ -29,7 +29,10 @@ read-only, then:
 1. Propose at most three research-backed AI Native opportunities with stable
    `AIN-YYYY-MM-DD-NN` identifiers.
 2. Produce one complete approval contract per opportunity using the reference
-   format. Expected and excluded paths must be exact, not illustrative.
+   format. Expected and excluded paths must be exact, not illustrative. Include
+   repository-stored contract and evidence artifacts in that path set; if the
+   evidence bundle is stored outside the repository, name its durable PR
+   record before approval.
 3. Freeze stable acceptance-criterion IDs, evidence requirements, authority,
    and human gates in the presented revision and calculate its fingerprint.
 4. Stop without creating a worktree, branch, edit, commit, push, or pull request.
@@ -48,7 +51,9 @@ For every explicitly approved item:
    Never modify or clean the primary checkout.
 3. Materialize the approved packet as a repository-native task contract without
    changing its meaning. Freeze its criteria, record the approval, calculate
-   the fingerprint, and validate it before implementation edits.
+   the fingerprint, and validate it before implementation edits. Store each
+   revision separately using the repository convention; never overwrite a
+   prior revision when approval supersedes it.
 4. Implement the smallest complete slice within the exact approved path set.
 5. Run targeted checks and the repository verification command. Create an
    evidence bundle covering every acceptance ID, exact changed paths and
@@ -62,7 +67,8 @@ For every explicitly approved item:
 9. Mark the pull request ready for human review only when the exact approved
    revision is satisfied, local verification is green, the evidence validator
    passes, independent review is verified, and all required GitHub checks are
-   present and green.
+   present and successful for the exact final commit. Pending, skipped, neutral,
+   stale, or missing required checks do not satisfy readiness.
 
 Never merge, enable auto-merge, release, deploy, publish shared assets, roll out
 to consumers, change repository protection, or broaden authority.
@@ -88,12 +94,20 @@ Every deviation must start a revisit:
 Repeat while the approved contract can still be honored safely. Never silently
 waive, reinterpret, omit, substitute, or weaken a requirement.
 
+When diagnosis conclusively shows that compliance requires a contract change,
+stop the revisit instead of repeatedly running a known-impossible suite. Do not
+push or open a pull request while waiting when none exists; keep an existing
+pull request draft.
+
 If compliance requires any contract change, stop and present the deviation
 approval packet. Human approval creates a new immutable contract revision and
 fingerprint while preserving the prior revision. An approval recorded as a
 deviation inside the old evidence bundle does not make that old revision
 verified. Rejection means return to the prior approved contract or abandon the
-item.
+item. Bind the new evidence bundle only to the active revision. Preserve the
+superseded deviation packet and approval in the pull request's durable history;
+do not carry that historical mismatch into the active bundle as an unresolved
+deviation when the final implementation fully conforms to the new revision.
 
 ## Stop Conditions
 
