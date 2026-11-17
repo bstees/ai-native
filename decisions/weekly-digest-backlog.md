@@ -1,6 +1,6 @@
 # Weekly Digest Findings Backlog
 
-This record consolidates the practical findings from the 13 historically dated weekly AI engineering digests published from 2026-08-14 through 2026-11-06. The machine-readable source of truth for digest, finding, primary/secondary backlog, implementation, verification, and publication links is [`planning/weekly-digest-delivery-manifest.json`](../planning/weekly-digest-delivery-manifest.json).
+This record consolidates the practical findings from the 14 historically dated weekly AI engineering digests from 2026-08-14 through 2026-11-13. The November 13 digest is inventoried but not yet publication-ready. The machine-readable source of truth for digest, finding, primary/secondary backlog, implementation, verification, and publication links is [`planning/weekly-digest-delivery-manifest.json`](../planning/weekly-digest-delivery-manifest.json).
 
 Baseline review was performed against AI Native commit `140e3ff2706ef5a9873d8bf3e4eb716ee86c8ae9`. Existing assets are noted as foundations, not as digest finding implementations. At baseline there were no digest-linked evidence records, concept records, backlog-item instances, implementation records, or verification runs. An item must not move to `implemented` until the manifest names the implementation paths and commit and records passing verification evidence.
 
@@ -9,19 +9,19 @@ All items use branch `codex/weekly-digest-findings`. `issueUrl` and `pullRequest
 ## AF-001: Workflow Contracts and Human-Judgment Gates
 
 - Status: `in_progress`
-- Primary findings: `F-2026-08-14-01`, `F-2026-08-14-03`, `F-2026-08-28-01`, `F-2026-09-04-02`, `F-2026-09-11-01`, `F-2026-09-11-05`, `F-2026-09-25-03`, `F-2026-10-02-03`, `F-2026-11-06-02`
+- Primary findings: `F-2026-08-14-01`, `F-2026-08-14-03`, `F-2026-08-28-01`, `F-2026-09-04-02`, `F-2026-09-11-01`, `F-2026-09-11-05`, `F-2026-09-25-03`, `F-2026-10-02-03`, `F-2026-11-06-02`, `F-2026-11-13-01`
 - Baseline: goal/plan workflow, authority tiers, human gates, governance policy, and agent-profile contracts already exist.
-- Verified branch slice: `IMP-AF001-TASK-CONTRACT` adds a machine-readable task contract, full-boundary approval fingerprint, consequential-action gate checks, validator, and negative regression tests.
-- Remaining gap: the slice is not yet packaged for consumer repositories, and requirements refinement does not yet have its own artifact or end-to-end runtime enforcement.
+- Verified branch slices: `IMP-AF001-TASK-CONTRACT` adds a machine-readable task contract, full-boundary approval fingerprint, consequential-action gate checks, validator, and negative regression tests. The updated `IMP-AF002-EVIDENCE-BUNDLE` requires explicit compromises, substitutions, and unfulfilled criteria and blocks verification of unapproved material deviations.
+- Remaining gap: the slices are not yet packaged for consumer repositories, and requirements refinement does not yet have its own artifact or end-to-end runtime enforcement.
 - Done when: a versioned task contract records goal, included/excluded scope, constraints, assumptions, stable acceptance IDs, required evidence, authority level, and human gates; approved criteria can change only through a new revision; invalid or consequential contracts fail deterministic validation.
 
 ## AF-002: Independent Verification and Acceptance Boundaries
 
 - Status: `in_progress`
-- Primary findings: `F-2026-08-14-04`, `F-2026-08-21-04`, `F-2026-08-28-02`, `F-2026-08-28-04`, `F-2026-10-02-02`, `F-2026-10-09-02`, `F-2026-10-09-03`, `F-2026-10-16-02`, `F-2026-10-16-05`, `F-2026-10-23-03`, `F-2026-10-23-04`, `F-2026-10-30-01`, `F-2026-10-30-03`, `F-2026-11-06-04`
+- Primary findings: `F-2026-08-14-04`, `F-2026-08-21-04`, `F-2026-08-28-02`, `F-2026-08-28-04`, `F-2026-10-02-02`, `F-2026-10-09-02`, `F-2026-10-09-03`, `F-2026-10-16-02`, `F-2026-10-16-05`, `F-2026-10-23-03`, `F-2026-10-23-04`, `F-2026-10-30-01`, `F-2026-10-30-03`, `F-2026-11-06-04`, `F-2026-11-13-02`, `F-2026-11-13-03`
 - Baseline: engineering-quality and code-review workflows, a read-only fresh-context reviewer profile, and instruction-evaluation cases exist. Concurrent `write-unit-tests` work is uncommitted and is not evidence that this epic is implemented.
-- Verified branch slice: `IMP-AF002-EVIDENCE-BUNDLE` adds a canonical evidence bundle that loads and validates the approved contract, requires exact criterion coverage, binds uncommitted changes by content fingerprint (or a durable commit), and rejects self-review or unresolved blockers.
-- Remaining gap: reviewer execution and consumer packaging remain separate work; the active unit-test stream has not been merged or claimed by this branch.
+- Verified branch slice: `IMP-AF002-EVIDENCE-BUNDLE` adds a canonical evidence bundle that loads and validates the approved contract, requires exact criterion coverage, binds uncommitted changes by content fingerprint (or a durable commit), rejects self-review or unresolved blockers, records requirement deviations, and represents fail-before/pass-after differential evidence.
+- Remaining gap: reviewer execution, consumer packaging, and the approved historical-bug pilot remain separate work; the active unit-test stream has not been merged or claimed by this branch.
 - Done when: a validated evidence bundle links the approved contract revision, changed paths/commit, exact command outcomes, acceptance evidence, independent reviewer identity, findings, unresolved risks, and disposition; self-review cannot satisfy independence and unresolved blockers prevent a verified result.
 
 ## AF-003: Skills and Harness Quality
@@ -29,24 +29,26 @@ All items use branch `codex/weekly-digest-findings`. `issueUrl` and `pullRequest
 - Status: `in_progress_external`
 - Primary findings: `F-2026-08-28-03`, `F-2026-09-04-03`, `F-2026-09-25-01`, `F-2026-10-16-01`, `F-2026-10-16-04`, `F-2026-11-06-01`
 - Baseline: an instruction-evaluation framework, cases, pilot runs, schemas, comparison tooling, repository-local skills, and an agent-contract validator exist. The concurrent `write-unit-tests` skill and synchronization wiring are dirty and must be handed off before related changes continue.
-- Gap: important skills lack a common execution contract and representative held-out behavioral regression coverage; there is no code-review skill in this repository.
+- Verified branch slice: `IMP-AF003-SPEC-FIRST-STANDARD` makes specification-derived properties and differential evidence part of the canonical engineering quality bar without editing the concurrent `write-unit-tests` skill.
+- Gap: important skills lack a common execution contract and representative held-out behavioral regression coverage; the active unit-test skill still needs owner handoff before direct integration, and there is no code-review skill in this repository.
 - Done when: each important skill declares prerequisites, permitted actions, evidence, recovery, and completion; deterministic scenarios cover permissions, tool use, state, error recovery, and approvals; representative and held-out cases detect regressions without relying on the executor's self-report.
 
 ## AF-004: Agent Trajectory Observability
 
 - Status: `in_progress_external`
-- Primary findings: `F-2026-08-21-02`, `F-2026-08-21-03`, `F-2026-10-09-05`
+- Primary findings: `F-2026-08-21-02`, `F-2026-08-21-03`, `F-2026-10-09-05`, `F-2026-11-13-05`
 - Baseline: token-usage data, server support, dashboard UI, and a hybrid-team dashboard plan exist. Structured telemetry-lake and API work is active and unmerged elsewhere.
-- Gap: no committed lifecycle event model covering inputs, assumptions, actions, evidence, decisions, failures, interventions, and outcomes; retention and redaction controls are absent.
+- Planned slice: `IMP-AF004-STRUCTURAL-PILOT-PLAN` defines a bounded pilot and the context, cost, and human-effort measurements required before structural plan verification is promoted.
+- Gap: the candidate still requires human approval and the pilot has not run; no committed lifecycle event model covering inputs, assumptions, actions, evidence, decisions, failures, interventions, and outcomes exists, and retention and redaction controls are absent.
 - Done when: structured, queryable trajectory events preserve provenance across lifecycle phases; sensitive content is minimized or redacted; retention is explicit; tests prove schema integrity and safe failure behavior after the active telemetry work lands.
 
 ## AF-005: Engineering Knowledge and Retrieval
 
 - Status: `in_progress`
-- Primary findings: `F-2026-08-14-05`, `F-2026-09-11-02`, `F-2026-09-18-03`, `F-2026-09-25-04`, `F-2026-10-09-04`, `F-2026-10-23-02`, `F-2026-10-30-02`, `F-2026-11-06-03`
+- Primary findings: `F-2026-08-14-05`, `F-2026-09-11-02`, `F-2026-09-18-03`, `F-2026-09-25-04`, `F-2026-10-09-04`, `F-2026-10-23-02`, `F-2026-10-30-02`, `F-2026-11-06-03`, `F-2026-11-13-04`
 - Baseline: a deterministic repository-surface index, content fingerprint, staleness refresh, and `dry-context` skill exist.
 - Verified branch slice: `IMP-AF005-PROVENANCE` adds Git revision, dirty-state, and exact dirty-snapshot fingerprints to the deterministic index, plus the schema-validated digest/finding/backlog/implementation ledger.
-- Remaining gap: dependency relationships, incident/decision retrieval, and intent-based routing across deterministic and semantic sources are not implemented.
+- Remaining gap: dependency relationships, incident/decision retrieval, and intent-based routing across deterministic and semantic sources are not implemented. Retrieval-only, dependency-expanded, and whole-repository traceability have not yet been compared on a controlled sample.
 - Done when: retrieved knowledge carries source, repository revision, dirty/fresh state, date, and dependencies; deterministic code navigation and dependency context are preferred for code questions; broader history and semantic retrieval are routed by intent; tests prevent absolute paths, remotes, secrets, or source bodies from leaking.
 
 ## AF-006: Failure Learning and Guardrail Promotion
