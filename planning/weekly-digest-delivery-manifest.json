@@ -1580,7 +1580,7 @@
       ],
       "repositoryKey": "aiNativeNovember13",
       "branch": "codex/november-13-digest-findings",
-      "commit": "8cf8595",
+      "commit": "bd87749",
       "paths": [
         "assets/quality/contracts/task-evidence-bundle.schema.json",
         "assets/quality/task-evidence-bundle.md",
@@ -1605,7 +1605,7 @@
       ],
       "repositoryKey": "aiNativeNovember13",
       "branch": "codex/november-13-digest-findings",
-      "commit": "253d74c",
+      "commit": "3a07aff",
       "paths": [
         "schemas/weekly-digest-delivery-manifest.schema.json",
         "scripts/repo-surface-index.js",
@@ -1628,7 +1628,7 @@
       ],
       "repositoryKey": "aiNativeNovember13",
       "branch": "codex/november-13-digest-findings",
-      "commit": "253d74c",
+      "commit": "3a07aff",
       "paths": [
         "scripts/validate-weekly-digest-delivery-manifest.js",
         "tests/weekly-digest-delivery-manifest.test.js"
@@ -1673,7 +1673,7 @@
       ],
       "repositoryKey": "aiNativeNovember13",
       "branch": "codex/november-13-digest-findings",
-      "commit": "8cf8595",
+      "commit": "bd87749",
       "paths": [
         "assets/quality/engineering-quality.md"
       ],
@@ -1691,12 +1691,18 @@
       ],
       "repositoryKey": "aiNativeNovember13",
       "branch": "codex/november-13-digest-findings",
-      "commit": "8cf8595",
+      "commit": "0af10e4",
       "paths": [
+        "experiments/november-13-node-runtime-pilot/pilot-report.json",
+        "experiments/november-13-node-runtime-pilot/task-contract.json",
+        "experiments/november-13-node-runtime-pilot/task-evidence-bundle.json",
+        "experiments/november-13-node-runtime-pilot/verify-runtime-contract.js",
         "planning/november-13-verification-pilot.md"
       ],
-      "status": "planned",
-      "verificationRunIds": [],
+      "status": "implemented",
+      "verificationRunIds": [
+        "VR-AF004-STRUCTURAL-PILOT"
+      ],
       "pullRequestUrl": null
     }
   ],
@@ -1809,6 +1815,18 @@
       "completedOn": "2026-11-16",
       "evidenceRefs": [
         "tests/weekly-digest-delivery-manifest.test.js"
+      ]
+    },
+    {
+      "verificationRunId": "VR-AF004-STRUCTURAL-PILOT",
+      "implementationId": "IMP-AF004-STRUCTURAL-PILOT-PLAN",
+      "command": "node scripts/validate-task-evidence.js experiments/november-13-node-runtime-pilot/task-evidence-bundle.json",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-16",
+      "evidenceRefs": [
+        "experiments/november-13-node-runtime-pilot/task-evidence-bundle.json",
+        "experiments/november-13-node-runtime-pilot/pilot-report.json"
       ]
     }
   ]
