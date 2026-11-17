@@ -228,6 +228,97 @@ function validateTaskEvidence(
     criterionIds.add(evidence.criterionId);
   }
 
+  const contractCriterionIds = new Set(
+    Array.isArray(contract?.acceptanceCriteria)
+      ? contract.acceptanceCriteria.map((criterion) => criterion.id)
+      : []
+  );
+  const deviationIds = new Set();
+  for (const deviation of Array.isArray(bundle.requirementDeviations)
+    ? bundle.requirementDeviations
+    : []) {
+    if (deviationIds.has(deviation.id)) {
+      errors.push(`/requirementDeviations contains duplicate deviation ${deviation.id}`);
+    }
+    deviationIds.add(deviation.id);
+    for (const criterionId of deviation.criterionIds || []) {
+      if (!contractCriterionIds.has(criterionId)) {
+        errors.push(
+          `/requirementDeviations ${deviation.id} references unknown criterion ${criterionId}`
+        );
+      }
+    }
+    if (deviation.impact === "material" && deviation.status === "approved") {
+      const gate = Array.isArray(contract?.humanGates)
+        ? contract.humanGates.find((candidate) => candidate.id === deviation.humanGateId)
+        : null;
+      if (!gate || gate.status !== "approved") {
+        errors.push(
+          `/requirementDeviations ${deviation.id} approved material deviation requires its referenced contract human gate to be approved`
+        );
+      }
+    }
+  }
+
+  const differential = bundle.differentialEvidence || {};
+  const differentialRecords = Array.isArray(differential.records) ? differential.records : [];
+  if (differential.applicability === "required") {
+    if (!differentialRecords.length) {
+      errors.push("/differentialEvidence required evidence must contain at least one record");
+    }
+    if (differential.rationale !== null) {
+      errors.push("/differentialEvidence required evidence must use a null rationale");
+    }
+  }
+  if (differential.applicability === "not_applicable") {
+    if (differentialRecords.length) {
+      errors.push("/differentialEvidence not-applicable evidence cannot contain records");
+    }
+    if (typeof differential.rationale !== "string" || !differential.rationale.trim()) {
+      errors.push("/differentialEvidence not-applicable evidence requires a rationale");
+    }
+  }
+
+  const differentialIds = new Set();
+  for (const record of differentialRecords) {
+    if (differentialIds.has(record.id)) {
+      errors.push(`/differentialEvidence contains duplicate record ${record.id}`);
+    }
+    differentialIds.add(record.id);
+    for (const criterionId of record.criterionIds || []) {
+      if (!contractCriterionIds.has(criterionId)) {
+        errors.push(
+          `/differentialEvidence ${record.id} references unknown criterion ${criterionId}`
+        );
+      }
+    }
+    if (record.baseRevision !== contract?.repository?.revision) {
+      errors.push(
+        `/differentialEvidence ${record.id} baseRevision must match the approved contract revision`
+      );
+    }
+    if (
+      typeof implementation.commit === "string" &&
+      record.patchedRevision !== implementation.commit
+    ) {
+      errors.push(
+        `/differentialEvidence ${record.id} patchedRevision must match the implementation commit`
+      );
+    }
+    if ((record.observedBaseResult === "passed") !== (record.baseExitCode === 0)) {
+      errors.push(`/differentialEvidence ${record.id} base result and exit code disagree`);
+    }
+    if ((record.observedPatchedResult === "passed") !== (record.patchedExitCode === 0)) {
+      errors.push(`/differentialEvidence ${record.id} patched result and exit code disagree`);
+    }
+    if (
+      record.expectedBaseResult !== record.observedBaseResult ||
+      record.expectedPatchedResult !== record.observedPatchedResult
+    ) {
+      errors.push(`/differentialEvidence ${record.id} observed results do not match expectations`);
+    }
+  }
+
   if (review.disposition === "verified") {
     if (typeof implementation.commit !== "string") {
       errors.push("/implementation/commit is required for verified evidence");
@@ -264,6 +355,30 @@ function validateTaskEvidence(
     }
     if (Array.isArray(review.unresolvedRisks) && review.unresolvedRisks.length) {
       errors.push("/review/unresolvedRisks must be empty for verified disposition");
+    }
+    if (
+      Array.isArray(bundle.requirementDeviations) &&
+      bundle.requirementDeviations.some(
+        (item) =>
+          item.impact === "material" &&
+          item.status !== "approved" &&
+          item.status !== "resolved"
+      )
+    ) {
+      errors.push(
+        "/requirementDeviations unapproved material deviations prevent verified disposition"
+      );
+    }
+    if (
+      differential.applicability === "required" &&
+      differentialRecords.some(
+        (record) =>
+          record.observedBaseResult !== "failed" || record.observedPatchedResult !== "passed"
+      )
+    ) {
+      errors.push(
+        "/differentialEvidence required verified evidence must fail on the base and pass on the patch"
+      );
     }
   }
 

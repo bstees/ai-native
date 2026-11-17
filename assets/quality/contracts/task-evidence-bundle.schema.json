@@ -12,6 +12,8 @@
     "implementation",
     "commandEvidence",
     "criterionEvidence",
+    "requirementDeviations",
+    "differentialEvidence",
     "review"
   ],
   "properties": {
@@ -74,6 +76,96 @@
           "criterionId": { "type": "string", "pattern": "^AC-[0-9]{3}$" },
           "status": { "enum": ["passed", "failed", "insufficient"] },
           "evidenceRefs": { "$ref": "#/$defs/nonEmptyStrings" }
+        }
+      }
+    },
+    "requirementDeviations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "criterionIds",
+          "kind",
+          "description",
+          "rationale",
+          "impact",
+          "status",
+          "humanGateId",
+          "evidenceRefs"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^DEV-[0-9]{3}$" },
+          "criterionIds": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^AC-[0-9]{3}$" }
+          },
+          "kind": { "enum": ["compromise", "substitution", "unfulfilled"] },
+          "description": { "type": "string", "minLength": 1 },
+          "rationale": { "type": "string", "minLength": 1 },
+          "impact": { "enum": ["material", "non_material"] },
+          "status": { "enum": ["disclosed", "approved", "rejected", "resolved"] },
+          "humanGateId": {
+            "oneOf": [
+              { "type": "null" },
+              { "type": "string", "pattern": "^GATE-[0-9]{3}$" }
+            ]
+          },
+          "evidenceRefs": { "$ref": "#/$defs/nonEmptyStrings" }
+        }
+      }
+    },
+    "differentialEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["applicability", "rationale", "records"],
+      "properties": {
+        "applicability": { "enum": ["required", "not_applicable"] },
+        "rationale": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "minLength": 1 }]
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "criterionIds",
+              "baseRevision",
+              "patchedRevision",
+              "command",
+              "expectedBaseResult",
+              "observedBaseResult",
+              "baseExitCode",
+              "expectedPatchedResult",
+              "observedPatchedResult",
+              "patchedExitCode",
+              "evidenceRefs"
+            ],
+            "properties": {
+              "id": { "type": "string", "pattern": "^DIFF-[0-9]{3}$" },
+              "criterionIds": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "pattern": "^AC-[0-9]{3}$" }
+              },
+              "baseRevision": { "type": "string", "minLength": 7 },
+              "patchedRevision": { "type": "string", "minLength": 7 },
+              "command": { "type": "string", "minLength": 1 },
+              "expectedBaseResult": { "enum": ["passed", "failed"] },
+              "observedBaseResult": { "enum": ["passed", "failed"] },
+              "baseExitCode": { "type": "integer", "minimum": 0 },
+              "expectedPatchedResult": { "enum": ["passed", "failed"] },
+              "observedPatchedResult": { "enum": ["passed", "failed"] },
+              "patchedExitCode": { "type": "integer", "minimum": 0 },
+              "evidenceRefs": { "$ref": "#/$defs/nonEmptyStrings" }
+            }
+          }
         }
       }
     },

@@ -15,6 +15,12 @@ A complete example is
   verification commands. An uncommitted bundle may be reviewed provisionally,
   but a `verified` disposition requires a durable commit.
 - Every acceptance-criterion ID has explicit evidence and a result.
+- Every known compromise, substitution, or unfulfilled criterion is recorded as
+  a requirement deviation. Material deviations require an approved contract
+  gate before the bundle can be verified.
+- Differential evidence records the base and patched revisions, exact command,
+  and expected and observed result on each revision. When differential testing
+  is unsafe or irrelevant, the bundle records why it is not applicable.
 - A reviewer using the read-only
   [`reviewer` profile](../agent-orchestration/profiles/reviewer.json) examines
   the approved contract, diff, and evidence from fresh context.
@@ -24,7 +30,9 @@ A complete example is
   task identity, revision, contract fingerprint, and criterion coverage.
 - A bundle cannot be `verified` when it lacks a commit, the reviewer is the
   implementer, a command failed, criterion evidence is incomplete, or a
-  blocking finding is unresolved.
+  blocking finding is unresolved. It also cannot be verified with an
+  unapproved material deviation or internally inconsistent differential
+  evidence.
 
 Store durable references and concise outcomes. Raw prompts, chain-of-thought,
 secret-bearing output, and entire terminal transcripts are neither required

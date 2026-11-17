@@ -43,6 +43,12 @@
       "evidenceRefs": ["tests/task-contract.test.js#consequentialWithoutGate"]
     }
   ],
+  "requirementDeviations": [],
+  "differentialEvidence": {
+    "applicability": "not_applicable",
+    "rationale": "This documentation and validation change does not repair a previously failing behavior.",
+    "records": []
+  },
   "review": {
     "reviewerId": "independent-reviewer",
     "profilePath": "assets/agent-orchestration/profiles/reviewer.json",

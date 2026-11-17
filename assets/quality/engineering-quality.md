@@ -68,6 +68,18 @@ Expected validation includes:
 - build verification
 - UI checks where presentation or interaction is involved
 
+Derive expected behavior independently from approved requirements, invariants,
+worked examples, trusted references, or known regressions. For broad input
+domains, derive candidate properties from the specification before inspecting
+the implementation, then add implementation-informed robustness properties as
+a complementary layer. Do not let code-derived tests become the oracle for
+whether the original product workflow was implemented.
+
+For bug fixes and other patches intended to change observable behavior, prefer
+focused differential evidence: the same test should fail on the approved base
+revision and pass on the patched revision. Record why that comparison is unsafe
+or not decision-useful when it is not performed.
+
 Where logic branching is prevalent, vetting automated tests should begin with
 mutation testing at the unit test level.
 
