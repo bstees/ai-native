@@ -1,0 +1,148 @@
+{
+  "$schema": "../../assets/quality/contracts/task-evidence-bundle.schema.json",
+  "bundleVersion": 1,
+  "bundleId": "EVB-2026-11-16-NODE-RUNTIME-PILOT",
+  "createdOn": "2026-11-16",
+  "task": {
+    "taskId": "november-13-node-runtime-fix",
+    "revision": 1,
+    "contractPath": "experiments/november-13-node-runtime-pilot/task-contract.json",
+    "contractFingerprint": "ec218517b1c76732e7ae5b1904fac7f1649f45422b74157bcdc11c9546fc22d0"
+  },
+  "implementation": {
+    "actorId": "historical-runtime-fix",
+    "actorType": "hybrid",
+    "branch": "main",
+    "commit": "f8afa3f0e7f5f9373b2b3a001e0cabcf9124bf96",
+    "changedPaths": [".nvmrc", "package-lock.json"],
+    "changeFingerprint": "7ece05038cd435b5274c9998e8e0b765025a3b04cb7b2191c8ac694fa463673f"
+  },
+  "commandEvidence": [
+    {
+      "command": "node experiments/november-13-node-runtime-pilot/verify-runtime-contract.js <base-archive> runtime-selector",
+      "exitCode": 1,
+      "result": "failed",
+      "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/runtime-selector/base"]
+    },
+    {
+      "command": "node experiments/november-13-node-runtime-pilot/verify-runtime-contract.js <patch-archive> runtime-selector",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/runtime-selector/patch"]
+    },
+    {
+      "command": "node experiments/november-13-node-runtime-pilot/verify-runtime-contract.js <base-archive> package-engine",
+      "exitCode": 1,
+      "result": "failed",
+      "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/package-engine/base"]
+    },
+    {
+      "command": "node experiments/november-13-node-runtime-pilot/verify-runtime-contract.js <patch-archive> package-engine",
+      "exitCode": 1,
+      "result": "failed",
+      "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/package-engine/patch"]
+    },
+    {
+      "command": "node experiments/november-13-node-runtime-pilot/verify-runtime-contract.js <base-archive> setup-guidance",
+      "exitCode": 1,
+      "result": "failed",
+      "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/setup-guidance/base"]
+    },
+    {
+      "command": "node experiments/november-13-node-runtime-pilot/verify-runtime-contract.js <patch-archive> setup-guidance",
+      "exitCode": 1,
+      "result": "failed",
+      "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/setup-guidance/patch"]
+    }
+  ],
+  "criterionEvidence": [
+    { "criterionId": "AC-001", "status": "passed", "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/runtime-selector"] },
+    { "criterionId": "AC-002", "status": "failed", "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/package-engine"] },
+    { "criterionId": "AC-003", "status": "failed", "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/setup-guidance"] }
+  ],
+  "requirementDeviations": [
+    {
+      "id": "DEV-001",
+      "criterionIds": ["AC-002"],
+      "kind": "unfulfilled",
+      "description": "The patch does not declare the supported Node range in package.json.",
+      "rationale": "The historical patch changed only the runtime selector and lockfile.",
+      "impact": "material",
+      "status": "disclosed",
+      "humanGateId": null,
+      "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#requirementDeviations/package-engine"]
+    },
+    {
+      "id": "DEV-002",
+      "criterionIds": ["AC-003"],
+      "kind": "unfulfilled",
+      "description": "The patch does not document the repository runtime-selection step in README.md.",
+      "rationale": "The historical patch did not change contributor guidance.",
+      "impact": "material",
+      "status": "disclosed",
+      "humanGateId": null,
+      "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#requirementDeviations/setup-guidance"]
+    }
+  ],
+  "differentialEvidence": {
+    "applicability": "required",
+    "rationale": null,
+    "records": [
+      {
+        "id": "DIFF-001",
+        "criterionIds": ["AC-001"],
+        "baseRevision": "0ffa3a52120f98f2a75578a0e6a26d3635b57ef9",
+        "patchedRevision": "f8afa3f0e7f5f9373b2b3a001e0cabcf9124bf96",
+        "command": "node verify-runtime-contract.js <revision-archive> runtime-selector",
+        "expectedBaseResult": "failed",
+        "observedBaseResult": "failed",
+        "baseExitCode": 1,
+        "expectedPatchedResult": "passed",
+        "observedPatchedResult": "passed",
+        "patchedExitCode": 0,
+        "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/runtime-selector"]
+      },
+      {
+        "id": "DIFF-002",
+        "criterionIds": ["AC-002"],
+        "baseRevision": "0ffa3a52120f98f2a75578a0e6a26d3635b57ef9",
+        "patchedRevision": "f8afa3f0e7f5f9373b2b3a001e0cabcf9124bf96",
+        "command": "node verify-runtime-contract.js <revision-archive> package-engine",
+        "expectedBaseResult": "failed",
+        "observedBaseResult": "failed",
+        "baseExitCode": 1,
+        "expectedPatchedResult": "failed",
+        "observedPatchedResult": "failed",
+        "patchedExitCode": 1,
+        "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/package-engine"]
+      },
+      {
+        "id": "DIFF-003",
+        "criterionIds": ["AC-003"],
+        "baseRevision": "0ffa3a52120f98f2a75578a0e6a26d3635b57ef9",
+        "patchedRevision": "f8afa3f0e7f5f9373b2b3a001e0cabcf9124bf96",
+        "command": "node verify-runtime-contract.js <revision-archive> setup-guidance",
+        "expectedBaseResult": "failed",
+        "observedBaseResult": "failed",
+        "baseExitCode": 1,
+        "expectedPatchedResult": "failed",
+        "observedPatchedResult": "failed",
+        "patchedExitCode": 1,
+        "evidenceRefs": ["experiments/november-13-node-runtime-pilot/pilot-report.json#results/setup-guidance"]
+      }
+    ]
+  },
+  "review": {
+    "reviewerId": "pilot-author-self-audit",
+    "profilePath": "assets/agent-orchestration/profiles/reviewer.json",
+    "independent": false,
+    "readOnly": true,
+    "findings": [
+      { "id": "REV-001", "severity": "major", "status": "open", "summary": "The package engine requirement remains unfulfilled.", "evidenceRefs": ["DEV-001"] },
+      { "id": "REV-002", "severity": "major", "status": "open", "summary": "The contributor setup-guidance requirement remains unfulfilled.", "evidenceRefs": ["DEV-002"] }
+    ],
+    "unresolvedRisks": ["Independent read-only review is still required before the merge gate.", "The historical patch is only a partial implementation of the reconstructed runtime contract."],
+    "disposition": "changes_required",
+    "reviewedOn": "2026-11-16"
+  }
+}

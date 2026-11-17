@@ -1,0 +1,46 @@
+{
+  "$schema": "../../assets/workflows/contracts/task-contract.schema.json",
+  "contractVersion": 1,
+  "taskId": "november-13-node-runtime-fix",
+  "revision": 1,
+  "status": "approved",
+  "goal": "Align the repository's declared Node runtime with Vite's supported runtime and give contributors an explicit setup path.",
+  "repository": { "name": "bstees/ai-native", "revision": "0ffa3a52120f98f2a75578a0e6a26d3635b57ef9", "branch": "main" },
+  "scope": {
+    "included": ["Select a repository Node runtime compatible with Vite", "Declare the supported Node runtime in package metadata", "Document the contributor runtime-selection step"],
+    "excluded": ["Changing application behavior", "Upgrading Vite or unrelated dependencies", "Deployment or consumer rollout"],
+    "expectedChangedPaths": [".nvmrc", "package-lock.json"],
+    "excludedPaths": ["server/telemetry-lake.js"]
+  },
+  "constraints": [
+    { "id": "CON-001", "statement": "The selected runtime must satisfy the Vite engine range recorded in package-lock.json." },
+    { "id": "CON-002", "statement": "Verification must use the same specification-derived checks before and after the patch." }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-001",
+      "statement": "The merged Node runtime feedback record is the approved source for the reconstructed requirements.",
+      "status": "validated",
+      "evidenceRefs": [".ai-native/feedback/toil/2026-08-11-node-runtime-build-mismatch.md", "commit:bcb03c9"]
+    }
+  ],
+  "acceptanceCriteria": [
+    { "id": "AC-001", "statement": "A repository runtime selector names a Node version compatible with Vite's declared engine range.", "evidenceRequired": ["Differential verifier result for runtime-selector"], "owner": "shared", "frozen": true },
+    { "id": "AC-002", "statement": "package.json declares an engines.node range compatible with Vite's declared engine range.", "evidenceRequired": ["Differential verifier result for package-engine"], "owner": "shared", "frozen": true },
+    { "id": "AC-003", "statement": "README.md tells contributors how to select the repository's supported Node runtime.", "evidenceRequired": ["Differential verifier result for setup-guidance"], "owner": "human", "frozen": true }
+  ],
+  "authority": {
+    "level": "read_only",
+    "allowedActions": ["Evaluate the historical base and patched revisions using the approved verifier"],
+    "prohibitedActions": ["Modify either historical revision", "Merge, deploy, or remediate unmet requirements"]
+  },
+  "humanGates": [
+    { "id": "GATE-001", "decision": "Approve the Node runtime mismatch as the historical pilot candidate after its feedback record is merged.", "when": "Before running the differential pilot.", "status": "approved" },
+    { "id": "GATE-002", "decision": "Approve merge and any remediation arising from the pilot.", "when": "After pilot evidence and independent review are complete.", "status": "pending" }
+  ],
+  "approval": {
+    "approvedBy": "repository owner via Codex task",
+    "approvedOn": "2026-11-16",
+    "contractFingerprint": "ec218517b1c76732e7ae5b1904fac7f1649f45422b74157bcdc11c9546fc22d0"
+  }
+}

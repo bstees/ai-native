@@ -172,7 +172,7 @@
           "items": { "$ref": "#/$defs/backlogId" }
         },
         "disposition": { "enum": ["mapped", "deferred"] },
-        "publishedStatus": { "enum": ["content_ready", "published"] }
+        "publishedStatus": { "enum": ["inventory", "content_ready", "published"] }
       }
     },
     "backlogItem": {

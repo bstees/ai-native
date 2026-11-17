@@ -2,7 +2,7 @@
   "$schema": "../schemas/weekly-digest-delivery-manifest.schema.json",
   "manifestVersion": 1,
   "projectId": "weekly-ai-engineering-digests",
-  "updatedOn": "2026-11-12",
+  "updatedOn": "2026-11-16",
   "sourceConversation": {
     "conversationId": "6a6a57f2-9878-83ea-aaec-2594e4a75be4",
     "title": "Friday AI engineering brief"
@@ -24,6 +24,13 @@
       "remote": "git@github.com:bstees/nuk.git",
       "role": "future editorial intake and generation",
       "status": "blocked_active_dirty_worktree"
+    },
+    "aiNativeNovember13": {
+      "remote": "git@github.com:bstees/ai-native.git",
+      "role": "November 13 requirements-grounded verification and digest intake",
+      "baseCommit": "140e3ff2706ef5a9873d8bf3e4eb716ee86c8ae9",
+      "branch": "codex/november-13-digest-findings",
+      "status": "active_feature_branch"
     }
   },
   "runEvents": [
@@ -249,6 +256,22 @@
         "F-2026-11-06-05"
       ],
       "publicationStatus": "content_ready"
+    },
+    {
+      "digestId": "digest-2026-11-13",
+      "sourceMessageId": "d4a4a5c3-28d6-447e-9102-622b159e1606",
+      "publicationDate": "2026-11-13",
+      "dateEvidence": "Explicit source heading",
+      "siteSlug": "2026-11-13",
+      "siteContentPath": "src/content/digests/2026-11-13.md",
+      "findingIds": [
+        "F-2026-11-13-01",
+        "F-2026-11-13-02",
+        "F-2026-11-13-03",
+        "F-2026-11-13-04",
+        "F-2026-11-13-05"
+      ],
+      "publicationStatus": "inventory"
     }
   ],
   "findings": [
@@ -1183,6 +1206,77 @@
       ],
       "disposition": "mapped",
       "publishedStatus": "content_ready"
+    },
+    {
+      "findingId": "F-2026-11-13-01",
+      "digestId": "digest-2026-11-13",
+      "title": "SatisFix catches agents knowingly settling for incomplete requirements",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2611.16289"
+      ],
+      "practicalTakeaway": "Require agents to disclose compromises, substitutions, and unfulfilled criteria; route material deviations through an explicit human gate before verification.",
+      "primaryBacklogId": "AF-001",
+      "secondaryBacklogIds": [
+        "AF-002"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "inventory"
+    },
+    {
+      "findingId": "F-2026-11-13-02",
+      "digestId": "digest-2026-11-13",
+      "title": "Specification-derived property tests find bugs that code-derived tests miss",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2611.15920"
+      ],
+      "practicalTakeaway": "Derive property invariants from the approved specification before inspecting implementation, while retaining code-derived robustness tests as a complementary layer.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "inventory"
+    },
+    {
+      "findingId": "F-2026-11-13-03",
+      "digestId": "digest-2026-11-13",
+      "title": "ADAPT generates tests proving that a pull request actually changes behavior",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2611.16114"
+      ],
+      "practicalTakeaway": "Record differential evidence that the same focused test fails on the approved base revision and passes on the patched revision.",
+      "primaryBacklogId": "AF-002",
+      "secondaryBacklogIds": [
+        "AF-003"
+      ],
+      "disposition": "mapped",
+      "publishedStatus": "inventory"
+    },
+    {
+      "findingId": "F-2026-11-13-04",
+      "digestId": "digest-2026-11-13",
+      "title": "Repository-wide reasoning challenges conventional RAG for requirements traceability",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2611.09162"
+      ],
+      "practicalTakeaway": "Benchmark retrieval-only traceability against dependency-expanded and whole-repository reasoning before investing in a broader retrieval architecture.",
+      "primaryBacklogId": "AF-005",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "inventory"
+    },
+    {
+      "findingId": "F-2026-11-13-05",
+      "digestId": "digest-2026-11-13",
+      "title": "FlowPlan reduces agent token use through structural planning",
+      "sourceUrls": [
+        "https://arxiv.org/abs/2611.13241"
+      ],
+      "practicalTakeaway": "Measure whether plan-before-edit structural deltas reduce repeated context use without weakening independent functional verification.",
+      "primaryBacklogId": "AF-004",
+      "secondaryBacklogIds": [],
+      "disposition": "mapped",
+      "publishedStatus": "inventory"
     }
   ],
   "backlogItems": [
@@ -1195,11 +1289,32 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-08-14-01", "F-2026-08-14-03", "F-2026-08-14-04", "F-2026-08-21-01", "F-2026-08-21-03",
-        "F-2026-08-21-04", "F-2026-08-28-01", "F-2026-08-28-02", "F-2026-09-04-01", "F-2026-09-04-02",
-        "F-2026-09-11-01", "F-2026-09-11-05", "F-2026-09-18-05", "F-2026-09-25-03", "F-2026-10-02-02",
-        "F-2026-10-02-03", "F-2026-10-09-02", "F-2026-10-16-05", "F-2026-10-23-03", "F-2026-10-30-01",
-        "F-2026-10-30-03", "F-2026-10-30-04", "F-2026-11-06-01", "F-2026-11-06-02", "F-2026-11-06-04"
+        "F-2026-08-14-01",
+        "F-2026-08-14-03",
+        "F-2026-08-14-04",
+        "F-2026-08-21-01",
+        "F-2026-08-21-03",
+        "F-2026-08-21-04",
+        "F-2026-08-28-01",
+        "F-2026-08-28-02",
+        "F-2026-09-04-01",
+        "F-2026-09-04-02",
+        "F-2026-09-11-01",
+        "F-2026-09-11-05",
+        "F-2026-09-18-05",
+        "F-2026-09-25-03",
+        "F-2026-10-02-02",
+        "F-2026-10-02-03",
+        "F-2026-10-09-02",
+        "F-2026-10-16-05",
+        "F-2026-10-23-03",
+        "F-2026-10-30-01",
+        "F-2026-10-30-03",
+        "F-2026-10-30-04",
+        "F-2026-11-06-01",
+        "F-2026-11-06-02",
+        "F-2026-11-06-04",
+        "F-2026-11-13-01"
       ]
     },
     {
@@ -1211,12 +1326,35 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-08-14-01", "F-2026-08-14-04", "F-2026-08-21-04", "F-2026-08-28-01", "F-2026-08-28-02",
-        "F-2026-08-28-04", "F-2026-09-04-01", "F-2026-09-04-02", "F-2026-09-04-03", "F-2026-09-11-03",
-        "F-2026-09-11-04", "F-2026-09-18-01", "F-2026-10-02-02", "F-2026-10-02-03", "F-2026-10-09-01",
-        "F-2026-10-09-02", "F-2026-10-09-03", "F-2026-10-16-02", "F-2026-10-16-05", "F-2026-10-23-03",
-        "F-2026-10-23-04", "F-2026-10-30-01", "F-2026-10-30-03", "F-2026-10-30-05", "F-2026-11-06-02",
-        "F-2026-11-06-04"
+        "F-2026-08-14-01",
+        "F-2026-08-14-04",
+        "F-2026-08-21-04",
+        "F-2026-08-28-01",
+        "F-2026-08-28-02",
+        "F-2026-08-28-04",
+        "F-2026-09-04-01",
+        "F-2026-09-04-02",
+        "F-2026-09-04-03",
+        "F-2026-09-11-03",
+        "F-2026-09-11-04",
+        "F-2026-09-18-01",
+        "F-2026-10-02-02",
+        "F-2026-10-02-03",
+        "F-2026-10-09-01",
+        "F-2026-10-09-02",
+        "F-2026-10-09-03",
+        "F-2026-10-16-02",
+        "F-2026-10-16-05",
+        "F-2026-10-23-03",
+        "F-2026-10-23-04",
+        "F-2026-10-30-01",
+        "F-2026-10-30-03",
+        "F-2026-10-30-05",
+        "F-2026-11-06-02",
+        "F-2026-11-06-04",
+        "F-2026-11-13-01",
+        "F-2026-11-13-02",
+        "F-2026-11-13-03"
       ]
     },
     {
@@ -1228,10 +1366,24 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-08-14-02", "F-2026-08-14-04", "F-2026-08-28-03", "F-2026-09-04-03", "F-2026-09-11-03",
-        "F-2026-09-11-04", "F-2026-09-18-01", "F-2026-09-18-02", "F-2026-09-25-01", "F-2026-09-25-02",
-        "F-2026-10-09-01", "F-2026-10-09-05", "F-2026-10-16-01", "F-2026-10-16-04", "F-2026-10-23-04",
-        "F-2026-11-06-01"
+        "F-2026-08-14-02",
+        "F-2026-08-14-04",
+        "F-2026-08-28-03",
+        "F-2026-09-04-03",
+        "F-2026-09-11-03",
+        "F-2026-09-11-04",
+        "F-2026-09-18-01",
+        "F-2026-09-18-02",
+        "F-2026-09-25-01",
+        "F-2026-09-25-02",
+        "F-2026-10-09-01",
+        "F-2026-10-09-05",
+        "F-2026-10-16-01",
+        "F-2026-10-16-04",
+        "F-2026-10-23-04",
+        "F-2026-11-06-01",
+        "F-2026-11-13-02",
+        "F-2026-11-13-03"
       ]
     },
     {
@@ -1243,9 +1395,22 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-08-14-01", "F-2026-08-14-03", "F-2026-08-14-05", "F-2026-08-21-02", "F-2026-08-21-03",
-        "F-2026-08-28-04", "F-2026-09-04-04", "F-2026-09-25-01", "F-2026-10-02-04", "F-2026-10-02-05",
-        "F-2026-10-09-04", "F-2026-10-09-05", "F-2026-10-16-03", "F-2026-11-06-03", "F-2026-11-06-05"
+        "F-2026-08-14-01",
+        "F-2026-08-14-03",
+        "F-2026-08-14-05",
+        "F-2026-08-21-02",
+        "F-2026-08-21-03",
+        "F-2026-08-28-04",
+        "F-2026-09-04-04",
+        "F-2026-09-25-01",
+        "F-2026-10-02-04",
+        "F-2026-10-02-05",
+        "F-2026-10-09-04",
+        "F-2026-10-09-05",
+        "F-2026-10-16-03",
+        "F-2026-11-06-03",
+        "F-2026-11-06-05",
+        "F-2026-11-13-05"
       ]
     },
     {
@@ -1257,9 +1422,19 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-08-14-02", "F-2026-08-14-05", "F-2026-09-11-02", "F-2026-09-18-03", "F-2026-09-25-04",
-        "F-2026-10-09-04", "F-2026-10-16-03", "F-2026-10-16-05", "F-2026-10-23-01", "F-2026-10-23-02",
-        "F-2026-10-30-02", "F-2026-11-06-03"
+        "F-2026-08-14-02",
+        "F-2026-08-14-05",
+        "F-2026-09-11-02",
+        "F-2026-09-18-03",
+        "F-2026-09-25-04",
+        "F-2026-10-09-04",
+        "F-2026-10-16-03",
+        "F-2026-10-16-05",
+        "F-2026-10-23-01",
+        "F-2026-10-23-02",
+        "F-2026-10-30-02",
+        "F-2026-11-06-03",
+        "F-2026-11-13-04"
       ]
     },
     {
@@ -1271,8 +1446,15 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-08-14-02", "F-2026-08-28-03", "F-2026-09-11-03", "F-2026-09-18-01", "F-2026-09-18-03",
-        "F-2026-09-18-05", "F-2026-09-25-02", "F-2026-10-09-05", "F-2026-10-23-01"
+        "F-2026-08-14-02",
+        "F-2026-08-28-03",
+        "F-2026-09-11-03",
+        "F-2026-09-18-01",
+        "F-2026-09-18-03",
+        "F-2026-09-18-05",
+        "F-2026-09-25-02",
+        "F-2026-10-09-05",
+        "F-2026-10-23-01"
       ]
     },
     {
@@ -1284,9 +1466,21 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-08-21-03", "F-2026-08-28-01", "F-2026-08-28-04", "F-2026-09-11-04", "F-2026-09-18-02",
-        "F-2026-09-18-03", "F-2026-09-25-03", "F-2026-10-09-01", "F-2026-10-16-01", "F-2026-10-16-04",
-        "F-2026-10-30-03", "F-2026-10-30-05", "F-2026-11-06-03", "F-2026-11-06-04", "F-2026-11-06-05"
+        "F-2026-08-21-03",
+        "F-2026-08-28-01",
+        "F-2026-08-28-04",
+        "F-2026-09-11-04",
+        "F-2026-09-18-02",
+        "F-2026-09-18-03",
+        "F-2026-09-25-03",
+        "F-2026-10-09-01",
+        "F-2026-10-16-01",
+        "F-2026-10-16-04",
+        "F-2026-10-30-03",
+        "F-2026-10-30-05",
+        "F-2026-11-06-03",
+        "F-2026-11-06-04",
+        "F-2026-11-06-05"
       ]
     },
     {
@@ -1298,8 +1492,13 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-09-04-01", "F-2026-09-04-04", "F-2026-10-02-04", "F-2026-10-16-01", "F-2026-10-16-03",
-        "F-2026-10-16-04", "F-2026-10-23-01"
+        "F-2026-09-04-01",
+        "F-2026-09-04-04",
+        "F-2026-10-02-04",
+        "F-2026-10-16-01",
+        "F-2026-10-16-03",
+        "F-2026-10-16-04",
+        "F-2026-10-23-01"
       ]
     },
     {
@@ -1311,7 +1510,10 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-08-21-01", "F-2026-09-04-01", "F-2026-09-11-01", "F-2026-10-30-04"
+        "F-2026-08-21-01",
+        "F-2026-09-04-01",
+        "F-2026-09-11-01",
+        "F-2026-10-30-04"
       ]
     },
     {
@@ -1323,8 +1525,16 @@
       "pullRequestUrl": null,
       "branch": "codex/weekly-digest-findings",
       "findingIds": [
-        "F-2026-08-21-02", "F-2026-09-04-04", "F-2026-09-18-04", "F-2026-09-18-05", "F-2026-09-25-01",
-        "F-2026-10-02-01", "F-2026-10-02-05", "F-2026-10-09-03", "F-2026-10-23-05", "F-2026-10-30-04",
+        "F-2026-08-21-02",
+        "F-2026-09-04-04",
+        "F-2026-09-18-04",
+        "F-2026-09-18-05",
+        "F-2026-09-25-01",
+        "F-2026-10-02-01",
+        "F-2026-10-02-05",
+        "F-2026-10-09-03",
+        "F-2026-10-23-05",
+        "F-2026-10-30-04",
         "F-2026-10-30-05"
       ]
     }
@@ -1350,7 +1560,9 @@
         "tests/task-contract.test.js"
       ],
       "status": "verified",
-      "verificationRunIds": ["VR-AF001-TASK-CONTRACT"],
+      "verificationRunIds": [
+        "VR-AF001-TASK-CONTRACT"
+      ],
       "pullRequestUrl": null
     },
     {
@@ -1361,11 +1573,14 @@
         "F-2026-08-28-04",
         "F-2026-10-09-02",
         "F-2026-10-30-01",
-        "F-2026-11-06-04"
+        "F-2026-11-06-04",
+        "F-2026-11-13-01",
+        "F-2026-11-13-02",
+        "F-2026-11-13-03"
       ],
-      "repositoryKey": "aiNative",
-      "branch": "codex/weekly-digest-findings",
-      "commit": "bf301a9a921ad38536db63343879307cd9cc5b99",
+      "repositoryKey": "aiNativeNovember13",
+      "branch": "codex/november-13-digest-findings",
+      "commit": "bd87749",
       "paths": [
         "assets/quality/contracts/task-evidence-bundle.schema.json",
         "assets/quality/task-evidence-bundle.md",
@@ -1375,16 +1590,22 @@
         "tests/task-evidence.test.js"
       ],
       "status": "verified",
-      "verificationRunIds": ["VR-AF002-EVIDENCE-BUNDLE"],
+      "verificationRunIds": [
+        "VR-AF002-EVIDENCE-BUNDLE",
+        "VR-AF002-REQUIREMENTS-EVIDENCE"
+      ],
       "pullRequestUrl": null
     },
     {
       "implementationId": "IMP-AF005-PROVENANCE",
       "backlogId": "AF-005",
-      "findingIds": ["F-2026-11-06-03"],
-      "repositoryKey": "aiNative",
-      "branch": "codex/weekly-digest-findings",
-      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
+      "findingIds": [
+        "F-2026-11-06-03",
+        "F-2026-11-13-04"
+      ],
+      "repositoryKey": "aiNativeNovember13",
+      "branch": "codex/november-13-digest-findings",
+      "commit": "3a07aff",
       "paths": [
         "schemas/weekly-digest-delivery-manifest.schema.json",
         "scripts/repo-surface-index.js",
@@ -1401,16 +1622,22 @@
     {
       "implementationId": "IMP-AF005-MANIFEST-VALIDATION",
       "backlogId": "AF-005",
-      "findingIds": ["F-2026-11-06-03"],
-      "repositoryKey": "aiNative",
-      "branch": "codex/weekly-digest-findings",
-      "commit": "9f231f8e44e0207704b1bc19d39817dac4b68ab8",
+      "findingIds": [
+        "F-2026-11-06-03",
+        "F-2026-11-13-04"
+      ],
+      "repositoryKey": "aiNativeNovember13",
+      "branch": "codex/november-13-digest-findings",
+      "commit": "3a07aff",
       "paths": [
         "scripts/validate-weekly-digest-delivery-manifest.js",
         "tests/weekly-digest-delivery-manifest.test.js"
       ],
       "status": "verified",
-      "verificationRunIds": ["VR-AF005-MANIFEST"],
+      "verificationRunIds": [
+        "VR-AF005-MANIFEST",
+        "VR-AF005-NOV13-MANIFEST"
+      ],
       "pullRequestUrl": null
     },
     {
@@ -1432,7 +1659,50 @@
         "tests/failure-learning.test.js"
       ],
       "status": "verified",
-      "verificationRunIds": ["VR-AF006-FAILURE-PROMOTION"],
+      "verificationRunIds": [
+        "VR-AF006-FAILURE-PROMOTION"
+      ],
+      "pullRequestUrl": null
+    },
+    {
+      "implementationId": "IMP-AF003-SPEC-FIRST-STANDARD",
+      "backlogId": "AF-003",
+      "findingIds": [
+        "F-2026-11-13-02",
+        "F-2026-11-13-03"
+      ],
+      "repositoryKey": "aiNativeNovember13",
+      "branch": "codex/november-13-digest-findings",
+      "commit": "bd87749",
+      "paths": [
+        "assets/quality/engineering-quality.md"
+      ],
+      "status": "verified",
+      "verificationRunIds": [
+        "VR-AF003-SPEC-FIRST-STANDARD"
+      ],
+      "pullRequestUrl": null
+    },
+    {
+      "implementationId": "IMP-AF004-STRUCTURAL-PILOT-PLAN",
+      "backlogId": "AF-004",
+      "findingIds": [
+        "F-2026-11-13-05"
+      ],
+      "repositoryKey": "aiNativeNovember13",
+      "branch": "codex/november-13-digest-findings",
+      "commit": "0af10e4",
+      "paths": [
+        "experiments/november-13-node-runtime-pilot/pilot-report.json",
+        "experiments/november-13-node-runtime-pilot/task-contract.json",
+        "experiments/november-13-node-runtime-pilot/task-evidence-bundle.json",
+        "experiments/november-13-node-runtime-pilot/verify-runtime-contract.js",
+        "planning/november-13-verification-pilot.md"
+      ],
+      "status": "implemented",
+      "verificationRunIds": [
+        "VR-AF004-STRUCTURAL-PILOT"
+      ],
       "pullRequestUrl": null
     }
   ],
@@ -1444,7 +1714,9 @@
       "exitCode": 0,
       "result": "passed",
       "completedOn": "2026-11-12",
-      "evidenceRefs": ["tests/task-contract.test.js"]
+      "evidenceRefs": [
+        "tests/task-contract.test.js"
+      ]
     },
     {
       "verificationRunId": "VR-AF002-EVIDENCE-BUNDLE",
@@ -1453,7 +1725,9 @@
       "exitCode": 0,
       "result": "passed",
       "completedOn": "2026-11-12",
-      "evidenceRefs": ["tests/task-evidence.test.js"]
+      "evidenceRefs": [
+        "tests/task-evidence.test.js"
+      ]
     },
     {
       "verificationRunId": "VR-AF005-MANIFEST",
@@ -1462,7 +1736,9 @@
       "exitCode": 0,
       "result": "passed",
       "completedOn": "2026-11-12",
-      "evidenceRefs": ["tests/weekly-digest-delivery-manifest.test.js"]
+      "evidenceRefs": [
+        "tests/weekly-digest-delivery-manifest.test.js"
+      ]
     },
     {
       "verificationRunId": "VR-AF005-REPO-PROVENANCE",
@@ -1471,7 +1747,9 @@
       "exitCode": 0,
       "result": "passed",
       "completedOn": "2026-11-12",
-      "evidenceRefs": ["tests/repo-surface-index.test.js"]
+      "evidenceRefs": [
+        "tests/repo-surface-index.test.js"
+      ]
     },
     {
       "verificationRunId": "VR-AF005-FULL-SUITE",
@@ -1480,7 +1758,9 @@
       "exitCode": 0,
       "result": "passed",
       "completedOn": "2026-11-12",
-      "evidenceRefs": ["tests/run.js"]
+      "evidenceRefs": [
+        "tests/run.js"
+      ]
     },
     {
       "verificationRunId": "VR-AF005-BUILD",
@@ -1489,7 +1769,9 @@
       "exitCode": 0,
       "result": "passed",
       "completedOn": "2026-11-12",
-      "evidenceRefs": ["package.json#scripts.build"]
+      "evidenceRefs": [
+        "package.json#scripts.build"
+      ]
     },
     {
       "verificationRunId": "VR-AF006-FAILURE-PROMOTION",
@@ -1498,7 +1780,54 @@
       "exitCode": 0,
       "result": "passed",
       "completedOn": "2026-11-12",
-      "evidenceRefs": ["tests/failure-learning.test.js"]
+      "evidenceRefs": [
+        "tests/failure-learning.test.js"
+      ]
+    },
+    {
+      "verificationRunId": "VR-AF002-REQUIREMENTS-EVIDENCE",
+      "implementationId": "IMP-AF002-EVIDENCE-BUNDLE",
+      "command": "node tests/task-evidence.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-16",
+      "evidenceRefs": [
+        "tests/task-evidence.test.js"
+      ]
+    },
+    {
+      "verificationRunId": "VR-AF003-SPEC-FIRST-STANDARD",
+      "implementationId": "IMP-AF003-SPEC-FIRST-STANDARD",
+      "command": "npm test",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-16",
+      "evidenceRefs": [
+        "tests/run.js"
+      ]
+    },
+    {
+      "verificationRunId": "VR-AF005-NOV13-MANIFEST",
+      "implementationId": "IMP-AF005-MANIFEST-VALIDATION",
+      "command": "node tests/weekly-digest-delivery-manifest.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-16",
+      "evidenceRefs": [
+        "tests/weekly-digest-delivery-manifest.test.js"
+      ]
+    },
+    {
+      "verificationRunId": "VR-AF004-STRUCTURAL-PILOT",
+      "implementationId": "IMP-AF004-STRUCTURAL-PILOT-PLAN",
+      "command": "node scripts/validate-task-evidence.js experiments/november-13-node-runtime-pilot/task-evidence-bundle.json",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-16",
+      "evidenceRefs": [
+        "experiments/november-13-node-runtime-pilot/task-evidence-bundle.json",
+        "experiments/november-13-node-runtime-pilot/pilot-report.json"
+      ]
     }
   ]
 }

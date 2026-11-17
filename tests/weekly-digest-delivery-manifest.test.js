@@ -29,8 +29,8 @@ function expectInvalid(manifest, fragment) {
 function run() {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
   assert.deepStrictEqual(validateWeeklyDigestManifest(manifest), { valid: true, errors: [] });
-  assert.strictEqual(manifest.digests.filter((digest) => digest.publicationDate).length, 13);
-  assert.strictEqual(manifest.findings.length, 61);
+  assert.strictEqual(manifest.digests.filter((digest) => digest.publicationDate).length, 14);
+  assert.strictEqual(manifest.findings.length, 66);
   assert.strictEqual(manifest.backlogItems.length, 10);
 
   const duplicate = clone(manifest);
@@ -51,8 +51,22 @@ function run() {
   expectInvalid(missingBacklog, "missing backlog item");
 
   const mismatchedPublication = clone(manifest);
-  mismatchedPublication.findings[0].publishedStatus = "published";
+  mismatchedPublication.findings.find(
+    (finding) => finding.digestId === "digest-2026-11-06"
+  ).publishedStatus = "published";
   expectInvalid(mismatchedPublication, "publicationStatus");
+
+  const inventoriedDigest = manifest.digests.find(
+    (digest) => digest.digestId === "digest-2026-11-13"
+  );
+  assert.strictEqual(inventoriedDigest.publicationStatus, "inventory");
+  assert.ok(
+    inventoriedDigest.findingIds.every(
+      (findingId) =>
+        manifest.findings.find((finding) => finding.findingId === findingId).publishedStatus ===
+        "inventory"
+    )
+  );
 
   const brokenVerification = clone(manifest);
   const verifiedImplementation = brokenVerification.implementations.find(

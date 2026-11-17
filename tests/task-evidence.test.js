@@ -116,6 +116,90 @@ function run() {
   assert.doesNotThrow(() => validateTaskEvidence(malformedCriteria));
   expectInvalid(malformedCriteria, "criterionEvidence");
 
+  const unknownDeviationCriterion = clone(valid);
+  unknownDeviationCriterion.requirementDeviations.push({
+    id: "DEV-001",
+    criterionIds: ["AC-999"],
+    kind: "substitution",
+    description: "Use a different validation seam.",
+    rationale: "The requested seam is unavailable.",
+    impact: "non_material",
+    status: "disclosed",
+    humanGateId: null,
+    evidenceRefs: ["evidence:deviation"]
+  });
+  expectInvalid(unknownDeviationCriterion, "unknown criterion AC-999");
+
+  const unapprovedMaterialDeviation = clone(valid);
+  unapprovedMaterialDeviation.requirementDeviations.push({
+    id: "DEV-001",
+    criterionIds: ["AC-001"],
+    kind: "compromise",
+    description: "Skip one required validation mode.",
+    rationale: "The implementation actor considered it too expensive.",
+    impact: "material",
+    status: "disclosed",
+    humanGateId: null,
+    evidenceRefs: ["evidence:deviation"]
+  });
+  unapprovedMaterialDeviation.review.disposition = "verified";
+  unapprovedMaterialDeviation.review.unresolvedRisks = [];
+  expectInvalid(unapprovedMaterialDeviation, "unapproved material deviations");
+
+  const requiredWithoutRecord = clone(valid);
+  requiredWithoutRecord.differentialEvidence = {
+    applicability: "required",
+    rationale: null,
+    records: []
+  };
+  expectInvalid(requiredWithoutRecord, "at least one record");
+
+  const unexpectedDifferentialResult = clone(valid);
+  unexpectedDifferentialResult.differentialEvidence = {
+    applicability: "required",
+    rationale: null,
+    records: [
+      {
+        id: "DIFF-001",
+        criterionIds: ["AC-001"],
+        baseRevision: "140e3ff2706ef5a9873d8bf3e4eb716ee86c8ae9",
+        patchedRevision: "WORKTREE",
+        command: "node tests/task-contract.test.js",
+        expectedBaseResult: "failed",
+        observedBaseResult: "passed",
+        baseExitCode: 0,
+        expectedPatchedResult: "passed",
+        observedPatchedResult: "passed",
+        patchedExitCode: 0,
+        evidenceRefs: ["evidence:differential"]
+      }
+    ]
+  };
+  expectInvalid(unexpectedDifferentialResult, "observed results do not match expectations");
+
+  const validDifferential = clone(valid);
+  validDifferential.differentialEvidence = {
+    applicability: "required",
+    rationale: null,
+    records: [
+      {
+        id: "DIFF-001",
+        criterionIds: ["AC-001"],
+        baseRevision: "140e3ff2706ef5a9873d8bf3e4eb716ee86c8ae9",
+        patchedRevision: "WORKTREE",
+        command: "node tests/task-contract.test.js",
+        expectedBaseResult: "failed",
+        observedBaseResult: "failed",
+        baseExitCode: 1,
+        expectedPatchedResult: "passed",
+        observedPatchedResult: "passed",
+        patchedExitCode: 0,
+        evidenceRefs: ["evidence:differential"]
+      }
+    ]
+  };
+  assert.deepStrictEqual(validateTaskEvidence(validDifferential), { valid: true, errors: [] });
+
   const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "task-evidence-gate-test-"));
   try {
     for (const relativePath of valid.implementation.changedPaths) {
@@ -148,6 +232,35 @@ function run() {
     });
     assert.strictEqual(pendingResult.valid, false);
     assert.ok(pendingResult.errors.some((error) => error.includes("approved human gate")));
+
+    consequentialContract.humanGates[0].status = "approved";
+    consequentialContract.approval.contractFingerprint = contractFingerprint(consequentialContract);
+    fs.writeFileSync(
+      temporaryContractPath,
+      `${JSON.stringify(consequentialContract, null, 2)}\n`
+    );
+    const approvedDeviationEvidence = clone(valid);
+    approvedDeviationEvidence.task.contractFingerprint =
+      consequentialContract.approval.contractFingerprint;
+    approvedDeviationEvidence.implementation.changeFingerprint = changedPathsFingerprint(
+      temporaryRoot,
+      approvedDeviationEvidence.implementation.changedPaths
+    );
+    approvedDeviationEvidence.requirementDeviations.push({
+      id: "DEV-001",
+      criterionIds: ["AC-001"],
+      kind: "substitution",
+      description: "Use an approved equivalent validation seam.",
+      rationale: "The original seam is unavailable in the target runtime.",
+      impact: "material",
+      status: "approved",
+      humanGateId: "GATE-001",
+      evidenceRefs: ["evidence:approved-deviation"]
+    });
+    assert.deepStrictEqual(
+      validateTaskEvidence(approvedDeviationEvidence, { baseDirectory: temporaryRoot }),
+      { valid: true, errors: [] }
+    );
   } finally {
     fs.rmSync(temporaryRoot, { recursive: true, force: true });
   }
@@ -211,6 +324,26 @@ function run() {
       implementationCommit,
       committedEvidence.implementation.changedPaths
     );
+    committedEvidence.differentialEvidence = {
+      applicability: "required",
+      rationale: null,
+      records: [
+        {
+          id: "DIFF-001",
+          criterionIds: ["AC-001"],
+          baseRevision: "BASELINE",
+          patchedRevision: implementationCommit,
+          command: "node tests/example.test.js",
+          expectedBaseResult: "failed",
+          observedBaseResult: "failed",
+          baseExitCode: 1,
+          expectedPatchedResult: "passed",
+          observedPatchedResult: "passed",
+          patchedExitCode: 0,
+          evidenceRefs: ["evidence:base-run", "evidence:patched-run"]
+        }
+      ]
+    };
     committedEvidence.review.disposition = "verified";
     committedEvidence.review.unresolvedRisks = [];
     assert.deepStrictEqual(
