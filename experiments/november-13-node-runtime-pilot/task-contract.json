@@ -1,0 +1,130 @@
+{
+  "$schema": "../../assets/workflows/contracts/task-contract.schema.json",
+  "contractVersion": 1,
+  "taskId": "november-13-node-runtime-pilot",
+  "revision": 1,
+  "status": "approved",
+  "goal": "Evaluate whether specification-derived checks distinguish the historical Node runtime fix from its base revision and expose any unmet runtime requirements.",
+  "repository": {
+    "name": "bstees/ai-native",
+    "revision": "76a76fc",
+    "branch": "codex/november-13-digest-findings"
+  },
+  "scope": {
+    "included": [
+      "Read-only verification of commits 0ffa3a5 and f8afa3f",
+      "Specification-derived runtime selection, package engine, and setup guidance checks",
+      "Durable pilot evidence and bounded conclusions"
+    ],
+    "excluded": [
+      "Changing either historical revision",
+      "Fixing remaining runtime declaration gaps",
+      "Consumer rollout, merge, or deployment"
+    ],
+    "expectedChangedPaths": [
+      "experiments/november-13-node-runtime-pilot/pilot-report.json",
+      "experiments/november-13-node-runtime-pilot/task-contract.json",
+      "experiments/november-13-node-runtime-pilot/verify-runtime-contract.js",
+      "planning/november-13-verification-pilot.md"
+    ],
+    "excludedPaths": [
+      ".agents/skills/write-unit-tests",
+      "package-lock.json",
+      "package.json",
+      "README.md",
+      "server/telemetry-lake.js"
+    ]
+  },
+  "constraints": [
+    {
+      "id": "CON-001",
+      "statement": "Run the same committed verifier without modification against both historical revisions."
+    },
+    {
+      "id": "CON-002",
+      "statement": "Derive the checks from the durable feedback record rather than from the historical patch diff."
+    },
+    {
+      "id": "CON-003",
+      "statement": "Do not modify historical files or install dependencies inside either extracted revision."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-001",
+      "statement": "The merged feedback record is the approved requirement source for this bounded pilot.",
+      "status": "validated",
+      "evidenceRefs": [
+        ".ai-native/feedback/toil/2026-08-11-node-runtime-build-mismatch.md",
+        "commit:bcb03c9"
+      ]
+    },
+    {
+      "id": "ASM-002",
+      "statement": "Commits 0ffa3a5 and f8afa3f are the approved pre-fix and post-fix revisions.",
+      "status": "validated",
+      "evidenceRefs": ["git:0ffa3a5", "git:f8afa3f"]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-001",
+      "statement": "The same verifier runs unchanged against both historical revisions.",
+      "evidenceRequired": ["Verifier fingerprint and command are identical for both runs"],
+      "owner": "shared",
+      "frozen": true
+    },
+    {
+      "id": "AC-002",
+      "statement": "The pilot reports which runtime requirements fail before and pass after the patch.",
+      "evidenceRequired": ["Per-criterion base and patch results"],
+      "owner": "shared",
+      "frozen": true
+    },
+    {
+      "id": "AC-003",
+      "statement": "The pilot explicitly reports requirements that remain unsatisfied after the patch.",
+      "evidenceRequired": ["Post-patch failures and bounded conclusion"],
+      "owner": "human",
+      "frozen": true
+    },
+    {
+      "id": "AC-004",
+      "statement": "Historical revisions remain unchanged and no dependency installation occurs within them.",
+      "evidenceRequired": ["Archive-based read-only execution record"],
+      "owner": "shared",
+      "frozen": true
+    }
+  ],
+  "authority": {
+    "level": "reversible_changes",
+    "allowedActions": [
+      "Add pilot-only verifier, contract, report, and planning evidence on the feature branch",
+      "Extract historical revisions into temporary directories for read-only verification"
+    ],
+    "prohibitedActions": [
+      "Modify historical revisions",
+      "Merge, deploy, or change runtime policy",
+      "Edit concurrent unit-test or telemetry work"
+    ]
+  },
+  "humanGates": [
+    {
+      "id": "GATE-001",
+      "decision": "Approve the Node runtime mismatch as the historical pilot candidate after its feedback record is merged.",
+      "when": "Before extracting revisions or running the differential pilot.",
+      "status": "approved"
+    },
+    {
+      "id": "GATE-002",
+      "decision": "Approve merge and any runtime-policy remediation arising from the pilot.",
+      "when": "After pilot evidence and independent review are complete.",
+      "status": "pending"
+    }
+  ],
+  "approval": {
+    "approvedBy": "repository owner via Codex task",
+    "approvedOn": "2026-11-16",
+    "contractFingerprint": "62415a9b254e6990dd75dc2710394d8a6c4d9b4e37cb86806afbcc36d0b473b6"
+  }
+}

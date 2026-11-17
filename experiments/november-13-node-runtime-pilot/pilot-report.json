@@ -1,0 +1,107 @@
+{
+  "pilotId": "november-13-node-runtime-pilot",
+  "completedOn": "2026-11-16",
+  "contractPath": "experiments/november-13-node-runtime-pilot/task-contract.json",
+  "requirementSource": {
+    "path": ".ai-native/feedback/toil/2026-08-11-node-runtime-build-mismatch.md",
+    "commit": "bcb03c9cdc56d42948defda245b4a3f5b6907f4b"
+  },
+  "revisions": {
+    "base": {
+      "commit": "0ffa3a52120f98f2a75578a0e6a26d3635b57ef9",
+      "tree": "32231840caf9b997e4035eeb29d61b83e3acd665"
+    },
+    "patch": {
+      "commit": "f8afa3f0e7f5f9373b2b3a001e0cabcf9124bf96",
+      "tree": "45f62dc875a3040bfa702751278746801018f426"
+    }
+  },
+  "verifier": {
+    "path": "experiments/november-13-node-runtime-pilot/verify-runtime-contract.js",
+    "sha256": "d5d01290ec723be089360fbea31f7051f6f8b9f51baa2b370fd1921cc17e6bfe",
+    "execution": "The same verifier bytes and criterion command were used against read-only archives of both revisions."
+  },
+  "results": [
+    {
+      "criterion": "runtime-selector",
+      "requirement": "The repository selects a Node version compatible with its checked-in Vite toolchain.",
+      "base": {
+        "result": "failed",
+        "exitCode": 1,
+        "evidence": {
+          "selectedVersion": null,
+          "viteRange": "^20.19.0 || >=22.12.0"
+        }
+      },
+      "patch": {
+        "result": "passed",
+        "exitCode": 0,
+        "evidence": {
+          "selectedVersion": "22.23.4",
+          "viteRange": "^20.19.0 || >=22.12.0"
+        }
+      },
+      "disposition": "fail_before_pass_after"
+    },
+    {
+      "criterion": "package-engine",
+      "requirement": "package.json declares a supported Node engine range compatible with the selected runtime.",
+      "base": {
+        "result": "failed",
+        "exitCode": 1,
+        "evidence": { "projectRange": null, "selectedVersion": null }
+      },
+      "patch": {
+        "result": "failed",
+        "exitCode": 1,
+        "evidence": { "projectRange": null, "selectedVersion": "22.23.4" }
+      },
+      "disposition": "unfulfilled_after_patch"
+    },
+    {
+      "criterion": "setup-guidance",
+      "requirement": "README setup guidance names the repository's Node runtime selection path.",
+      "base": {
+        "result": "failed",
+        "exitCode": 1,
+        "evidence": { "mentionsRuntimeSelection": false }
+      },
+      "patch": {
+        "result": "failed",
+        "exitCode": 1,
+        "evidence": { "mentionsRuntimeSelection": false }
+      },
+      "disposition": "unfulfilled_after_patch"
+    }
+  ],
+  "requirementDeviations": [
+    {
+      "kind": "unfulfilled",
+      "criterion": "package-engine",
+      "impact": "material",
+      "status": "disclosed",
+      "summary": "The patch selects a compatible local runtime but does not declare the supported Node range in package.json."
+    },
+    {
+      "kind": "unfulfilled",
+      "criterion": "setup-guidance",
+      "impact": "material",
+      "status": "disclosed",
+      "summary": "The patch does not tell contributors to use .nvmrc or name a supported Node version in README setup guidance."
+    }
+  ],
+  "measurements": {
+    "verifierInvocations": 6,
+    "specificationDerivedChecks": 3,
+    "failBeforePassAfterChecks": 1,
+    "unfulfilledAfterPatchChecks": 2,
+    "externalServiceCostUsd": 0,
+    "modelTokensDuringVerifierExecution": 0,
+    "historicalFilesModified": 0,
+    "dependenciesInstalledInHistoricalRevisions": 0,
+    "falsePositiveAssessment": "pending_independent_review",
+    "humanReviewMinutes": null
+  },
+  "conclusion": "The historical patch establishes a compatible runtime selector through .nvmrc, but it does not satisfy the durable feedback record's package-engine or setup-guidance requirements. The patch is a partial fix and should not be treated as complete evidence of the runtime contract.",
+  "nextAction": "Obtain independent read-only review, then decide at the merge gate whether to plan a separate runtime-policy remediation."
+}

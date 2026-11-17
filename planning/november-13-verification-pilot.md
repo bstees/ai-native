@@ -2,8 +2,9 @@
 
 ## Status
 
-Candidate selection pending human approval. Do not run the pilot until the
-owner approves the historical bug and its execution budget.
+Candidate approved after the durable feedback record was merged. The bounded
+pilot may run; merge and any resulting runtime-policy remediation remain human
+gates.
 
 ## Goal
 
@@ -12,15 +13,14 @@ requirements more reliably than implementation-informed testing alone.
 
 ## Candidate
 
-The recommended candidate is the Node runtime and dependency-lock mismatch
+The approved candidate is the Node runtime and dependency-lock mismatch
 fixed by commit `f8afa3f`. The pre-fix revision is `0ffa3a5`, and the repository
 records the failure in
 `.ai-native/feedback/toil/2026-08-11-node-runtime-build-mismatch.md`.
 
 This candidate is suitable because it has a durable before/after boundary, a
-reproducible build surface, and a written account of the intended behavior. It
-must still be approved before execution because selecting the pilot determines
-which historical requirement and cost profile the experiment represents.
+reproducible runtime-contract surface, and a merged account of the intended
+behavior.
 
 ## Approved Inputs
 
@@ -54,6 +54,23 @@ After candidate approval, freeze:
 - Any compromise, substitution, or unfulfilled criterion is explicit.
 - Results separate specification-derived findings from code-derived findings.
 - The experiment reports false positives, cost, context use, and human effort.
+
+## Result
+
+The approved pilot ran against read-only archives of `0ffa3a5` and `f8afa3f`
+using the same verifier fingerprint for both revisions.
+
+- runtime selection: failed before and passed after; the patch added `.nvmrc`
+  with Node `22.23.4`, which satisfies Vite's declared engine range
+- package engine declaration: failed before and after; `package.json` still has
+  no `engines.node` contract
+- setup guidance: failed before and after; the README still does not name
+  `.nvmrc`, `nvm use`, or a supported Node version
+
+The durable result is
+[`pilot-report.json`](../experiments/november-13-node-runtime-pilot/pilot-report.json).
+It records one fail-before/pass-after check and two material unfulfilled
+requirements. Independent read-only review and remediation remain pending.
 
 ## Stop Conditions
 
