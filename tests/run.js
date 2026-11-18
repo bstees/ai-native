@@ -3,6 +3,7 @@ const path = require("path");
 
 const testFiles = [
   "api.test.js",
+  "dependency-audit.test.js",
   "agent-orchestration-contracts.test.js",
   "agent-routing.test.js",
   "weekly-digest-delivery-manifest.test.js",
