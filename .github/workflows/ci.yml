@@ -37,5 +37,19 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --ignore-scripts
 
+      - name: Check full dependency audit
+        id: full-audit
+        run: node scripts/check-dependency-audit.js
+      - name: Preserve full audit report
+        if: always() && steps.full-audit.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: dependency-audit
+          path: dependency-audit.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
       - name: Verify repository
         run: npm run verify
