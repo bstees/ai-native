@@ -219,3 +219,9 @@ Use `--dry-run` with `sync` to preview what would be created, updated, or remove
 
 Keep this glossary small. Add terms only when a new word becomes important to
 working effectively in the repo.
+
+## Dependency Security
+
+See the [dependency security review](docs/dependency-security.md) for the current
+picomatch development-tool advisory, production-only audit result, and explicit
+limitations. CI preserves the full dependency audit, not just production results.
