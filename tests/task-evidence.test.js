@@ -144,7 +144,37 @@ function run() {
   });
   unapprovedMaterialDeviation.review.disposition = "verified";
   unapprovedMaterialDeviation.review.unresolvedRisks = [];
-  expectInvalid(unapprovedMaterialDeviation, "unapproved material deviations");
+  expectInvalid(unapprovedMaterialDeviation, "every deviation must be resolved");
+
+  const unresolvedNonMaterialDeviation = clone(valid);
+  unresolvedNonMaterialDeviation.requirementDeviations.push({
+    id: "DEV-001",
+    criterionIds: ["AC-001"],
+    kind: "substitution",
+    description: "Use a different evidence label without repairing the contract mismatch.",
+    rationale: "The implementation actor considered the label equivalent.",
+    impact: "non_material",
+    status: "disclosed",
+    humanGateId: null,
+    evidenceRefs: ["evidence:deviation"]
+  });
+  unresolvedNonMaterialDeviation.review.disposition = "verified";
+  unresolvedNonMaterialDeviation.review.unresolvedRisks = [];
+  expectInvalid(unresolvedNonMaterialDeviation, "every deviation must be resolved");
+
+  const approvedNonMaterialWithoutGate = clone(valid);
+  approvedNonMaterialWithoutGate.requirementDeviations.push({
+    id: "DEV-001",
+    criterionIds: ["AC-001"],
+    kind: "substitution",
+    description: "Treat a non-material contract change as approved without its gate.",
+    rationale: "The implementation actor considered the change minor.",
+    impact: "non_material",
+    status: "approved",
+    humanGateId: "GATE-001",
+    evidenceRefs: ["evidence:deviation"]
+  });
+  expectInvalid(approvedNonMaterialWithoutGate, "approved deviation requires");
 
   const requiredWithoutRecord = clone(valid);
   requiredWithoutRecord.differentialEvidence = {
@@ -212,6 +242,7 @@ function run() {
     const consequentialContract = JSON.parse(fs.readFileSync(sourceContractPath, "utf8"));
     consequentialContract.authority.level = "consequential_changes";
     consequentialContract.humanGates[0].status = "pending";
+    consequentialContract.verificationCommands = ["node tests/task-contract.test.js"];
     consequentialContract.approval.contractFingerprint = contractFingerprint(consequentialContract);
     const temporaryContractPath = path.join(temporaryRoot, valid.task.contractPath);
     fs.mkdirSync(path.dirname(temporaryContractPath), { recursive: true });
@@ -260,6 +291,28 @@ function run() {
     assert.deepStrictEqual(
       validateTaskEvidence(approvedDeviationEvidence, { baseDirectory: temporaryRoot }),
       { valid: true, errors: [] }
+    );
+    const missingRequiredCommand = clone(approvedDeviationEvidence);
+    missingRequiredCommand.commandEvidence[0].command = "true";
+    const missingCommandResult = validateTaskEvidence(missingRequiredCommand, {
+      baseDirectory: temporaryRoot
+    });
+    assert.strictEqual(missingCommandResult.valid, false);
+    assert.ok(
+      missingCommandResult.errors.some((error) =>
+        error.includes("missing approved verification command")
+      )
+    );
+    approvedDeviationEvidence.review.disposition = "verified";
+    approvedDeviationEvidence.review.unresolvedRisks = [];
+    const approvedDeviationResult = validateTaskEvidence(approvedDeviationEvidence, {
+      baseDirectory: temporaryRoot
+    });
+    assert.strictEqual(approvedDeviationResult.valid, false);
+    assert.ok(
+      approvedDeviationResult.errors.some((error) =>
+        error.includes("every deviation must be resolved")
+      )
     );
   } finally {
     fs.rmSync(temporaryRoot, { recursive: true, force: true });
@@ -346,6 +399,17 @@ function run() {
     };
     committedEvidence.review.disposition = "verified";
     committedEvidence.review.unresolvedRisks = [];
+    committedEvidence.requirementDeviations.push({
+      id: "DEV-001",
+      criterionIds: ["AC-001"],
+      kind: "substitution",
+      description: "An early implementation used the wrong source path.",
+      rationale: "The approach was repaired before the final commit.",
+      impact: "material",
+      status: "resolved",
+      humanGateId: null,
+      evidenceRefs: ["evidence:repaired-diff"]
+    });
     assert.deepStrictEqual(
       validateTaskEvidence(committedEvidence, { baseDirectory: committedRoot }),
       { valid: true, errors: [] }

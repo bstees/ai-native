@@ -17,6 +17,12 @@
     "aiNative": {
       "remote": "git@github.com:bstees/ai-native.git",
       "role": "canonical findings, backlog, implementation, and verification",
+      "baseCommit": "38a9f87cd57ab9155360c963644e80f16ec9cf45",
+      "branch": "codex/weekly-brief-delivery"
+    },
+    "aiNativeHistorical": {
+      "remote": "git@github.com:bstees/ai-native.git",
+      "role": "historical verified AI Native implementations",
       "baseCommit": "140e3ff2706ef5a9873d8bf3e4eb716ee86c8ae9",
       "branch": "codex/weekly-digest-findings"
     },
@@ -1541,7 +1547,7 @@
   ],
   "implementations": [
     {
-      "implementationId": "IMP-AF001-TASK-CONTRACT",
+      "implementationId": "IMP-AIN-DELIVERY-001-TASK-CONTRACT",
       "backlogId": "AF-001",
       "findingIds": [
         "F-2026-09-04-02",
@@ -1550,6 +1556,30 @@
         "F-2026-11-06-02"
       ],
       "repositoryKey": "aiNative",
+      "branch": "codex/weekly-brief-delivery",
+      "commit": "beda00a6cb16f8931da17e8d552e60ee62a2dab7",
+      "paths": [
+        "assets/workflows/contracts/task-contract.schema.json",
+        "assets/workflows/task-contract.md",
+        "scripts/validate-task-contract.js",
+        "tests/task-contract.test.js"
+      ],
+      "status": "verified",
+      "verificationRunIds": [
+        "VR-AIN-DELIVERY-001-TASK-CONTRACT"
+      ],
+      "pullRequestUrl": null
+    },
+    {
+      "implementationId": "IMP-AF001-TASK-CONTRACT",
+      "backlogId": "AF-001",
+      "findingIds": [
+        "F-2026-09-04-02",
+        "F-2026-09-25-03",
+        "F-2026-10-02-03",
+        "F-2026-11-06-02"
+      ],
+      "repositoryKey": "aiNativeHistorical",
       "branch": "codex/weekly-digest-findings",
       "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
       "paths": [
@@ -1648,7 +1678,7 @@
         "F-2026-09-18-01",
         "F-2026-09-25-02"
       ],
-      "repositoryKey": "aiNative",
+      "repositoryKey": "aiNativeHistorical",
       "branch": "codex/weekly-digest-findings",
       "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
       "paths": [
@@ -1716,6 +1746,18 @@
       "completedOn": "2026-11-12",
       "evidenceRefs": [
         "tests/task-contract.test.js"
+      ]
+    },
+    {
+      "verificationRunId": "VR-AIN-DELIVERY-001-TASK-CONTRACT",
+      "implementationId": "IMP-AIN-DELIVERY-001-TASK-CONTRACT",
+      "command": "node tests/task-contract.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-16",
+      "evidenceRefs": [
+        "tests/task-contract.test.js",
+        "planning/task-contracts/ain-delivery-001-rev-5.json"
       ]
     },
     {

@@ -32,6 +32,8 @@ used across production repositories.
 - Use the narrowest workflow and smallest useful skill set for the task.
 - Keep sub-agents tightly scoped and give them only the context they need.
 - Prefer repo-local skills for repeatable techniques over growing this file.
+- Use `$weekly-brief-delivery` for the private AI Native approval and delivery
+  lane of the Friday AI Engineering Brief.
 
 ## DRY And Evolution Rule
 

@@ -1,0 +1,279 @@
+{
+  "$schema": "../../assets/workflows/contracts/task-contract.schema.json",
+  "contractVersion": 1,
+  "taskId": "ain-delivery-001",
+  "revision": 5,
+  "status": "approved",
+  "goal": "Deliver approved AI Native weekly-brief opportunities through one front-door human gate, automated implementation and verification, and a CI-green pull request ready for human review.",
+  "repository": {
+    "name": "bstees/ai-native",
+    "revision": "38a9f87cd57ab9155360c963644e80f16ec9cf45",
+    "branch": "codex/weekly-brief-delivery"
+  },
+  "scope": {
+    "included": [
+      "A repository-local weekly-brief delivery skill covering proposal, approval, isolated implementation, evidence, review, CI repair, and pull-request readiness",
+      "A strict deviation revisit rule that requires compliant repair or an explicitly approved superseding contract revision",
+      "A read-only GitHub Actions verification pipeline for pull requests and main",
+      "Updates to the existing Friday AI Engineering Brief automation so approved AI Native proposals use the delivery skill"
+    ],
+    "excluded": [
+      "Publishing or changing the public AI Engineering Brief",
+      "Merging, enabling auto-merge, releasing, deploying, publishing shared assets, or rolling changes out to consumers",
+      "Changing repository protection settings or editing the dirty primary checkout"
+    ],
+    "expectedChangedPaths": [
+      ".agents/skills/weekly-brief-delivery/SKILL.md",
+      ".agents/skills/weekly-brief-delivery/agents/openai.yaml",
+      ".agents/skills/weekly-brief-delivery/references/approval-packets.md",
+      ".github/workflows/ci.yml",
+      "agents.md",
+      "assets/instruction-evaluation/cases/weekly-brief-deviation.json",
+      "assets/quality/examples/task-evidence-bundle.json",
+      "assets/quality/task-evidence-bundle.md",
+      "assets/workflows/contracts/task-contract.schema.json",
+      "assets/workflows/independent-verification.md",
+      "assets/workflows/task-contract.md",
+      "package.json",
+      "planning/task-contracts/ain-delivery-001-rev-2.json",
+      "scripts/validate-task-contract.js",
+      "scripts/validate-task-evidence.js",
+      "tests/task-contract.test.js",
+      "tests/task-evidence.test.js",
+      "planning/task-contracts/ain-delivery-001-rev-3.json",
+      "planning/weekly-digest-delivery-manifest.json",
+      "planning/task-contracts/ain-delivery-001-rev-4.json",
+      "tests/instruction-evaluation.test.js",
+      "planning/task-contracts/ain-delivery-001-rev-5.json"
+    ],
+    "excludedPaths": [
+      ".agents/skills/write-unit-tests",
+      "scripts/shared-assets-manifest.js",
+      "server",
+      "tests/server.test.js"
+    ]
+  },
+  "sourceEvidence": [
+    {
+      "id": "SRC-001",
+      "source": "OpenAI scheduled-task and Git-worktree documentation",
+      "claim": "Scheduled tasks can produce the proposal in an existing task, while isolated worktrees keep implementation separate from the primary checkout.",
+      "limitations": "The documentation does not define this repository's contract, deviation, evidence, or PR-readiness policy.",
+      "evidenceRefs": [
+        "https://learn.chatgpt.com/docs/automations",
+        "https://learn.chatgpt.com/docs/environments/git-worktrees"
+      ]
+    },
+    {
+      "id": "SRC-002",
+      "source": "GitHub Actions billing and repository inspection",
+      "claim": "The public repository can use standard GitHub-hosted Actions runners without custom credentials or per-minute charges, and its tests require full Git history.",
+      "limitations": "GitHub policy and repository visibility can change; the workflow still requires a live run before readiness.",
+      "evidenceRefs": [
+        "https://docs.github.com/en/actions/concepts/billing-and-usage",
+        ".nvmrc",
+        "tests/weekly-digest-manifest.test.js"
+      ]
+    },
+    {
+      "id": "SRC-003",
+      "source": "Existing AI Native task-contract and evidence validators",
+      "claim": "The repository already has executable contract and evidence formats that can anchor approval and independent verification.",
+      "limitations": "The existing evidence validator permits a same-revision approved deviation to verify, so rev 2 must close that loophole.",
+      "evidenceRefs": [
+        "assets/workflows/task-contract.md",
+        "assets/quality/task-evidence-bundle.md",
+        "scripts/validate-task-evidence.js"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "statement": "A loose deviation rule could let an implementation pass while no longer honoring the human-approved specification."
+    },
+    {
+      "id": "RISK-002",
+      "statement": "A shallow GitHub checkout would make history-sensitive repository tests fail despite a valid implementation."
+    },
+    {
+      "id": "RISK-003",
+      "statement": "The existing Friday automation could continue producing proposals that lack enough detail to freeze an executable contract."
+    },
+    {
+      "id": "RISK-004",
+      "statement": "Main is currently unprotected, so human merge discipline remains necessary until repository protection is separately authorized."
+    }
+  ],
+  "verificationCommands": [
+    "node tests/task-contract.test.js",
+    "node tests/task-evidence.test.js",
+    "npm run validate:task-contract -- planning/task-contracts/ain-delivery-001-rev-5.json",
+    "npm run verify",
+    "npm run validate:task-evidence -- /tmp/ain-delivery-001-rev-5-evidence.json"
+  ],
+  "constraints": [
+    {
+      "id": "CON-001",
+      "statement": "Work only in a clean, dedicated worktree based on the recorded origin/main commit; do not disturb the user's dirty primary checkout."
+    },
+    {
+      "id": "CON-002",
+      "statement": "No repository mutation may begin before explicit approval of the exact stable ID and revision."
+    },
+    {
+      "id": "CON-003",
+      "statement": "Every deviation must trigger a revisit until the approved specification is honored or a new contract revision and fingerprint receive explicit human approval."
+    },
+    {
+      "id": "CON-004",
+      "statement": "The pull request may be created and moved from draft to ready only after local verification, independent review, evidence validation, and GitHub CI succeed; it must never be merged by this delivery workflow."
+    },
+    {
+      "id": "CON-005",
+      "statement": "GitHub Actions must use read-only repository permissions, pinned actions, the repository Node version, and full Git history."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-001",
+      "statement": "The implementation worktree is based on the current origin/main commit recorded in this contract.",
+      "status": "validated",
+      "evidenceRefs": [
+        "git:origin/main@38a9f87cd57ab9155360c963644e80f16ec9cf45"
+      ]
+    },
+    {
+      "id": "ASM-002",
+      "statement": "The existing GitHub connection can create and update a pull request, and repository SSH credentials can push the feature branch.",
+      "status": "validated",
+      "evidenceRefs": [
+        "github:authenticated-user=bstees",
+        "git:remote-origin-ssh-check"
+      ]
+    },
+    {
+      "id": "ASM-003",
+      "statement": "Standard GitHub-hosted Actions runners are available without billed minutes for this public repository.",
+      "status": "validated",
+      "evidenceRefs": [
+        "https://docs.github.com/en/actions/concepts/billing-and-usage"
+      ]
+    },
+    {
+      "id": "ASM-004",
+      "statement": "The existing Friday AI Engineering Brief heartbeat is the automation to update rather than duplicate.",
+      "status": "validated",
+      "evidenceRefs": [
+        "automation:friday-ai-engineering-brief"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-001",
+      "statement": "The weekly brief produces a complete, fingerprinted, proposal-only approval contract and performs no implementation mutation before explicit approval.",
+      "evidenceRequired": [
+        "The weekly-brief-delivery skill defines exact proposal fields and a no-mutation stop",
+        "The Friday automation invokes that proposal workflow"
+      ],
+      "owner": "shared",
+      "frozen": true
+    },
+    {
+      "id": "AC-002",
+      "statement": "An approved item uses one isolated worktree, branch, task contract, evidence bundle, and draft pull request through implementation and verification.",
+      "evidenceRequired": [
+        "Skill instructions define the one-item delivery unit and readiness gates",
+        "This delivery records a valid contract, commit-bound evidence, independent review, and pull request"
+      ],
+      "owner": "agent",
+      "frozen": true
+    },
+    {
+      "id": "AC-003",
+      "statement": "Every deviation starts a revisit, and unresolved or same-revision approved deviations cannot verify or make a pull request ready.",
+      "evidenceRequired": [
+        "Validator regression tests cover material and non-material unresolved deviations, same-revision approval, and repaired deviations",
+        "The skill and verification guidance require an approved superseding revision when the original contract cannot be honored"
+      ],
+      "owner": "shared",
+      "frozen": true
+    },
+    {
+      "id": "AC-004",
+      "statement": "GitHub CI runs the repository verification suite with read-only permissions, pinned actions, the .nvmrc version, and full Git history.",
+      "evidenceRequired": [
+        "The CI workflow passes on the final pull-request commit",
+        "The workflow contains no write permission or pull_request_target trigger"
+      ],
+      "owner": "agent",
+      "frozen": true
+    },
+    {
+      "id": "AC-005",
+      "statement": "The existing Friday AI Engineering Brief automation is updated in place to use the contract, deviation, evidence, and pull-request workflow.",
+      "evidenceRequired": [
+        "The automation retains its Friday schedule and target task",
+        "Its saved prompt invokes the weekly-brief-delivery skill and preserves proposal-only behavior until approval"
+      ],
+      "owner": "agent",
+      "frozen": true
+    },
+    {
+      "id": "AC-006",
+      "statement": "AIN-DELIVERY-001 rev 2 dogfoods the workflow and ends at a CI-green pull request ready for human review without merge or deployment.",
+      "evidenceRequired": [
+        "The approved contract and commit-bound evidence validate",
+        "A fresh independent read-only reviewer verifies the final diff and evidence",
+        "The pull request is ready and every required GitHub check is green"
+      ],
+      "owner": "human",
+      "frozen": true
+    }
+  ],
+  "authority": {
+    "level": "consequential_changes",
+    "allowedActions": [
+      "Create and edit files only on the dedicated feature worktree and branch",
+      "Install lockfile-resolved dependencies and run repository verification",
+      "Update the existing Friday AI Engineering Brief automation in place",
+      "Commit and push the approved feature branch",
+      "Create and update one draft pull request and mark it ready after every readiness gate passes",
+      "Repair in-scope local or CI failures and rerun the required evidence and review loop"
+    ],
+    "prohibitedActions": [
+      "Merge or enable auto-merge",
+      "Release, deploy, publish shared assets, or roll out to consumer repositories",
+      "Change repository protection or security settings",
+      "Modify, clean, reset, or stash the dirty primary checkout",
+      "Expand scope, paths, authority, or acceptance boundaries without an approved superseding revision"
+    ]
+  },
+  "humanGates": [
+    {
+      "id": "GATE-001",
+      "decision": "Approve AIN-DELIVERY-001 rev 2 for bounded delivery through a pull request ready for human review.",
+      "when": "Before any implementation mutation.",
+      "status": "approved"
+    },
+    {
+      "id": "GATE-002",
+      "decision": "Approve an exact superseding contract revision and fingerprint when the active revision cannot be honored safely.",
+      "when": "Only after the deviation revisit cannot restore compliance with the active approved revision.",
+      "status": "approved"
+    },
+    {
+      "id": "GATE-003",
+      "decision": "Review and decide whether to merge the ready pull request.",
+      "when": "After the final commit, evidence, independent review, and required GitHub checks are green.",
+      "status": "pending"
+    }
+  ],
+  "approval": {
+    "approvedBy": "bstees",
+    "approvedOn": "2026-11-16",
+    "contractFingerprint": "eb15f69a74ff03bc6840c088177a28564989ed87046ecad915ef92c04e4ce7cd"
+  }
+}
+
