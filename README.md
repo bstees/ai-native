@@ -1,10 +1,32 @@
 # AI Native
 
-This repo is the central standards, workflows, skills, and governance layer for
-our hybrid human-and-agent development model.
+A shared engineering system for AI-assisted software delivery: reusable agent workflows,
+quality contracts, governance controls, and evidence that helps humans decide what to ship.
 
-Work should happen in product repos. This repo exists to improve how those repos
-work over time.
+Created by [Brent Stees](https://brentstees.com), AI Native treats developer tooling as
+an internal product. Product work stays in consumer repositories; shared standards,
+validation, and lessons return here.
+
+## Start Here: Capabilities and Evidence
+
+- **Repeatable delivery:** [task contracts](assets/workflows/task-contract.md) and
+  [independent verification](assets/workflows/independent-verification.md) separate
+  intended outcomes from implementation claims.
+- **Bounded agent work:** [orchestration contracts and routing](assets/agent-orchestration/README.md)
+  define reusable roles and provider adapters.
+- **Governance:** [risk and data-handling controls](assets/governance/README.md)
+  describe authority, escalation, and human review boundaries.
+- **Instruction evaluation:** the [recorded pilot assessment](assets/instruction-evaluation/pilot/runs/2026-07-31T14-15-28-553Z/assessment.md)
+  compares two instruction variants. Both missed an expected behavior; the assessment
+  recommends more trials rather than claiming an improvement from a small sample.
+- **Specification-derived verification:** the [runtime pilot report](experiments/november-13-node-runtime-pilot/pilot-report.json)
+  and [evidence bundle](experiments/november-13-node-runtime-pilot/task-evidence-bundle.json)
+  record one fail-before/pass-after criterion and two unmet requirements in a historical
+  patch. This is evidence of finding an incomplete fix, not a claim that every gate passed.
+
+**Status:** an evolving engineering toolkit and Studio app, with executable tests and
+recorded pilots. These artifacts do not establish organization-wide adoption,
+production reliability, or a statistically reliable productivity improvement.
 
 ## Quick Start
 
@@ -61,18 +83,24 @@ That is the minimum shared operating surface.
 You only need a few basics to work effectively here:
 
 - `git`
-- `node` and `npm`
+- `node` and `npm`; use `nvm use` to select the version in `.nvmrc`
 - `docker compose` if you want to run the showcase app with MySQL
 
 ## Useful Commands
 
 ### Verify The Repo
 
+Install the locked dependencies first with `npm ci`.
+
 ```bash
 npm test
 npm run build
 npm run eval:instructions
 ```
+
+[CI](../../actions/workflows/ci.yml) runs these deterministic checks on pull requests
+and pushes to `main`. It does not run paid model pilots, deploy the app, or certify
+production readiness.
 
 ### Query Existing Repo Surfaces
 
