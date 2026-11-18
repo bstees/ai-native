@@ -30,6 +30,20 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - name: Record full dependency audit
+        id: full-audit
+        continue-on-error: true
+        run: npm audit --json > dependency-audit.json
+      - name: Preserve full audit report
+        if: always() && steps.full-audit.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit
+          path: dependency-audit.json
+          if-no-files-found: error
+          retention-days: 14
       - name: Run automated tests
         run: npm test
       - name: Evaluate instruction contracts
