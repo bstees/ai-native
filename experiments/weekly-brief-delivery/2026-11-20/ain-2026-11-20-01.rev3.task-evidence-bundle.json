@@ -1,0 +1,192 @@
+{
+  "bundleVersion": 1,
+  "bundleId": "EVB-2026-11-20-AIN-REV3",
+  "createdOn": "2026-11-22",
+  "task": {
+    "taskId": "AIN-2026-11-20-01",
+    "revision": 3,
+    "contractPath": "experiments/weekly-brief-delivery/2026-11-20/ain-2026-11-20-01.rev3.task-contract.json",
+    "contractFingerprint": "fcb2ea039b22581bd2e2a5f2bc1193f2bce90eaa735c5ffb151a38c87943b113"
+  },
+  "implementation": {
+    "actorId": "codex-implementation",
+    "actorType": "agent",
+    "branch": "codex/ain-2026-11-20-01-requirement-ledger",
+    "commit": "eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5",
+    "changedPaths": [
+      "assets/workflows/contracts/requirement-ledger.schema.json",
+      "assets/workflows/contracts/task-contract.schema.json",
+      "assets/workflows/examples/requirement-ledger.json",
+      "assets/workflows/requirements-ledger.md",
+      "experiments/weekly-brief-delivery/2026-11-20/ain-2026-11-20-01.rev3.task-contract.json",
+      "package.json",
+      "scripts/validate-requirement-ledger.js",
+      "scripts/validate-task-evidence.js",
+      "tests/requirement-ledger.test.js",
+      "tests/run.js",
+      "tests/task-contract.test.js",
+      "tests/task-evidence.test.js"
+    ],
+    "changeFingerprint": "4f8e6bbce5977b71034d369f4dd0b20ee2d7dcf3802c4b0a89e871fd34c7930c"
+  },
+  "commandEvidence": [
+    {
+      "command": "node tests/task-contract.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/tests/task-contract.test.js"
+      ]
+    },
+    {
+      "command": "node tests/requirement-ledger.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/tests/requirement-ledger.test.js"
+      ]
+    },
+    {
+      "command": "node tests/task-evidence.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/tests/task-evidence.test.js"
+      ]
+    },
+    {
+      "command": "node scripts/validate-requirement-ledger.js assets/workflows/examples/requirement-ledger.json",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/assets/workflows/examples/requirement-ledger.json"
+      ]
+    },
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/tests/run.js"
+      ]
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/package.json"
+      ]
+    },
+    {
+      "command": "npm run eval:instructions",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/scripts/evaluate-instructions.js"
+      ]
+    },
+    {
+      "command": "npm run audit:dependencies",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/scripts/check-dependency-audit.js"
+      ]
+    },
+    {
+      "command": "npm audit --omit=dev --audit-level=high",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/package-lock.json"
+      ]
+    },
+    {
+      "command": "npm run validate:task-contract -- experiments/weekly-brief-delivery/2026-11-20/ain-2026-11-20-01.rev3.task-contract.json",
+      "exitCode": 0,
+      "result": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/experiments/weekly-brief-delivery/2026-11-20/ain-2026-11-20-01.rev3.task-contract.json"
+      ]
+    }
+  ],
+  "criterionEvidence": [
+    {
+      "criterionId": "AC-001",
+      "status": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/tests/task-contract.test.js"
+      ]
+    },
+    {
+      "criterionId": "AC-002",
+      "status": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/assets/workflows/contracts/requirement-ledger.schema.json",
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/assets/workflows/examples/requirement-ledger.json"
+      ]
+    },
+    {
+      "criterionId": "AC-003",
+      "status": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/tests/requirement-ledger.test.js"
+      ]
+    },
+    {
+      "criterionId": "AC-004",
+      "status": "passed",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/assets/workflows/requirements-ledger.md",
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/assets/workflows/independent-verification.md"
+      ]
+    },
+    {
+      "criterionId": "AC-005",
+      "status": "insufficient",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/tests/task-evidence.test.js",
+        "planning/weekly-digest-delivery-manifest.json"
+      ]
+    }
+  ],
+  "requirementDeviations": [],
+  "differentialEvidence": {
+    "applicability": "required",
+    "rationale": null,
+    "records": [
+      {
+        "id": "DIFF-001",
+        "criterionIds": [
+          "AC-001"
+        ],
+        "baseRevision": "936bc227bb62fe59901d166d7ccd11bcaeef94c9",
+        "patchedRevision": "eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5",
+        "command": "node -e \"const {validateTaskContract}=require('./scripts/validate-task-contract'); const draft={...require('./assets/workflows/examples/task-contract.json'),status:'draft',approval:null,taskId:'AIN-2026-11-20-01'}; const result=validateTaskContract(draft); if(!result.valid) console.error(result.errors); process.exitCode=Number(!result.valid);\"",
+        "baseExitCode": 1,
+        "patchedExitCode": 0,
+        "expectedBaseResult": "failed",
+        "observedBaseResult": "failed",
+        "expectedPatchedResult": "passed",
+        "observedPatchedResult": "passed",
+        "evidenceRefs": [
+          "https://github.com/bstees/ai-native/blob/936bc227bb62fe59901d166d7ccd11bcaeef94c9/assets/workflows/contracts/task-contract.schema.json",
+          "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/assets/workflows/contracts/task-contract.schema.json"
+        ]
+      }
+    ]
+  },
+  "review": {
+    "reviewerId": "independent-review",
+    "profilePath": "assets/agent-orchestration/profiles/reviewer.json",
+    "independent": true,
+    "readOnly": true,
+    "findings": [],
+    "unresolvedRisks": [
+      "Exact final-head verification, CI, and read-only review are recorded on the pull request after this evidence commit exists."
+    ],
+    "disposition": "changes_required",
+    "reviewedOn": "2026-11-22"
+  }
+}
