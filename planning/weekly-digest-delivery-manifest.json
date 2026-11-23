@@ -1551,7 +1551,7 @@
       ],
       "repositoryKey": "aiNative",
       "branch": "codex/weekly-digest-findings",
-      "commit": "ad16ef8fea7532e579da32e291ab89688b4c5137",
+      "commit": "eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5",
       "paths": [
         "assets/workflows/contracts/task-contract.schema.json",
         "assets/workflows/task-contract.md",
@@ -1561,7 +1561,8 @@
       ],
       "status": "verified",
       "verificationRunIds": [
-        "VR-AF001-TASK-CONTRACT"
+        "VR-AF001-TASK-CONTRACT",
+        "VR-AF001-TASK-CONTRACT-AIN-2026-11-20-01-REV3"
       ],
       "pullRequestUrl": null
     },
@@ -1827,6 +1828,17 @@
       "evidenceRefs": [
         "experiments/november-13-node-runtime-pilot/task-evidence-bundle.json",
         "experiments/november-13-node-runtime-pilot/pilot-report.json"
+      ]
+    },
+    {
+      "verificationRunId": "VR-AF001-TASK-CONTRACT-AIN-2026-11-20-01-REV3",
+      "implementationId": "IMP-AF001-TASK-CONTRACT",
+      "command": "node tests/task-contract.test.js",
+      "exitCode": 0,
+      "result": "passed",
+      "completedOn": "2026-11-22",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/blob/eb0b6c7fb74ddfb289284aca82a7d7ce668ef5d5/tests/task-contract.test.js"
       ]
     }
   ]

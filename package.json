@@ -21,7 +21,8 @@
     "query:repo": "node scripts/repo-surface-index.js query",
     "sync": "node scripts/sync.js",
     "seed:onboarding": "node scripts/seed-repo-onboarding.js",
-    "audit:dependencies": "node scripts/check-dependency-audit.js"
+    "audit:dependencies": "node scripts/check-dependency-audit.js",
+    "validate:requirement-ledger": "node scripts/validate-requirement-ledger.js"
   },
   "dependencies": {
     "d3": "^7.9.0",

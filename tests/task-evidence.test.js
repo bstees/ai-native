@@ -33,8 +33,91 @@ function expectInvalid(bundle, fragment) {
   );
 }
 
+function testSeparateEvidenceCommit(root, legacyContract, legacyBundle, revision) {
+  const git = (...args) => execFileSync("git", args, { cwd: root, encoding: "utf8" }).trim();
+  const writeJson = (relativePath, value) => fs.writeFileSync(
+    path.join(root, relativePath), JSON.stringify(value, null, 2) + "\n"
+  );
+  const contract = clone(legacyContract);
+  const contractPath = `revision-${revision}.task-contract.json`;
+  const evidencePath = `revision-${revision}.task-evidence-bundle.json`;
+  const manifestPath = "planning/weekly-digest-delivery-manifest.json";
+  const sourcePath = "src/example.js";
+  const implementationPaths = [contractPath, sourcePath];
+  contract.taskId = "AIN-2026-11-20-01";
+  contract.revision = revision;
+  contract.repository.revision = git("rev-parse", "HEAD");
+  contract.scope.expectedChangedPaths = [...implementationPaths, evidencePath];
+  if (revision === 3) contract.scope.expectedChangedPaths.push(manifestPath);
+  contract.approval.contractFingerprint = contractFingerprint(contract);
+  writeJson(contractPath, contract);
+  fs.writeFileSync(path.join(root, sourcePath), `export const value = ${revision + 1};\n`);
+  git("add", "--", contractPath, sourcePath);
+  git("commit", "-m", `Implement revision ${revision}`);
+
+  const bundle = clone(legacyBundle);
+  bundle.task = {
+    taskId: contract.taskId,
+    revision: contract.revision,
+    contractPath,
+    contractFingerprint: contract.approval.contractFingerprint
+  };
+  const implementationCommit = git("rev-parse", "HEAD");
+  bundle.implementation.commit = implementationCommit;
+  bundle.implementation.changedPaths = implementationPaths;
+  bundle.implementation.changeFingerprint = commitPathsFingerprint(
+    root, implementationCommit, implementationPaths
+  );
+  bundle.differentialEvidence = { applicability: "not_applicable", rationale: "Fixture only.", records: [] };
+
+  function checkEvidenceCommit(input, extraPath, message, includeManifest = revision === 3) {
+    git("reset", "--hard", implementationCommit);
+    writeJson(evidencePath, input);
+    git("add", "--", evidencePath);
+    if (includeManifest) {
+      fs.mkdirSync(path.join(root, "planning"), { recursive: true });
+      writeJson(manifestPath, { commit: implementationCommit });
+      git("add", "--", manifestPath);
+    }
+    if (extraPath) {
+      fs.writeFileSync(path.join(root, extraPath), "unexpected change\n");
+      git("add", "--", extraPath);
+    }
+    git("commit", "-m", "Record evidence");
+    const result = validateTaskEvidence(input, { baseDirectory: root });
+    if (message) {
+      assert.strictEqual(result.valid, false);
+      assert.ok(result.errors.some((error) => error.includes(message)), result.errors.join("\n"));
+    } else {
+      assert.deepStrictEqual(result, { valid: true, errors: [] });
+    }
+  }
+
+  checkEvidenceCommit(bundle, null);
+  const unpublished = clone(bundle);
+  unpublished.review.reviewerId = "different-reviewer";
+  assert.ok(validateTaskEvidence(unpublished, { baseDirectory: root }).errors.some(
+    (error) => error.includes("must contain the supplied evidence bundle")
+  ));
+  if (revision === 3) checkEvidenceCommit(bundle, null, "must change only", false);
+  checkEvidenceCommit(bundle, "extra.txt", "must change only");
+  checkEvidenceCommit(bundle, sourcePath, "must change only");
+  const incorrectFingerprint = clone(bundle);
+  incorrectFingerprint.implementation.changeFingerprint = "0".repeat(64);
+  checkEvidenceCommit(incorrectFingerprint, null, "does not match the committed path contents");
+}
+
 function run() {
   const valid = JSON.parse(fs.readFileSync(examplePath, "utf8"));
+  assert.strictEqual(
+    valid.implementation.changeFingerprint,
+    commitPathsFingerprint(path.join(__dirname, ".."), "936bc227bb62fe59901d166d7ccd11bcaeef94c9",
+      valid.implementation.changedPaths)
+  );
+  // The historical example includes the files changed by this task.
+  valid.implementation.changeFingerprint = changedPathsFingerprint(
+    path.join(__dirname, ".."), valid.implementation.changedPaths
+  );
   assert.deepStrictEqual(validateTaskEvidence(valid), { valid: true, errors: [] });
 
   const uncommittedVerified = clone(valid);
@@ -350,6 +433,8 @@ function run() {
       validateTaskEvidence(committedEvidence, { baseDirectory: committedRoot }),
       { valid: true, errors: [] }
     );
+    testSeparateEvidenceCommit(committedRoot, committedContract, committedEvidence, 2);
+    testSeparateEvidenceCommit(committedRoot, committedContract, committedEvidence, 3);
   } finally {
     fs.rmSync(committedRoot, { recursive: true, force: true });
   }

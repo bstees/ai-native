@@ -1,0 +1,27 @@
+{
+  "$schema": "../contracts/requirement-ledger.schema.json",
+  "ledgerVersion": 1,
+  "readiness": "ready",
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "statement": "Reject silent changes to an approved task contract.",
+      "sources": [
+        {
+          "authority": "repository_standard",
+          "reference": "assets/workflows/task-contract.md"
+        }
+      ],
+      "required": true,
+      "disposition": "verified",
+      "blockers": [],
+      "evidence": [
+        {
+          "kind": "repository_artifact",
+          "reference": "tests/task-contract.test.js"
+        }
+      ]
+    }
+  ],
+  "conflicts": []
+}

@@ -33,6 +33,19 @@ function run() {
   const draft = JSON.parse(fs.readFileSync(examplePath, "utf8"));
   assert.deepStrictEqual(validateTaskContract(draft), { valid: true, errors: [] });
 
+  const idFixture = { ...draft, status: "draft", approval: null };
+  for (const taskId of ["AIN-2026-11-20-01", "abc", "a1-", "0-legacy-id", "a".repeat(80)]) {
+    assert.deepStrictEqual(validateTaskContract({ ...idFixture, taskId }), { valid: true, errors: [] });
+  }
+  for (const taskId of [
+    "AIN-26-11-20-01", "AIN-2026-1-20-01", "AIN-2026-11-2-01",
+    "AIN-2026-11-20-1", "AIN-2026-11-20-001", "AIN-2026-11-20-01-extra",
+    "AIN-2026-11-20-01\n", "Ain-2026-11-20-01", "ABC", "-abc",
+    "ab", "with_underscore", "a".repeat(81)
+  ]) {
+    expectInvalid({ ...idFixture, taskId }, "/taskId");
+  }
+
   const missingGoal = clone(draft);
   delete missingGoal.goal;
   expectInvalid(missingGoal, "goal");

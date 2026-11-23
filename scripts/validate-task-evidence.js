@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const crypto = require("crypto");
+const { isDeepStrictEqual } = require("util");
 const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
@@ -68,10 +69,11 @@ function commitPathsFingerprint(baseDirectory, commit, changedPaths) {
   return hash.digest("hex");
 }
 
-function commitChangedPaths(baseDirectory, baseRevision, commit) {
+function commitChangedPaths(baseDirectory, baseRevision, commit, { detectRenames = true } = {}) {
   const output = execFileSync(
     "git",
-    ["-C", baseDirectory, "diff", "--name-only", "-z", baseRevision, commit, "--"],
+    ["-C", baseDirectory, "diff", "--name-only", "-z",
+      ...(detectRenames ? [] : ["--no-renames"]), baseRevision, commit, "--"],
     {
       encoding: "utf8",
       maxBuffer: 64 * 1024 * 1024,
@@ -85,11 +87,65 @@ function sameMembers(left, right) {
   return left.length === right.length && left.every((value) => right.includes(value));
 }
 
+const weeklyManifestPath = "planning/weekly-digest-delivery-manifest.json";
+
+function validateEvidenceCommit(bundle, contract, baseDirectory, evidencePath, evidenceRevision, errors) {
+  const implementation = bundle.implementation;
+  if (typeof implementation.commit !== "string") {
+    errors.push("/implementation/commit is required for a separate evidence commit");
+    return;
+  }
+
+  try {
+    const git = (...args) => execFileSync("git", ["-C", baseDirectory, ...args], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"]
+    }).trim();
+    if (evidenceRevision !== "HEAD" && !/^[a-f0-9]{40}$/.test(evidenceRevision)) {
+      throw new Error("Expected HEAD or a full commit hash");
+    }
+    const implementationCommit = git("rev-parse", `${implementation.commit}^{commit}`);
+    const [, ...implementationParents] = git(
+      "rev-list", "--parents", "-n", "1", implementationCommit
+    ).split(" ");
+    if (!sameMembers(implementationParents, [contract.repository.revision])) {
+      errors.push("/implementation/commit must have the approved baseline as its sole parent");
+    }
+    const [head, ...parents] = git("rev-list", "--parents", "-n", "1", evidenceRevision).split(" ");
+    if (!sameMembers(parents, [implementationCommit])) {
+      errors.push("/implementation/commit must be the sole parent of the evidence commit");
+    }
+    const evidenceChanges = commitChangedPaths(
+      baseDirectory, implementationCommit, head, { detectRenames: false }
+    );
+    const allowedChanges = contract.revision === 3 ? [evidencePath, weeklyManifestPath] : [evidencePath];
+    if (!sameMembers(evidenceChanges, allowedChanges)) {
+      errors.push("The evidence commit must change only the approved evidence paths");
+    }
+    if (!isDeepStrictEqual(JSON.parse(git("show", `${head}:${evidencePath}`)), bundle)) {
+      errors.push("The approved evidence commit must contain the supplied evidence bundle");
+    }
+    const committedContract = JSON.parse(git("show", `${implementationCommit}:${bundle.task.contractPath}`));
+    if (!isDeepStrictEqual(committedContract, contract)) {
+      errors.push("/task/contractPath must match the contract in the implementation commit");
+    }
+    try {
+      git("cat-file", "-e", `${implementationCommit}:${evidencePath}`);
+    } catch {
+      return;
+    }
+    errors.push("The evidence bundle must be absent from the implementation commit");
+  } catch {
+    errors.push("The evidence revision must resolve to a commit containing the approved evidence bundle");
+  }
+}
+
 function validateTaskEvidence(
   bundle,
   {
     schemaPath = defaultSchemaPath,
-    baseDirectory = path.join(__dirname, "..")
+    baseDirectory = path.join(__dirname, ".."),
+    evidenceRevision = "HEAD"
   } = {}
 ) {
   const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
@@ -105,6 +161,7 @@ function validateTaskEvidence(
       : {};
 
   let contract = null;
+  let separateEvidence = false;
   const contractPath = resolveRepositoryPath(baseDirectory, bundle.task?.contractPath);
   if (!contractPath || !fs.existsSync(contractPath)) {
     errors.push("/task/contractPath must reference an existing repository-relative contract");
@@ -129,12 +186,29 @@ function validateTaskEvidence(
       if (implementation.branch !== contract.repository?.branch) {
         errors.push("/implementation/branch does not match the approved contract branch");
       }
+      let expectedPaths = contract.scope?.expectedChangedPaths;
+      separateEvidence = contract.taskId === "AIN-2026-11-20-01" && [2, 3].includes(contract.revision);
+      if (separateEvidence) {
+        const evidencePath = bundle.task.contractPath.replace(
+          /\.task-contract\.json$/, ".task-evidence-bundle.json"
+        );
+        if (evidencePath === bundle.task.contractPath || !expectedPaths?.includes(evidencePath)) {
+          errors.push("/task/contractPath does not identify an approved sibling evidence bundle");
+        } else {
+          const evidencePaths = contract.revision === 3 ? [evidencePath, weeklyManifestPath] : [evidencePath];
+          if (!evidencePaths.every((changedPath) => expectedPaths.includes(changedPath))) {
+            errors.push("/task/contractPath is missing an approved evidence path");
+          }
+          expectedPaths = expectedPaths.filter((changedPath) => !evidencePaths.includes(changedPath));
+          validateEvidenceCommit(bundle, contract, baseDirectory, evidencePath, evidenceRevision, errors);
+        }
+      }
       if (
         Array.isArray(implementation.changedPaths) &&
-        Array.isArray(contract.scope?.expectedChangedPaths) &&
+        Array.isArray(expectedPaths) &&
         !sameMembers(
           [...implementation.changedPaths].sort(),
-          [...contract.scope.expectedChangedPaths].sort()
+          [...expectedPaths].sort()
         )
       ) {
         errors.push("/implementation/changedPaths must equal the approved expected changed-path set");
@@ -198,7 +272,8 @@ function validateTaskEvidence(
       const committedPaths = commitChangedPaths(
         baseDirectory,
         contract.repository.revision,
-        implementation.commit
+        implementation.commit,
+        { detectRenames: !separateEvidence }
       );
       if (!sameMembers(committedPaths, [...implementation.changedPaths].sort())) {
         errors.push("/implementation/changedPaths do not match the approved base-to-commit diff");
@@ -394,12 +469,12 @@ function validateTaskEvidence(
 if (require.main === module) {
   const filePath = process.argv[2];
   if (!filePath) {
-    process.stderr.write("Usage: validate-task-evidence <task-evidence-bundle.json>\n");
+    process.stderr.write("Usage: validate-task-evidence <task-evidence-bundle.json> [evidence-commit]\n");
     process.exitCode = 1;
   } else {
     try {
       const bundle = JSON.parse(fs.readFileSync(path.resolve(filePath), "utf8"));
-      const result = validateTaskEvidence(bundle);
+      const result = validateTaskEvidence(bundle, { evidenceRevision: process.argv[3] });
       if (!result.valid) {
         process.stderr.write(`${result.errors.join("\n")}\n`);
         process.exitCode = 1;
