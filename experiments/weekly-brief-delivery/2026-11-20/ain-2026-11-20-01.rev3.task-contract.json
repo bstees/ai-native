@@ -1,0 +1,162 @@
+{
+  "contractVersion": 1,
+  "taskId": "AIN-2026-11-20-01",
+  "revision": 3,
+  "status": "approved",
+  "goal": "Implement and publish the deterministic requirement-level completion ledger from revision 1 using a commit-bound evidence bundle that can pass validation without self-reference. Refresh the existing AF-001 attestation for the two intentionally changed files it pins.",
+  "repository": {
+    "name": "bstees/ai-native",
+    "revision": "936bc227bb62fe59901d166d7ccd11bcaeef94c9",
+    "branch": "codex/ain-2026-11-20-01-requirement-ledger"
+  },
+  "scope": {
+    "included": [
+      "Implement revision 1's ledger, CLI, example, documentation, tests, and uppercase AIN task ID compatibility.",
+      "Update the evidence validator and its tests to support a revision 2 bundle in an evidence-only commit immediately following the implementation commit.",
+      "Update only the AF-001 entry and its verification runs in the weekly digest delivery manifest. Record the implementation commit and a fresh passing targeted test run in the evidence commit while keeping the historical verification run."
+    ],
+    "excluded": [
+      "Automatic requirement extraction, agent runners, LLM evaluation, RAG, UI, consumer rollout, evidence schema changes, and changes to PR #4 or its skill.",
+      "Changes to the weekly digest manifest validator and unrelated manifest records."
+    ],
+    "expectedChangedPaths": [
+      "assets/workflows/contracts/task-contract.schema.json",
+      "assets/workflows/contracts/requirement-ledger.schema.json",
+      "assets/workflows/requirements-ledger.md",
+      "assets/workflows/examples/requirement-ledger.json",
+      "scripts/validate-requirement-ledger.js",
+      "tests/requirement-ledger.test.js",
+      "tests/task-contract.test.js",
+      "tests/run.js",
+      "package.json",
+      "scripts/validate-task-evidence.js",
+      "tests/task-evidence.test.js",
+      "experiments/weekly-brief-delivery/2026-11-20/ain-2026-11-20-01.rev3.task-contract.json",
+      "experiments/weekly-brief-delivery/2026-11-20/ain-2026-11-20-01.rev3.task-evidence-bundle.json",
+      "planning/weekly-digest-delivery-manifest.json"
+    ],
+    "excludedPaths": [
+      ".agents/skills/weekly-brief-delivery/",
+      "assets/quality/contracts/task-evidence-bundle.schema.json",
+      "assets/agent-orchestration/",
+      "server/",
+      "src/",
+      "scripts/check-dependency-audit.js",
+      "scripts/dependency-audit-exception.json"
+    ]
+  },
+  "constraints": [
+    {
+      "id": "CON-001",
+      "statement": "Preserve existing lowercase task ID validation and existing approval fingerprint semantics."
+    },
+    {
+      "id": "CON-002",
+      "statement": "Accept independently checkable evidence for verified requirements. A completion claim alone is insufficient."
+    },
+    {
+      "id": "CON-003",
+      "statement": "Keep raw prompts, secrets, private correspondence, and personal data out of committed artifacts."
+    },
+    {
+      "id": "CON-004",
+      "statement": "Keep existing evidence validation behavior for all contracts outside this revision's explicitly defined evidence layout."
+    },
+    {
+      "id": "CON-005",
+      "statement": "Preserve the weekly digest manifest validator and require the existing live manifest test to pass unchanged."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-001",
+      "statement": "Main and the approved branch were observed at the approved baseline. Recheck for collisions and drift before edits.",
+      "status": "validated",
+      "evidenceRefs": [
+        "https://github.com/bstees/ai-native/tree/936bc227bb62fe59901d166d7ccd11bcaeef94c9"
+      ]
+    },
+    {
+      "id": "ASM-002",
+      "statement": "The AF-001 manifest attestation matches the pinned baseline and becomes stale when the approved task-contract schema and test change.",
+      "status": "validated",
+      "evidenceRefs": [
+        "planning/weekly-digest-delivery-manifest.json#IMP-AF001-TASK-CONTRACT",
+        "scripts/validate-weekly-digest-delivery-manifest.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-001",
+      "statement": "Accept exact AIN-YYYY-MM-DD-NN and existing lowercase IDs. Reject malformed AIN IDs and previously invalid forms.",
+      "evidenceRequired": [
+        "Passing targeted task-contract tests."
+      ],
+      "owner": "shared",
+      "frozen": true
+    },
+    {
+      "id": "AC-002",
+      "statement": "Provide a versioned schema and example with stable requirement IDs, authoritative provenance, statements, dispositions, blockers or conflicts, evidence references, and readiness.",
+      "evidenceRequired": [
+        "Schema, example, and passing provenance tests."
+      ],
+      "owner": "shared",
+      "frozen": true
+    },
+    {
+      "id": "AC-003",
+      "statement": "The CLI exits nonzero for ready ledgers with unverified required requirements, unresolved conflicts, or missing independent evidence, and zero for a valid fully evidenced ready ledger.",
+      "evidenceRequired": [
+        "Passing positive and negative CLI tests with recorded exit codes."
+      ],
+      "owner": "shared",
+      "frozen": true
+    },
+    {
+      "id": "AC-004",
+      "statement": "Document the separate pre-acceptance ledger check, the need for independent evidence, and how existing evidence requirements continue to apply.",
+      "evidenceRequired": [
+        "Documentation reviewed against task-contract and task-evidence workflows."
+      ],
+      "owner": "human",
+      "frozen": true
+    },
+    {
+      "id": "AC-005",
+      "statement": "The first commit changes exactly the 12 approved implementation paths from the baseline. The second commit has the implementation commit as its sole parent and changes only the approved bundle and the AF-001 manifest attestation with its new verification run. Validate the bundle's implementation commit and 12-path fingerprint. Validate the live manifest without changing its validator, and verify the exact final 14-path diff locally and in CI. Obtain independent read-only review of the final PR head before marking ready, merging, or publishing.",
+      "evidenceRequired": [
+        "Passing positive and negative evidence validator tests, including extra paths, implementation changes in the evidence commit, a missing manifest update, and wrong fingerprint.",
+        "Passing targeted tests, npm test, build, instruction evaluation, dependency audit, and contract and evidence validation.",
+        "Final base-to-head change fingerprint, exact-head CI results, and independent review disposition recorded on the PR.",
+        "Passing unmodified weekly digest manifest test and a recorded targeted task-contract test run referenced by the updated AF-001 manifest entry."
+      ],
+      "owner": "shared",
+      "frozen": true
+    }
+  ],
+  "authority": {
+    "level": "consequential_changes",
+    "allowedActions": [
+      "Implement the exact paths in an isolated worktree, push the approved branch, open one draft PR, and resolve in-scope findings.",
+      "After every acceptance criterion passes, mark the PR ready, merge into main, and publish the approved deliverables via the repository's established publication workflow."
+    ],
+    "prohibitedActions": [
+      "Changes outside the approved set, bypassing checks, weakening existing validation, modifying repository or security settings, and consumer rollout."
+    ]
+  },
+  "humanGates": [
+    {
+      "id": "GATE-001",
+      "decision": "Approve this exact revision and fingerprint.",
+      "when": "Before implementation.",
+      "status": "approved"
+    }
+  ],
+  "approval": {
+    "approvedBy": "repository-owner",
+    "approvedOn": "2026-11-22",
+    "contractFingerprint": "fcb2ea039b22581bd2e2a5f2bc1193f2bce90eaa735c5ffb151a38c87943b113"
+  }
+}
